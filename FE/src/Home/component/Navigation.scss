@@ -1,0 +1,376 @@
+.navigation-container {
+    width          : 100%;
+    padding        : 11px 56px;
+    left           : 0;
+    top            : 0;
+    position       : fixed;
+    background     : linear-gradient(180deg, rgba(18, 18, 20, 0.68) 0%, rgba(18, 18, 20, 0) 100%), rgba(18, 18, 20, 0.10);
+    flex-direction : column;
+    justify-content: flex-start;
+    align-items    : flex-start;
+    display        : inline-flex;
+    z-index        : 1000;
+
+    .navigation-content {
+        align-self     : stretch;
+        min-height     : 88px;
+        justify-content: space-between;
+        align-items    : flex-start;
+        display        : inline-flex;
+
+        .left-section {
+            align-self     : stretch;
+            justify-content: center;
+            align-items    : center;
+            gap            : 48px;
+            display        : flex;
+            width          : 70%;
+
+            .logo-section {
+                align-self     : stretch;
+                justify-content: flex-start;
+                align-items    : flex-start;
+                display        : flex;
+
+                .logo-image {
+                    width    : 115px;
+                    height   : 38px;
+                    max-width: 146px;
+                    min-width: 115px;
+                    position : relative;
+                }
+
+                .logo-icon-container {
+                    width    : 31px;
+                    height   : 26px;
+                    max-width: 144px;
+                    position : relative;
+
+                    .logo-icon {
+                        width   : 33px;
+                        height  : 26px;
+                        left    : -2px;
+                        top     : 0;
+                        position: absolute;
+                    }
+                }
+            }
+
+            .navigation-menu {
+                flex-direction : row;
+                justify-content: space-between;
+                align-items    : center;
+                display        : flex;
+                position       : relative;
+                width          : 100%;
+
+                .menu-item {
+                    height         : 100%;
+                    width          : 50px;
+                    padding        : 10px 0;
+                    position       : relative;
+                    flex-direction : column;
+                    justify-content: flex-start;
+                    align-items    : flex-start;
+                    display        : inline-flex;
+
+                    .menu-item-content {
+                        flex-direction : column;
+                        justify-content: flex-start;
+                        align-items    : flex-start;
+                        display        : flex;
+
+                        .menu-text {
+                            justify-content   : center;
+                            display           : flex;
+                            flex-direction    : column;
+                            color             : #F2F2F2;
+                            font-family       : 'Inter';
+                            font-weight       : 500;
+                            line-height       : 24px;
+                            white-space       : nowrap;
+                            // word-wrap      : break-word;
+                        }
+                    }
+
+
+
+
+                }
+            }
+        }
+
+        .right-section {
+            align-self     : stretch;
+            justify-content: flex-start;
+            align-items    : center;
+            gap            : 48px;
+            display        : flex;
+            width          : 30%;
+
+            .search-section {
+                padding        : 4px 12px;
+                flex-direction : column;
+                justify-content: flex-start;
+                align-items    : flex-start;
+                display        : inline-flex;
+
+                .search-container {
+                    max-width      : 48px;
+                    min-width      : 24px;
+                    overflow       : hidden;
+                    flex-direction : column;
+                    justify-content: flex-start;
+                    align-items    : flex-start;
+                    display        : flex;
+
+                    .search-icon-wrapper {
+                        width          : 24px;
+                        height         : 24px;
+                        overflow       : hidden;
+                        flex-direction : column;
+                        justify-content: center;
+                        align-items    : center;
+                        display        : flex;
+
+                        .search-icon {
+                            width   : 24px;
+                            height  : 24px;
+                            position: relative;
+                            overflow: hidden;
+
+                            .search-circle {
+                                width         : 18px;
+                                height        : 18px;
+                                left          : 2px;
+                                top           : 2px;
+                                position      : absolute;
+                                outline       : 2px white solid;
+                                outline-offset: -1px;
+                            }
+
+                            .search-handle {
+                                width         : 4.50px;
+                                height        : 4.50px;
+                                left          : 17.50px;
+                                top           : 17.50px;
+                                position      : absolute;
+                                outline       : 2px white solid;
+                                outline-offset: -1px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .subscription-section {
+                flex-direction : column;
+                justify-content: flex-start;
+                align-items    : flex-start;
+                display        : inline-flex;
+
+                .subscription-button {
+                    min-width      : 92px;
+                    padding        : 5.92px 10.67px;
+                    background     : rgba(255, 204, 0, 0.16);
+                    border-radius  : 16px;
+                    outline        : 1px #FFCC00 solid;
+                    outline-offset : -1px;
+                    justify-content: flex-start;
+                    align-items    : center;
+                    display        : inline-flex;
+
+                    .subscription-icon {
+                        width          : 16px;
+                        height         : 16px;
+                        flex-direction : column;
+                        justify-content: flex-start;
+                        align-items    : flex-start;
+                        display        : inline-flex;
+
+                        .subscription-icon-container {
+                            max-width      : 16px;
+                            overflow       : hidden;
+                            flex-direction : column;
+                            justify-content: flex-start;
+                            align-items    : flex-start;
+                            display        : flex;
+
+                            .subscription-icon-wrapper {
+                                width          : 16px;
+                                height         : 16px;
+                                overflow       : hidden;
+                                flex-direction : column;
+                                justify-content: center;
+                                align-items    : center;
+                                display        : flex;
+
+                                .subscription-icon-svg {
+                                    width   : 16px;
+                                    height  : 16px;
+                                    position: relative;
+                                    overflow: hidden;
+
+                                    .subscription-main {
+                                        width         : 13px;
+                                        height        : 11px;
+                                        left          : 1.50px;
+                                        top           : 2.50px;
+                                        position      : absolute;
+                                        outline       : 1px #FFCC00 solid;
+                                        outline-offset: -0.50px;
+                                    }
+
+                                    .subscription-dot {
+                                        width         : 3px;
+                                        height        : 3px;
+                                        left          : 6.50px;
+                                        top           : 7.50px;
+                                        position      : absolute;
+                                        outline       : 1px #FFCC00 solid;
+                                        outline-offset: -0.50px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .subscription-text-container {
+                        padding-left   : 3px;
+                        flex-direction : column;
+                        justify-content: flex-start;
+                        align-items    : flex-start;
+                        display        : inline-flex;
+
+                        .subscription-text {
+                            justify-content: center;
+                            display        : flex;
+                            flex-direction : column;
+                            color          : #FFCC00;
+                            font-size      : 12.49px;
+                            font-family    : 'Inter';
+                            font-weight    : 400;
+                            line-height    : 19.50px;
+                            word-wrap      : break-word;
+                        }
+                    }
+                }
+            }
+
+            .auth-section {
+                height         : 42px;
+                justify-content: flex-start;
+                align-items    : center;
+                gap            : 8px;
+                display        : flex;
+
+                .register-button {
+                    padding        : 8.67px 16.67px;
+                    background     : rgba(255, 255, 255, 0.10);
+                    border-radius  : 9999px;
+                    outline        : 1px rgba(255, 255, 255, 0.10) solid;
+                    outline-offset : -1px;
+                    flex-direction : column;
+                    justify-content: center;
+                    align-items    : center;
+                    display        : inline-flex;
+                    cursor         : pointer;
+                    transition     : all 0.3s ease;
+
+                    .register-button-content {
+                        justify-content: center;
+                        align-items    : flex-start;
+                        display        : inline-flex;
+
+                        .register-text {
+                            text-align     : center;
+                            justify-content: center;
+                            display        : flex;
+                            flex-direction : column;
+                            color          : white;
+                            font-size      : 15.62px;
+                            font-family    : 'Inter';
+                            font-weight    : 400;
+                            line-height    : 20px;
+                            word-wrap      : break-word;
+                        }
+                    }
+                }
+
+                .login-button {
+                    padding        : 8px 16px;
+                    background     : #15B088;
+                    border-radius  : 9999px;
+                    justify-content: center;
+                    align-items    : center;
+                    display        : flex;
+                    cursor         : pointer;
+                    transition     : all 0.3s ease;
+
+                    .login-button-content {
+                        flex-direction : column;
+                        justify-content: flex-start;
+                        align-items    : center;
+                        display        : inline-flex;
+
+                        .login-text {
+                            text-align     : center;
+                            justify-content: center;
+                            display        : flex;
+                            flex-direction : column;
+                            color          : white;
+                            font-size      : 15.62px;
+                            font-family    : 'Inter';
+                            font-weight    : 400;
+                            line-height    : 20px;
+                            word-wrap      : break-word;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* Modal Overlay Styles */
+    .modal-overlay {
+        position       : fixed;
+        top            : 0;
+        left           : 0;
+        right          : 0;
+        bottom         : 0;
+        background     : rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        display        : flex;
+        justify-content: center;
+        align-items    : center;
+        z-index        : 10000;
+        animation      : fadeIn 0.3s ease-out;
+        padding        : 20px;
+        overflow-y     : auto;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Button Hover Effects */
+    .auth-section {
+        .register-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            outline   : 1px rgba(255, 255, 255, 0.2) solid;
+            transform : translateY(-2px);
+        }
+
+        .login-button:hover {
+            background: #12a085;
+            transform : translateY(-2px);
+            box-shadow: 0 4px 15px rgba(21, 176, 136, 0.3);
+        }
+    }
+}

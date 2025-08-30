@@ -1,0 +1,27 @@
+<svg width="35" height="36" viewBox="0 0 35 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_7_7731)">
+<g filter="url(#filter0_d_7_7731)">
+<path d="M23 0.969971C29.6274 0.969971 35 6.34255 35 12.97V30.116C31.8622 31.9311 28.2191 32.97 24.3333 32.97C12.5513 32.97 3 23.4187 3 11.6367C3 7.75091 4.03887 4.10782 5.85402 0.969971H23Z" fill="white"/>
+</g>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M21.6473 6.55076C21.498 6.34317 21.2569 6.21997 21 6.21997C20.7431 6.21997 20.502 6.34317 20.3527 6.55076L16.625 11.845L13.4012 9.85805C13.1273 9.72207 12.7992 9.75426 12.5574 9.94084C12.3156 10.1274 12.2031 10.4353 12.2682 10.7324L14.2568 20.5979C14.3363 20.961 14.6599 21.22 15.0341 21.22H26.9659C27.3401 21.22 27.6637 20.961 27.7432 20.5979L29.7318 10.7324C29.7969 10.4353 29.6844 10.1274 29.4426 9.94084C29.2008 9.75426 28.8727 9.72207 28.5988 9.85805L25.375 11.845L21.6473 6.55076ZM21 17.47C22.3807 17.47 23.5 16.3507 23.5 14.97C23.5 13.5893 22.3807 12.47 21 12.47C19.6193 12.47 18.5 13.5893 18.5 14.97C18.5 16.3507 19.6193 17.47 21 17.47Z" fill="url(#paint0_linear_7_7731)"/>
+</g>
+<defs>
+<filter id="filter0_d_7_7731" x="0" y="-0.0300293" width="36" height="36" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="-1" dy="1"/>
+<feGaussianBlur stdDeviation="1"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_7_7731"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_7_7731" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_7_7731" x1="29.75" y1="13.72" x2="12.25" y2="13.72" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FB3A1A"/>
+<stop offset="1" stop-color="#EBB004"/>
+</linearGradient>
+<clipPath id="clip0_7_7731">
+<rect width="35" height="35" fill="white" transform="translate(0 0.969971)"/>
+</clipPath>
+</defs>
+</svg>

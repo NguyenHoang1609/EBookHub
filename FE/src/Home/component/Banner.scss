@@ -1,0 +1,322 @@
+// Banner Component Styles
+.banner-container {
+    position  : relative;
+    width     : 100%;
+    height    : 50vh;
+    min-height: 600px;
+    overflow  : hidden;
+
+    .banner-swiper {
+        width : 100%;
+        height: 100%;
+
+        .swiper-slide {
+            position       : relative;
+            display        : flex;
+            align-items    : center;
+            justify-content: center;
+        }
+    }
+
+    .banner-slide {
+        position       : relative;
+        width          : 100%;
+        height         : 100%;
+        display        : flex;
+        align-items    : center;
+        justify-content: center;
+    }
+
+    .banner-image {
+        position  : absolute;
+        top       : 0;
+        left      : 0;
+        width     : 100%;
+        object-fit: contain;
+        height    : 100%;
+        z-index   : 1;
+
+        img {
+            width          : 100%;
+            height         : 100%;
+            object-fit     : cover;
+            object-position: center;
+        }
+
+        .banner-overlay {
+            position: absolute;
+            top     : 0;
+            left    : 0;
+            width   : 100%;
+            height  : 100%;
+            background: linear-gradient(135deg,
+                    rgba(0, 0, 0, 0.6) 0%,
+                    rgba(0, 0, 0, 0.3) 50%,
+                    rgba(0, 0, 0, 0.7) 100%);
+            z-index: 2;
+        }
+    }
+
+    .banner-content {
+        position  : relative;
+        z-index   : 3;
+        width     : 100%;
+        color     : white;
+        text-align: center;
+
+        .container {
+            max-width: 1200px;
+            margin   : 0 auto;
+            padding  : 0 20px;
+        }
+
+        .banner-text {
+            max-width: 800px;
+            margin   : 0 auto;
+            animation: slideUp 1s ease-out;
+
+            .banner-title {
+                font-size    : 3.5rem;
+                font-weight  : 700;
+                margin-bottom: 1rem;
+                line-height  : 1.2;
+                text-shadow  : 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+                @media (max-width: 768px) {
+                    font-size: 2.5rem;
+                }
+
+                @media (max-width: 480px) {
+                    font-size: 2rem;
+                }
+            }
+
+            .banner-subtitle {
+                font-size    : 1.5rem;
+                font-weight  : 400;
+                margin-bottom: 1.5rem;
+                color        : #f0f0f0;
+                text-shadow  : 1px 1px 2px rgba(0, 0, 0, 0.5);
+
+                @media (max-width: 768px) {
+                    font-size: 1.25rem;
+                }
+            }
+
+            .banner-description {
+                font-size    : 1.125rem;
+                line-height  : 1.6;
+                margin-bottom: 2.5rem;
+                color        : #e0e0e0;
+                text-shadow  : 1px 1px 2px rgba(0, 0, 0, 0.5);
+
+                @media (max-width: 768px) {
+                    font-size    : 1rem;
+                    margin-bottom: 2rem;
+                }
+            }
+
+            .banner-actions {
+                display        : flex;
+                gap            : 1rem;
+                justify-content: center;
+                flex-wrap      : wrap;
+
+                .banner-button {
+                    padding        : 12px 32px;
+                    border-radius  : 50px;
+                    font-size      : 1rem;
+                    font-weight    : 600;
+                    text-decoration: none;
+                    border         : 2px solid transparent;
+                    cursor         : pointer;
+                    transition     : all 0.3s ease;
+                    display        : inline-flex;
+                    align-items    : center;
+                    justify-content: center;
+                    min-width      : 150px;
+
+                    &.primary {
+                        background  : linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color       : white;
+                        border-color: transparent;
+
+                        &:hover {
+                            transform : translateY(-2px);
+                            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+                            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+                        }
+                    }
+
+                    &.secondary {
+                        background  : transparent;
+                        color       : white;
+                        border-color: white;
+
+                        &:hover {
+                            background: white;
+                            color     : #333;
+                            transform : translateY(-2px);
+                            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+                        }
+                    }
+
+                    @media (max-width: 480px) {
+                        min-width: 120px;
+                        padding  : 10px 24px;
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+        }
+    }
+
+    // Custom Navigation Styles
+    .swiper-button-prev-custom,
+    .swiper-button-next-custom {
+        position       : absolute;
+        top            : 50%;
+        transform      : translateY(-50%);
+        z-index        : 4;
+        width          : 50px;
+        height         : 50px;
+        background     : rgba(255, 255, 255, 0.2);
+        border-radius  : 50%;
+        display        : flex;
+        align-items    : center;
+        justify-content: center;
+        cursor         : pointer;
+        transition     : all 0.3s ease;
+        color          : white;
+        backdrop-filter: blur(10px);
+        border         : 1px solid rgba(255, 255, 255, 0.3);
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform : translateY(-50%) scale(1.1);
+        }
+
+        svg {
+            width : 24px;
+            height: 24px;
+        }
+
+        @media (max-width: 768px) {
+            width : 40px;
+            height: 40px;
+
+            svg {
+                width : 20px;
+                height: 20px;
+            }
+        }
+    }
+
+    .swiper-button-prev-custom {
+        left: 30px;
+
+        @media (max-width: 768px) {
+            left: 15px;
+        }
+    }
+
+    .swiper-button-next-custom {
+        right: 30px;
+
+        @media (max-width: 768px) {
+            right: 15px;
+        }
+    }
+
+    // Custom Pagination Styles
+    .swiper-pagination-custom {
+        position : absolute;
+        bottom   : 30px;
+        left     : 50%;
+        transform: translateX(-50%);
+        z-index  : 4;
+        display  : flex;
+        gap      : 10px;
+
+        .custom-bullet {
+            width        : 12px;
+            height       : 12px;
+            border-radius: 50%;
+            background   : rgba(255, 255, 255, 0.5);
+            cursor       : pointer;
+            transition   : all 0.3s ease;
+            border       : 2px solid transparent;
+
+            &.swiper-pagination-bullet-active {
+                background  : white;
+                transform   : scale(1.2);
+                border-color: rgba(255, 255, 255, 0.8);
+                box-shadow  : 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.8);
+                transform : scale(1.1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            bottom: 20px;
+
+            .custom-bullet {
+                width : 10px;
+                height: 10px;
+            }
+        }
+    }
+
+    // Animations
+    @keyframes slideUp {
+        from {
+            opacity  : 0;
+            transform: translateY(50px);
+        }
+
+        to {
+            opacity  : 1;
+            transform: translateY(0);
+        }
+    }
+
+    // Additional responsive styles
+    @media (max-width: 1024px) {
+        height    : 80vh;
+        min-height: 500px;
+    }
+
+    @media (max-width: 768px) {
+        height    : 70vh;
+        min-height: 400px;
+    }
+
+    @media (max-width: 480px) {
+        height    : 60vh;
+        min-height: 350px;
+    }
+}
+
+// Global Swiper overrides for this component
+.banner-swiper {
+    .swiper-slide-active {
+        .banner-text {
+            animation: slideUp 0.8s ease-out;
+        }
+    }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+    .banner-container {
+        .banner-image .banner-overlay {
+            background: linear-gradient(135deg,
+                    rgba(0, 0, 0, 0.7) 0%,
+                    rgba(0, 0, 0, 0.4) 50%,
+                    rgba(0, 0, 0, 0.8) 100%);
+        }
+    }
+}
