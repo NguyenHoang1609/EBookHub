@@ -19,14 +19,14 @@ const User = sequelize.define('User', {
     email: {
         type: DataTypes.STRING(255),
         allowNull: false,
-        unique: true, //duy nhat
+        unique: true,
         validate: {
-            isEmail: true,  //bat loi @gmail.com
+            isEmail: true,
             notEmpty: true
         }
     },
     phone: {
-        type: DataTypes.STRING,
+        type: DataTypes.BIGINT,
         allowNull: true,
         validate: {
             isNumeric: true
@@ -49,10 +49,16 @@ const User = sequelize.define('User', {
         allowNull: true,
         defaultValue: 3,
         field: 'group_id',
-        references: {  
+        references: {
             model: 'groups',
             key: 'id'
         }
+    },
+    isActive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+        field: 'is_active'
     }
 }, {
     tableName: 'users',
@@ -66,5 +72,8 @@ const User = sequelize.define('User', {
         }
     ]
 });
+
+// Remove individual sync call to prevent deadlocks
+// User.sync({ alter: true });
 
 module.exports = User;

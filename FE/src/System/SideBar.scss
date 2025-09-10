@@ -1,0 +1,556 @@
+// Variables
+$primary-bg          : #031C30;
+$secondary-bg        : #667A8A;
+$text-light          : #EFF2F4;
+$text-white          : white;
+$accent-blue         : #0C7FDA;
+$border-radius-small : 4px;
+$border-radius-medium: 7.51px;
+$font-family         : 'Poppins',
+sans-serif;
+
+// Mixins
+@mixin flex-center {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+}
+
+@mixin flex-column {
+    display       : flex;
+    flex-direction: column;
+}
+
+@mixin nav-link-base {
+    width        : 93%;
+    padding      : 0 10px;
+    margin-right : 12px;
+    border-radius: $border-radius-small;
+    @include flex-center;
+    align-items: center;
+    cursor     : pointer;
+    transition : all 0.3s ease;
+    position   : relative;
+    overflow   : hidden;
+
+    &:hover {
+        background: rgba(102, 122, 138, 0.3);
+        transform : translateX(4px);
+    }
+
+    &:active {
+        transform: translateX(2px);
+    }
+}
+
+@mixin icon-container {
+    width   : 32px;
+    height  : 32px;
+    position: relative;
+    overflow: hidden;
+    @include flex-center;
+}
+
+@mixin text-base {
+    font-size     : 16px;
+    font-family   : $font-family;
+    line-height   : 24px;
+    letter-spacing: 0.16px;
+    word-wrap     : break-word;
+    font-weight   : 400;
+}
+
+// Main sidebar container
+.sidebar-container {
+    width        : 18vw;
+    height       : 100vh;
+    padding      : 30px 18px;
+    background   : $primary-bg;
+    box-shadow   : 0px 9.385px 93.846px 0px rgba(0, 0, 0, 0.15);
+    border-radius: $border-radius-medium;
+    @include flex-column;
+    justify-content: space-between;
+    align-items    : flex-start;
+    position       : fixed;
+    left           : 0;
+    top            : 0;
+    z-index        : 1000;
+
+    // Top section
+    .sidebar-top {
+        @include flex-column;
+        justify-content: flex-start;
+        align-items    : flex-start;
+        gap            : 48px;
+        width          : 100%;
+
+        // Logo section
+        .logo-section {
+            flex-direction: row;
+            padding-left  : 12px;
+            gap           : 16px;
+            width         : 100%;
+
+            .logo-container {
+                @include flex-column;
+                justify-content: flex-start;
+                align-items    : flex-start;
+                gap            : 10px;
+
+                .logo-icon {
+                    padding      : 4px;
+                    background   : white;
+                    border-radius: 8px;
+                    @include flex-column;
+                    justify-content: flex-start;
+                    align-items    : flex-start;
+                    gap            : 5px;
+                    transition     : all 0.3s ease;
+
+                    &:hover {
+                        transform : scale(1.05);
+                        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+                    }
+
+                    .logo-image {
+                        width     : 30px;
+                        height    : 30px;
+                        object-fit: contain;
+                    }
+                }
+            }
+        }
+
+        // Navigation menu
+        .nav-menu {
+            @include flex-column;
+            justify-content: flex-start;
+            align-items    : flex-start;
+            gap            : 16px;
+            width          : 100%;
+
+            // Navigation link base styles
+            .nav-link {
+                @include nav-link-base;
+                justify-content: flex-start;
+
+                .nav-content {
+                    display        : flex;
+                    flex-direction : row;
+                    align-items    : center;
+                    justify-content: flex-start;
+                    width          : 100%;
+
+                    .icon-wrapper {
+                        padding: 8px;
+                        @include flex-center;
+
+                        .icon {
+                            @include icon-container;
+
+                            .icon-image {
+                                width     : 25px;
+                                height    : 26px;
+                                object-fit: contain;
+                                transition: all 0.3s ease;
+                            }
+                        }
+                    }
+
+                    .text-wrapper {
+                        padding: 8px;
+                        @include flex-center;
+
+                        .nav-text {
+                            @include text-base;
+                            color      : $text-light;
+                            font-weight: 400;
+                            transition : all 0.3s ease;
+                        }
+                    }
+                }
+
+                // Active state
+                &.active {
+                    background: $secondary-bg;
+                    transform : translateX(8px);
+
+                    .nav-content {
+                        .icon-wrapper {
+                            .icon {
+                                .icon-image {
+                                    filter: brightness(0) invert(1);
+                                }
+                            }
+                        }
+
+                        .text-wrapper {
+                            .nav-text {
+                                color      : white;
+                                font-weight: 600;
+                            }
+                        }
+                    }
+
+                    &:hover {
+                        background: lighten($secondary-bg, 5%);
+                    }
+                }
+
+                // Badge state
+                &.with-badge {
+                    justify-content: space-between;
+
+                    .badge-container {
+                        @include flex-center;
+                        align-items: flex-start;
+
+                        .badge {
+                            width        : 24px;
+                            height       : 24px;
+                            position     : relative;
+                            background   : $text-light;
+                            overflow     : hidden;
+                            border-radius: $border-radius-small;
+                            @include flex-center;
+                            transition: all 0.3s ease;
+
+                            &:hover {
+                                transform: scale(1.1);
+                            }
+
+                            .badge-text {
+                                color      : $accent-blue;
+                                font-size  : 13px;
+                                font-family: $font-family;
+                                font-weight: 400;
+                                line-height: 29px;
+                                word-wrap  : break-word;
+                            }
+                        }
+                    }
+                }
+
+                // Trailing icon state
+                &.with-trailing-icon {
+                    justify-content: space-between;
+                    cursor         : pointer;
+
+                    &:hover {
+                        background: rgba(102, 122, 138, 0.2);
+                    }
+
+                    .trailing-icon-container {
+                        @include flex-center;
+                        align-items: flex-start;
+
+                        .toggle-switch {
+                            padding      : 2px 4px;
+                            background   : $secondary-bg;
+                            border-radius: 100px;
+                            @include flex-center;
+                            gap       : 16px;
+                            cursor    : pointer;
+                            transition: all 0.3s ease;
+                            min-width : 60px;
+                            position  : relative;
+                            overflow  : hidden;
+
+                            &:hover {
+                                background: lighten($secondary-bg, 5%);
+                                transform : scale(1.05);
+                                box-shadow: 0 2px 8px rgba(102, 122, 138, 0.3);
+                            }
+
+                            &:active {
+                                transform: scale(0.98);
+                            }
+
+                            .toggle-circle {
+                                width        : 16px;
+                                height       : 16px;
+                                background   : $text-light;
+                                border-radius: 50%;
+                                transition   : all 0.3s ease;
+                                position     : relative;
+                                z-index      : 2;
+
+                                &::before {
+                                    content      : '';
+                                    position     : absolute;
+                                    top          : 50%;
+                                    left         : 50%;
+                                    transform    : translate(-50%, -50%);
+                                    width        : 8px;
+                                    height       : 8px;
+                                    background   : $secondary-bg;
+                                    border-radius: 50%;
+                                    opacity      : 0;
+                                    transition   : opacity 0.3s ease;
+                                }
+                            }
+
+                            .toggle-text {
+                                color         : $text-light;
+                                font-size     : 13px;
+                                font-family   : $font-family;
+                                font-weight   : 400;
+                                line-height   : 20px;
+                                letter-spacing: 0.26px;
+                                word-wrap     : break-word;
+                                transition    : all 0.3s ease;
+                                position      : relative;
+                                z-index       : 1;
+                            }
+
+                            &.active {
+                                background: lighten($secondary-bg, 15%);
+                                animation : toggleGlow 2s ease-in-out infinite;
+
+                                .toggle-circle {
+                                    background: white;
+                                    animation : toggleSlide 0.3s ease-out forwards;
+
+                                    &::before {
+                                        opacity: 1;
+                                    }
+                                }
+
+                                .toggle-text {
+                                    color      : white;
+                                    font-weight: 500;
+                                }
+                            }
+
+                            // Add a subtle glow effect
+                            &::after {
+                                content   : '';
+                                position  : absolute;
+                                top       : 0;
+                                left      : 0;
+                                right     : 0;
+                                bottom    : 0;
+                                background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                                opacity   : 0;
+                                transition: opacity 0.3s ease;
+                            }
+
+                            &:hover::after {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+
+                // Hover effects for non-active items
+                &:not(.active):hover {
+                    .nav-content {
+                        .icon-wrapper {
+                            .icon {
+                                .icon-image {
+                                    filter: brightness(1.2);
+                                }
+                            }
+                        }
+
+                        .text-wrapper {
+                            .nav-text {
+                                color      : white;
+                                font-weight: 500;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Bottom section
+    .sidebar-bottom {
+        @include flex-column;
+        justify-content: flex-start;
+        align-items    : flex-start;
+        gap            : 24px;
+        width          : 100%;
+
+        .nav-link {
+            @include nav-link-base;
+            justify-content: flex-start;
+
+            .nav-content {
+                display        : flex;
+                flex-direction : row;
+                align-items    : center;
+                justify-content: flex-start;
+                width          : 100%;
+
+                .icon-wrapper {
+                    padding: 8px;
+                    @include flex-center;
+
+                    .icon {
+                        @include icon-container;
+
+                        .icon-image {
+                            width     : 25px;
+                            height    : 26px;
+                            object-fit: contain;
+                            transition: all 0.3s ease;
+                        }
+                    }
+                }
+
+                .text-wrapper {
+                    padding: 8px;
+                    @include flex-center;
+
+                    .nav-text {
+                        @include text-base;
+                        color      : $text-light;
+                        font-weight: 400;
+                        transition : all 0.3s ease;
+                    }
+                }
+            }
+
+            // Active state for bottom section
+            &.active {
+                background: $secondary-bg;
+                transform : translateX(8px);
+
+                .nav-content {
+                    .icon-wrapper {
+                        .icon {
+                            .icon-image {
+                                filter: brightness(0) invert(1);
+                            }
+                        }
+                    }
+
+                    .text-wrapper {
+                        .nav-text {
+                            color      : white;
+                            font-weight: 600;
+                        }
+                    }
+                }
+
+                &:hover {
+                    background: lighten($secondary-bg, 5%);
+                }
+            }
+
+            // Hover effects for bottom section
+            &:not(.active):hover {
+                .nav-content {
+                    .icon-wrapper {
+                        .icon {
+                            .icon-image {
+                                filter: brightness(1.2);
+                            }
+                        }
+                    }
+
+                    .text-wrapper {
+                        .nav-text {
+                            color      : white;
+                            font-weight: 500;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .sidebar-container {
+        width   : 100vw;
+        height  : auto;
+        position: relative;
+        padding : 16px 12px;
+
+        .sidebar-top {
+            gap: 24px;
+
+            .nav-menu {
+                gap: 8px;
+
+                .nav-link {
+                    width  : 100%;
+                    padding: 0 4px;
+                }
+            }
+        }
+
+        .sidebar-bottom {
+            gap: 16px;
+        }
+    }
+}
+
+// Animation keyframes
+@keyframes slideIn {
+    from {
+        opacity  : 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity  : 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes toggleSlide {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(8px);
+    }
+}
+
+@keyframes toggleGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 2px 12px rgba(102, 122, 138, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 2px 16px rgba(102, 122, 138, 0.6);
+    }
+}
+
+// Apply animations
+.sidebar-container {
+    animation: slideIn 0.5s ease-out;
+}
+
+.nav-link {
+    animation: fadeIn 0.3s ease-out;
+}
+
+// Focus states for accessibility
+.nav-link:focus {
+    outline       : 2px solid $accent-blue;
+    outline-offset: 2px;
+}
+
+.toggle-switch:focus {
+    outline       : 2px solid $accent-blue;
+    outline-offset: 2px;
+}

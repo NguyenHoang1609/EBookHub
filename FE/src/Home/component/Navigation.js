@@ -26,8 +26,8 @@ function Navigation(props) {
     };
 
     const handleSwitchToLogin = () => {
-        setShowRegisterModal(false);
-        setShowLoginModal(true);
+        // setShowRegisterModal(false);
+        // setShowLoginModal(true);
     };
 
     return (
@@ -79,7 +79,8 @@ function Navigation(props) {
                     </div>
                 </div>
                 <div className="right-section">
-                    <div className="search-section">
+
+                    {/* <div className="search-section">
                         <div className="search-container">
                             <div className="search-icon-wrapper">
                                 <div className="search-icon">
@@ -88,7 +89,8 @@ function Navigation(props) {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
+
                     <div className="subscription-section">
                         <div className="subscription-button">
                             <div className="subscription-icon">
@@ -101,6 +103,7 @@ function Navigation(props) {
                                     </div>
                                 </div>
                             </div>
+
                             <div className="subscription-text-container">
                                 <div className="subscription-text">Gói cước</div>
                             </div>

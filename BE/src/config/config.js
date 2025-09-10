@@ -10,7 +10,7 @@ module.exports = {
     "host": process.env.DATABASE_HOST,
     "port": process.env.DATABASE_PORT,
     "logging": false,
-    "dialect": process.env.DATABASE_DIALECT || 'mysql',
+    "dialect": process.env.DATABASE_DIALECT,
     // "dialectOptions": {
     //   "ssl": {
     //     "require": true,

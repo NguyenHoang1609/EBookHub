@@ -1,21 +1,16 @@
 import authService from '../serivces/authService';
 
 
-// B1: validate
-// B2: service ( CURD )
-// B3: tra ket qua cho frontend (return)
-
-
 const register = async (req, res) => {
     try {
         console.log('Register request received:', req.body);
 
-        const { name, email, phone, address, password } = req.body; //body api de lay du lieu 5thg kia
+        const { name, email, phone, address, password } = req.body;
 
-        if (!name || !email || !password) {         //bat loi ! = k ton tai
+        if (!name || !email || !password) {
             return res.status(400).json({
-                DT: '',         // data
-                EC: -1,         // error code ec -1 la sai, 0 la dung
+                DT: '',
+                EC: -1,
                 EM: 'Missing required fields: name, email, and password are required!'
             });
         }
@@ -29,9 +24,9 @@ const register = async (req, res) => {
         });
 
         if (result.EC === 0) {
-            return res.status(201).json(result); // ec=0 => dung return res... cho frontend 
+            return res.status(201).json(result);
         } else {
-            return res.status(400).json(result); // neu sai 
+            return res.status(400).json(result);
         }
 
     } catch (error) {

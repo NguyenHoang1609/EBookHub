@@ -97,7 +97,7 @@
         .books-grid-container {
             width          : 100%;
             max-width      : 96.53%; // 1448px/1500px ≈ 96.53%
-            overflow       : hidden;
+            overflow       : visible;
             flex-direction : column;
             justify-content: flex-start;
             align-items    : flex-start;
@@ -268,6 +268,7 @@
     justify-content: flex-start;
     align-items    : flex-start;
     display        : flex;
+    cursor         : pointer;
 
     .book-content {
         align-self     : stretch;
@@ -289,7 +290,7 @@
                 align-self   : stretch;
                 height       : 21.86rem; // 327.97px ≈ 21.86rem
                 position     : relative;
-                overflow     : hidden;
+                overflow     : visible;
                 border-radius: 0.8rem; // 12px ≈ 0.8rem
 
                 .book-image {
@@ -356,7 +357,7 @@
                 .badge-icon-container {
                     max-width      : 100.33%; // 1504px/1500px ≈ 100.33%
                     position       : relative;
-                    overflow       : hidden;
+                    overflow       : visible;
                     flex-direction : column;
                     justify-content: flex-start;
                     align-items    : flex-start;
@@ -365,7 +366,7 @@
                     .badge-icon-wrapper {
                         width          : 2.33rem; // 35px ≈ 2.33rem
                         height         : 2.33rem; // 35px ≈ 2.33rem
-                        overflow       : hidden;
+                        overflow       : visible;
                         flex-direction : column;
                         justify-content: center;
                         align-items    : center;
@@ -458,16 +459,19 @@
         .book-title {
             align-self     : stretch;
             height         : 2.73rem; // 41px ≈ 2.73rem
-            overflow       : hidden;
+            overflow       : visible;
             flex-direction : column;
             justify-content: flex-start;
             align-items    : flex-start;
             display        : flex;
+            padding-top    : 10px;
 
             .title-text {
                 align-self     : stretch;
-                justify-content: center;
+                justify-content: start;
                 display        : flex;
+                align-items    : flex-start;
+                text-align     : left;
                 flex-direction : column;
                 color          : #F2F2F2;
                 font-family    : 'Inter';
@@ -491,17 +495,4 @@
     }
 }
 
-.book-container{
-
-}
-
-.book-container .text .text1 {}
-
-
-
-.book-container{
-    .text1{
-
-    }
-}
-
+// Update book item styles for Swiper

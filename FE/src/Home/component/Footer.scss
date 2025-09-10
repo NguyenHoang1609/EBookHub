@@ -1,0 +1,242 @@
+.footer {
+    background-color: #121214;
+    padding         : 79.34px 60px 40px;
+    color           : #999999;
+    font-family     : 'Inter', sans-serif;
+    font-size       : 15px;
+    line-height     : 19.2px;
+
+    .footer-container {
+        display        : flex;
+        justify-content: space-between;
+        align-items    : flex-start;
+        margin-bottom  : 16px;
+        gap            : 20px;
+    }
+
+    .footer-section {
+        display       : flex;
+        flex-direction: column;
+        gap           : 17.33px;
+
+        &.company-info {
+            width : 393.14px;
+            height: 221.58px;
+        }
+
+        &.social-section {
+            width : 196.57px;
+            height: 221.58px;
+        }
+    }
+
+    .logo-section {
+        display       : flex;
+        flex-direction: column;
+        gap           : 13.3px;
+
+        .waka-logo {
+            width              : 180px;
+            height             : 43.88px;
+            background-image   : url('http://localhost:3845/assets/94c46c22f59f1b4aac27bdd17f4390e8106138e7.png');
+            background-size    : 100% 99.99%;
+            background-repeat  : no-repeat;
+            background-position: left;
+        }
+
+        .company-name {
+            font-size : 15.125px;
+            color     : #999999;
+            margin    : 0;
+            text-align: left;
+        }
+
+        .contact-info {
+            display    : flex;
+            align-items: center;
+            gap        : 20px;
+            padding-top: 6.57px;
+
+            .contact-item {
+                display    : flex;
+                align-items: center;
+                gap        : 10px;
+
+                .icon-phone {
+                    width            : 24px;
+                    height           : 24px;
+                    background-image : url('http://localhost:3845/assets/ff61e5851ca9a42a27b522320b219e43c14ceb3f.svg');
+                    background-size  : contain;
+                    background-repeat: no-repeat;
+                }
+
+                .icon-email {
+                    width            : 24px;
+                    height           : 24px;
+                    background-image : url('http://localhost:3845/assets/a79e5e81b44c6a38a56a6e566f6d76fa54a8ae12.svg');
+                    background-size  : contain;
+                    background-repeat: no-repeat;
+                }
+
+                span {
+                    font-size: 16px;
+                    color    : #999999;
+                }
+            }
+        }
+    }
+
+    .section-title {
+        font-size  : 15.375px;
+        color      : #f2f2f2;
+        margin     : 0;
+        font-weight: normal;
+        text-align : left;
+    }
+
+    .link-columns {
+        display: flex;
+        gap    : 20px;
+
+        .link-column {
+            display       : flex;
+            flex-direction: column;
+            gap           : 9.3px;
+            flex          : 1;
+            text-align    : left;
+            text-wrap     : nowrap;
+        }
+    }
+
+    .link-list {
+        display       : flex;
+        flex-direction: column;
+        gap           : 9.3px;
+        text-align    : left;
+    }
+
+    .footer-link {
+        color          : #999999;
+        text-decoration: none;
+        font-size      : 15.25px;
+        line-height    : 19.2px;
+        transition     : color 0.3s ease;
+
+        &:hover {
+            color: #f2f2f2;
+        }
+    }
+
+    .social-icons {
+        display    : flex;
+        align-items: center;
+        gap        : 20px;
+
+        .qr-code {
+            width              : 71.33px;
+            height             : 71.33px;
+            background-image   : url('http://localhost:3845/assets/e8341bda000683f9307bab8d8401c87858acc303.png');
+            background-size    : 100% 100%;
+            background-repeat  : no-repeat;
+            background-position: top left;
+        }
+
+        .social-links {
+            display       : flex;
+            flex-direction: column;
+            gap           : 18px;
+
+            .social-icon {
+                width              : 105.21px;
+                height             : 30.4px;
+                background-size    : 100.03% 100.01%;
+                background-repeat  : no-repeat;
+                background-position: 50% 49.98%;
+
+                &:first-child {
+                    background-image: url('http://localhost:3845/assets/2b6cd1c4baca5f616f13eb4146058a81851ee88b.png');
+                }
+
+                &:last-child {
+                    background-image: url('http://localhost:3845/assets/60aa20ba5f31d484ade4f4ce095974fdd600a476.png');
+                }
+            }
+        }
+    }
+
+    .app-download {
+        margin-bottom: 16px;
+
+        .app-logo {
+            width              : 130px;
+            height             : 49.18px;
+            background-image   : url('http://localhost:3845/assets/e0943c89ae88ee72ac7d607b24881a01d4ef2545.png');
+            background-size    : 100% 100.01%;
+            background-repeat  : no-repeat;
+            background-position: left;
+        }
+    }
+
+    .legal-info {
+        padding-top: 15.99px;
+        font-size  : 13px;
+        line-height: 19.5px;
+        color      : #999999;
+
+        p {
+            margin    : 0 0 8px 0;
+            text-align: left;
+        }
+    }
+}
+
+// Responsive design
+@media (max-width: 1200px) {
+    .footer {
+        padding: 60px 40px 30px;
+
+        .footer-container {
+            flex-wrap: wrap;
+            gap      : 30px;
+        }
+
+        .footer-section {
+            &.company-info {
+                width    : 100%;
+                max-width: 400px;
+            }
+
+            &.social-section {
+                width    : 100%;
+                max-width: 200px;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 40px 20px 20px;
+
+        .footer-container {
+            flex-direction: column;
+            align-items   : flex-start;
+        }
+
+        .footer-section {
+            width : 100% !important;
+            height: auto !important;
+        }
+
+        .contact-info {
+            flex-direction: column;
+            align-items   : flex-start;
+            gap           : 10px;
+        }
+
+        .link-columns {
+            flex-direction: column;
+            gap           : 15px;
+        }
+    }
+}

@@ -10,7 +10,7 @@ function App() {
     <div className="App">
       {/* <Scrollbar style={{ width: "100%", height: "100vh" }}> */}
       <RouteIndex></RouteIndex>
-      <ToastContainer position="bottom-right"  //de hien thi thanh thong bao
+      <ToastContainer position="bottom-right"
         autoClose={3000}
         hideProgressBar={true}
         newestOnTop={false}

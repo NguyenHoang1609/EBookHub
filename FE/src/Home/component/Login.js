@@ -39,6 +39,11 @@ function Login({ onClose, onSwitchToRegister }) {
 
             if (result.success) {
                 console.log('Login successful:', result.data);
+
+                localStorage.setItem('userData', JSON.stringify(result.data.DT));
+                localStorage.setItem('token', result.data.token);
+                localStorage.setItem('isLoggedIn', 'true');
+
                 alert('Đăng nhập thành công!');
                 onClose();
             } else {

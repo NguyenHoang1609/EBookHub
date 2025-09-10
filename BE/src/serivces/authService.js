@@ -3,16 +3,9 @@ import bcrypt from 'bcryptjs';
 import { Op } from 'sequelize';
 import JWTservice from '../middleware/JWTservice';
 
-// B1: check trung trong data
-// B2: Bam- ma hoa mat khau
-// B3: Them tai khoan, lay thong tin tai khoan
-// B4: return
-
-// password -> $2a$10$YOj5o4Vk0ngvm6PS59wZQewdXoUz516qYQOOdIlGAPNQ6ZvTGUyOa -> password123 
-//  $2a$10$YOj5o4Vk0ngvm6PS59wZQewdXoUz516qYQOOdIlGAPNQ6ZvTGUyO : true | flase
 const saltRounds = 10;
 
-const hashPassword = async (password) => { ////bam mk bang thu vien bcrypt
+const hashPassword = async (password) => {
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         return hashedPassword;
@@ -118,7 +111,7 @@ const registerUser = async (userData) => {
             }
         }
 
-        const hashedPassword = await hashPassword(password); //bam mk
+        const hashedPassword = await hashPassword(password);
 
         const newUser = {
             name: name,
@@ -129,7 +122,7 @@ const registerUser = async (userData) => {
             password: hashedPassword
         };
 
-        const createdUser = await db.User.create(newUser);  //luu vao bang user trong dt
+        const createdUser = await db.User.create(newUser);
 
         console.log('User registered successfully:', createdUser.id);
 

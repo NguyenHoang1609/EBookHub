@@ -1,13 +1,11 @@
 'use strict';
 
 module.exports = {
-
-    // tao bang
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('users', {
             id: {
-                allowNull: false,  //check loi trong
-                autoIncrement: true, //tu dong tang 1 khi tao user moi
+                allowNull: false,
+                autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
@@ -18,10 +16,10 @@ module.exports = {
             email: {
                 type: Sequelize.STRING(255),
                 allowNull: false,
-                unique: true  //check duy nhat
+                unique: true
             },
             phone: {
-                type: Sequelize.STRING,
+                type: Sequelize.BIGINT,
                 allowNull: true
             },
             address: {
@@ -37,6 +35,11 @@ module.exports = {
                 allowNull: true,
                 defaultValue: 3
             },
+            is_active: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+                defaultValue: true
+            },
             created_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
@@ -49,13 +52,13 @@ module.exports = {
             }
         });
 
-        // Tim kiem bang email
+        // Add indexes
         await queryInterface.addIndex('users', ['email'], {
             unique: true,
             name: 'users_email_unique'
         });
     },
-    // xoa bang
+
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('users');
     }

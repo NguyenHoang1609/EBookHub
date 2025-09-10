@@ -3,6 +3,7 @@ const { sequelize } = require('../config/connectDb');
 // Import all models
 const User = require('./User');
 const Ebook = require('./Ebook');
+const Page = require('./Page');
 const SavedPage = require('./SavedPage');
 const ReviewRating = require('./ReviewRating');
 const Payment = require('./Payment');
@@ -11,10 +12,13 @@ const LibraryWishlist = require('./LibraryWishlist');
 const Group = require('./Group');
 const Role = require('./Role');
 const GroupRole = require('./GroupRole');
+const AuthorViolation = require('./AuthorViolation');
 
 // Define associations
 // User associations
 User.hasMany(Ebook, { foreignKey: 'authorId', as: 'authoredBooks' });
+User.hasMany(AuthorViolation, { foreignKey: 'authorId', as: 'authorViolations' });
+User.hasMany(AuthorViolation, { foreignKey: 'reportedBy', as: 'reportedViolations' });
 User.hasMany(ReviewRating, { foreignKey: 'userId', as: 'reviews' });
 User.hasMany(Payment, { foreignKey: 'userId', as: 'payments' });
 User.hasMany(LibraryWishlist, { foreignKey: 'userId', as: 'libraryItems' });
@@ -27,11 +31,16 @@ User.hasMany(Notification, { foreignKey: 'receiverId', as: 'receivedNotification
 
 // Ebook associations
 Ebook.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
+Ebook.hasMany(Page, { foreignKey: 'ebookId', as: 'pages' });
 Ebook.hasMany(SavedPage, { foreignKey: 'bookId', as: 'savedPages' });
 Ebook.hasMany(ReviewRating, { foreignKey: 'ebookId', as: 'reviews' });
 Ebook.hasMany(Payment, { foreignKey: 'ebookId', as: 'payments' });
 Ebook.hasMany(Notification, { foreignKey: 'bookId', as: 'notifications' });
 Ebook.hasMany(LibraryWishlist, { foreignKey: 'ebookId', as: 'libraryItems' });
+Ebook.hasMany(AuthorViolation, { foreignKey: 'ebookId', as: 'violations' });
+
+// Page associations
+Page.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
 
 // SavedPage associations
 SavedPage.belongsTo(User, { foreignKey: 'userId', as: 'user' });
@@ -49,6 +58,11 @@ Payment.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
 Notification.belongsTo(User, { foreignKey: 'senderId', as: 'sender' });
 Notification.belongsTo(User, { foreignKey: 'receiverId', as: 'receiver' });
 Notification.belongsTo(Ebook, { foreignKey: 'bookId', as: 'ebook' });
+
+// AuthorViolation associations
+AuthorViolation.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
+AuthorViolation.belongsTo(User, { foreignKey: 'reportedBy', as: 'reporter' });
+AuthorViolation.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
 
 // LibraryWishlist associations
 LibraryWishlist.belongsTo(User, { foreignKey: 'userId', as: 'user' });
@@ -81,6 +95,7 @@ module.exports = {
     sequelize,
     User,
     Ebook,
+    Page,
     SavedPage,
     ReviewRating,
     Payment,
@@ -88,5 +103,6 @@ module.exports = {
     LibraryWishlist,
     Group,
     Role,
-    GroupRole
+    GroupRole,
+    AuthorViolation
 };

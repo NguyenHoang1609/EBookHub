@@ -2,7 +2,7 @@
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        // Them rang buoc
+        // Add foreign key constraint for group_id in users table
         await queryInterface.addConstraint('users', {
             fields: ['group_id'],
             type: 'foreign key',
@@ -15,7 +15,7 @@ module.exports = {
             onDelete: 'SET NULL'
         });
 
-        // Them rang buoc
+        // Add index for performance
         await queryInterface.addIndex('users', ['group_id'], {
             name: 'users_group_id_index'
         });

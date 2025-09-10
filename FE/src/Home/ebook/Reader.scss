@@ -1,0 +1,511 @@
+.reader-container {
+    min-height    : 100vh;
+    background    : linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    display       : flex;
+    flex-direction: column;
+
+    .reader-header {
+        background     : rgba(30, 30, 30, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom  : 1px solid rgba(255, 255, 255, 0.1);
+        padding        : 1rem 2rem;
+        position       : sticky;
+        top            : 0;
+
+        z-index: 100;
+
+        .reader-controls {
+            display        : flex;
+            align-items    : center;
+            justify-content: space-between;
+            max-width      : 1200px;
+            margin         : 0 auto;
+
+            .back-button {
+                background   : #4a5568;
+                color        : #e2e8f0;
+                border       : 1px solid #718096;
+                padding      : 0.5rem 1rem;
+                border-radius: 8px;
+                font-size    : 0.75rem;
+                font-weight  : 500;
+                cursor       : pointer;
+                transition   : all 0.3s ease;
+                display      : flex;
+                align-items  : center;
+                gap          : 0.5rem;
+
+                &:hover {
+                    background  : #2d3748;
+                    border-color: #a0aec0;
+                    transform   : translateY(-2px);
+                    box-shadow  : 0 4px 12px rgba(0, 0, 0, 0.3);
+                }
+
+                &:active {
+                    transform: translateY(0);
+                }
+            }
+
+            .book-info {
+                text-align: center;
+                flex      : 1;
+                margin    : 0 2rem;
+
+                h2 {
+                    margin     : 0;
+                    font-size  : 1.5rem;
+                    color      : #e2e8f0;
+                    font-weight: 600;
+                }
+
+                p {
+                    margin   : 0.25rem 0 0 0;
+                    color    : #a0aec0;
+                    font-size: 0.9rem;
+                }
+
+                .keyboard-hints {
+                    margin-top: 0.5rem;
+
+                    small {
+                        color    : #718096;
+                        font-size: 0.75rem;
+                        opacity  : 0.8;
+                    }
+                }
+            }
+        }
+    }
+
+    .reader-content {
+        flex          : 1;
+        display       : flex;
+        flex-direction: column;
+        align-items   : center;
+        padding       : 2rem;
+        max-width     : 1200px;
+        margin        : 0 auto;
+        width         : 100%;
+
+        .book-container {
+            flex           : 1;
+            display        : flex;
+            justify-content: center;
+            align-items    : center;
+            margin         : 2rem 0;
+            width          : 100%;
+
+            .book {
+                box-shadow   : 0 20px 40px rgba(0, 0, 0, 0.5);
+                border-radius: 8px;
+                overflow     : hidden;
+                background   : #1a202c;
+                border       : 1px solid #2d3748;
+            }
+        }
+
+        .reader-controls-bottom {
+            margin-top     : 2rem;
+            width          : 100%;
+            display        : flex;
+            justify-content: center;
+
+            .page-controls {
+                display        : flex;
+                align-items    : center;
+                gap            : 2rem;
+                background     : rgba(30, 30, 30, 0.9);
+                padding        : 1rem 2rem;
+                border-radius  : 12px;
+                backdrop-filter: blur(10px);
+                box-shadow     : 0 8px 32px rgba(0, 0, 0, 0.3);
+                border         : 1px solid #2d3748;
+
+                .page-button {
+                    background   : #4a5568;
+                    color        : #e2e8f0;
+                    border       : 1px solid #718096;
+                    padding      : 0.75rem 1.5rem;
+                    border-radius: 8px;
+                    font-size    : 0.9rem;
+                    font-weight  : 500;
+                    cursor       : pointer;
+                    transition   : all 0.3s ease;
+                    min-width    : 120px;
+
+                    &:hover:not(:disabled) {
+                        background  : #2d3748;
+                        border-color: #a0aec0;
+                        transform   : translateY(-2px);
+                        box-shadow  : 0 4px 12px rgba(0, 0, 0, 0.3);
+                    }
+
+                    &:active:not(:disabled) {
+                        transform: translateY(0);
+                    }
+
+                    &:disabled {
+                        background  : #2d3748;
+                        border-color: #4a5568;
+                        cursor      : not-allowed;
+                        opacity     : 0.6;
+                    }
+                }
+
+                .page-info {
+                    display    : flex;
+                    align-items: center;
+                    gap        : 0.5rem;
+                    font-size  : 1rem;
+                    font-weight: 500;
+                    color      : #e2e8f0;
+
+                    .current-page {
+                        color      : #81c784;
+                        font-weight: 600;
+                    }
+
+                    .page-separator {
+                        color: #a0aec0;
+                    }
+
+                    .total-pages {
+                        color: #a0aec0;
+                    }
+                }
+            }
+        }
+    }
+
+    .loading-container,
+    .error-container {
+        flex           : 1;
+        display        : flex;
+        flex-direction : column;
+        justify-content: center;
+        align-items    : center;
+        padding        : 4rem 2rem;
+        text-align     : center;
+
+        .loading-spinner {
+            width        : 50px;
+            height       : 50px;
+            border       : 4px solid #2d3748;
+            border-top   : 4px solid #81c784;
+            border-radius: 50%;
+            animation    : spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            color        : #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color        : #a0aec0;
+            margin-bottom: 2rem;
+            max-width    : 500px;
+        }
+
+        .back-button {
+            background   : #4a5568;
+            color        : #e2e8f0;
+            border       : 1px solid #718096;
+            padding      : 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size    : 0.9rem;
+            font-weight  : 500;
+            cursor       : pointer;
+            transition   : all 0.3s ease;
+
+            &:hover {
+                background  : #2d3748;
+                border-color: #a0aec0;
+                transform   : translateY(-2px);
+                box-shadow  : 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+        }
+    }
+}
+
+// Page styles for PageFlip
+.page {
+    background     : #1a202c;
+    display        : flex;
+    flex-direction : column;
+    padding        : 2rem;
+    box-sizing     : border-box;
+    position       : relative;
+    overflow       : hidden;
+    align-items    : center;
+    justify-content: center;
+    border         : 1px solid #2d3748;
+
+    &.cover-page {
+        background     : linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        color          : #e2e8f0;
+        justify-content: center;
+        align-items    : center;
+        text-align     : center;
+
+        .cover-content {
+            display       : flex;
+            flex-direction: column;
+            align-items   : center;
+            gap           : 2rem;
+            max-width     : 80%;
+            width         : 100%;
+            height        : 100%;
+
+            .cover-image {
+                width : 100%;
+                height: 100%;
+
+                img {
+                    width        : 100%;
+                    height       : 100%;
+                    object-fit   : contain;
+                    border-radius: 8px;
+                    filter       : brightness(0.9) contrast(1.1);
+                }
+            }
+
+            .cover-info {
+                .book-title {
+                    font-size  : 2rem;
+                    font-weight: 700;
+                    margin     : 0 0 1rem 0;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+                    color      : #e2e8f0;
+                }
+
+                .book-author {
+                    font-size: 1.2rem;
+                    margin   : 0 0 1.5rem 0;
+                    opacity  : 0.9;
+                    color    : #a0aec0;
+                }
+
+                .book-description {
+                    font-size  : 1rem;
+                    line-height: 1.6;
+                    opacity    : 0.8;
+                    color      : #cbd5e0;
+                }
+
+                .cover-footer {
+                    margin-top : 2rem;
+                    padding-top: 1rem;
+                    border-top : 1px solid rgba(255, 255, 255, 0.2);
+
+                    .reading-hint {
+                        font-size : 0.9rem;
+                        color     : #a0aec0;
+                        font-style: italic;
+                        margin    : 0;
+                        opacity   : 0.8;
+                    }
+                }
+            }
+        }
+    }
+
+    &.content-page {
+        .page-header {
+            border-bottom : 2px solid #4a5568;
+            padding-bottom: 1rem;
+            margin-bottom : 1.5rem;
+
+            h3 {
+                margin     : 0;
+                font-size  : 1.3rem;
+                color      : #e2e8f0;
+                font-weight: 600;
+            }
+        }
+
+        .page-content {
+            flex       : 1;
+            line-height: 1.8;
+            color      : #e2e8f0;
+            font-size  : 1rem;
+
+            // Style HTML content
+            p {
+                margin-bottom: 1rem;
+                color        : #e2e8f0;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color        : #e2e8f0;
+                margin-top   : 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            ul,
+            ol {
+                margin-bottom: 1rem;
+                padding-left : 2rem;
+                color        : #e2e8f0;
+            }
+
+            blockquote {
+                border-left  : 4px solid #81c784;
+                padding-left : 1rem;
+                margin       : 1.5rem 0;
+                font-style   : italic;
+                color        : #a0aec0;
+                background   : rgba(129, 199, 132, 0.1);
+                padding      : 1rem;
+                border-radius: 4px;
+            }
+
+            img {
+                max-width    : 100%;
+                height       : auto;
+                border-radius: 4px;
+                margin       : 1rem 0;
+                filter       : brightness(0.9) contrast(1.1);
+            }
+
+            code {
+                background   : #2d3748;
+                color        : #81c784;
+                padding      : 0.2rem 0.4rem;
+                border-radius: 3px;
+                font-family  : 'Courier New', monospace;
+            }
+
+            pre {
+                background   : #2d3748;
+                color        : #e2e8f0;
+                padding      : 1rem;
+                border-radius: 4px;
+                overflow-x   : auto;
+                border       : 1px solid #4a5568;
+            }
+        }
+
+        .page-footer {
+            border-top : 1px solid #4a5568;
+            padding-top: 1rem;
+            margin-top : 1.5rem;
+            text-align : center;
+
+            .page-number {
+                color      : #a0aec0;
+                font-size  : 0.9rem;
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .reader-container {
+        .reader-header {
+            padding: 1rem;
+
+            .reader-controls {
+                flex-direction: column;
+                gap           : 1rem;
+
+                .book-info {
+                    margin: 0;
+                    order : -1;
+
+                    h2 {
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+        }
+
+        .reader-content {
+            padding: 1rem;
+
+            .book-container {
+                margin: 1rem 0;
+            }
+
+            .reader-controls-bottom {
+                .page-controls {
+                    flex-direction: column;
+                    gap           : 1rem;
+                    padding       : 1rem;
+
+                    .page-button {
+                        width    : 100%;
+                        min-width: auto;
+                    }
+                }
+            }
+        }
+    }
+
+    .page {
+        padding: 1rem;
+
+        &.cover-page {
+            .cover-content {
+                gap: 1rem;
+
+                .cover-image img {
+                    max-width : 150px;
+                    max-height: 200px;
+                }
+
+                .cover-info {
+                    .book-title {
+                        font-size: 1.5rem;
+                    }
+
+                    .book-author {
+                        font-size: 1rem;
+                    }
+                }
+            }
+        }
+
+        &.content-page {
+            .page-header h3 {
+                font-size: 1.1rem;
+            }
+
+            .page-content {
+                font-size: 0.9rem;
+            }
+        }
+    }
+}
+
+// Animation keyframes
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+// PageFlip specific styles
+.st-pageflip {
+    .st-pageflip__shadow {
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.4) 0%, transparent 100%);
+    }
+
+    .st-pageflip__page {
+        background: #1a202c !important;
+        border    : 1px solid #2d3748 !important;
+    }
+}

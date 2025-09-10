@@ -27,9 +27,9 @@ module.exports = {
                 type: Sequelize.TEXT,
                 allowNull: true
             },
-            file_path: {
-                type: Sequelize.STRING(1000),
-                allowNull: false
+            cover_image: {
+                type: Sequelize.STRING(500),
+                allowNull: true
             },
             view_count: {
                 type: Sequelize.INTEGER,

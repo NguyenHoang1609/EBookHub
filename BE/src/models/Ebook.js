@@ -31,12 +31,10 @@ const Ebook = sequelize.define('Ebook', {
         allowNull: true
     },
     filePath: {
-        type: DataTypes.STRING(1000),
-        allowNull: false,
+        type: DataTypes.STRING(500),
+        allowNull: true,
         field: 'file_path',
-        validate: {
-            notEmpty: true
-        }
+        defaultValue: ''
     },
     viewCount: {
         type: DataTypes.INTEGER,
@@ -51,6 +49,11 @@ const Ebook = sequelize.define('Ebook', {
         type: DataTypes.ENUM('draft', 'published', 'archived', 'pending_review'),
         allowNull: false,
         defaultValue: 'draft'
+    },
+    coverImage: {
+        type: DataTypes.STRING(500),
+        allowNull: true,
+        field: 'cover_image'
     }
 }, {
     tableName: 'ebooks',
@@ -69,5 +72,8 @@ const Ebook = sequelize.define('Ebook', {
         }
     ]
 });
+
+// Remove individual sync call to prevent deadlocks
+// Ebook.sync({ alter: true });
 
 module.exports = Ebook;

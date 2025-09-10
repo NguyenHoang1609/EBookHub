@@ -40,6 +40,8 @@ connectToDataBase();
 // convertImg();
 //socketService
 
+app.use('/public', express.static('public'));
+
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {

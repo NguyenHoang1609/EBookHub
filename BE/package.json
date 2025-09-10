@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "bao-duy",
   "version": "1.0.0",
   "description": "e-commerce project",
   "main": "sever.js",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": ""
   },
-  "author": "",
+  "author": "BaoDuy",
   "license": "ISC",
   "bugs": {
     "url": ""
@@ -37,10 +37,14 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
+    "multer": "^2.0.2",
     "mysql2": "^3.12.0",
     "nodemailer": "^6.10.1",
     "nodemon": "^3.1.9",
     "openai": "^4.91.1",
+    "pdf-parse": "^1.1.1",
+    "pdf-to-img": "^4.5.0",
+    "pdf2pic": "^3.2.0",
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.5",
