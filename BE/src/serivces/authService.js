@@ -196,6 +196,7 @@ const loginUser = async (email, password) => {
             email: user.email,
             phone: user.phone,
             address: user.address,
+            avatar: user.avatar,
             groupId: user.groupId || 3,
             group: user.group
         };
@@ -242,7 +243,7 @@ const getUserProfile = async (email) => {
 
         const user = await db.User.findOne({
             where: { email: email.toLowerCase().trim() },
-            attributes: ['id', 'name', 'email', 'phone', 'address', 'groupId', 'created_at', 'updated_at'],
+            attributes: ['id', 'name', 'email', 'phone', 'address', 'avatar', 'groupId', 'created_at', 'updated_at'],
             include: [
                 {
                     model: db.Group,
@@ -268,6 +269,7 @@ const getUserProfile = async (email) => {
                 email: user.email,
                 phone: user.phone,
                 address: user.address,
+                avatar: user.avatar,
                 groupId: user.groupId,
                 group: user.group,
                 createdAt: user.created_at,

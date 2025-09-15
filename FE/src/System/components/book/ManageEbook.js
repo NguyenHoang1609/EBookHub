@@ -250,6 +250,7 @@ const ManageEbook = () => {
     };
 
     const getCoverImageUrl = (coverImage) => {
+
         if (!coverImage) return null;
         const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
         return `${baseUrl}/public/${coverImage}`;

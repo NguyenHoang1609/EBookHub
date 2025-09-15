@@ -310,7 +310,7 @@ const updateUser = async (id, updateData) => {
             };
         }
 
-        const { name, email, phone, address, groupId, isActive } = updateData;
+        const { name, email, phone, address, groupId, isActive, avatar } = updateData;
 
         // Find user
         const user = await db.User.findByPk(id);
@@ -363,6 +363,7 @@ const updateUser = async (id, updateData) => {
         if (address !== undefined) updateFields.address = address ? address.trim() : null;
         if (groupId) updateFields.groupId = parseInt(groupId);
         if (isActive !== undefined) updateFields.isActive = Boolean(isActive);
+        if (avatar !== undefined) updateFields.avatar = avatar;
 
         // Update user
         await user.update(updateFields);

@@ -1,5 +1,5 @@
 module.exports = {
-    async up ( queryInterface, Sequelize ) {
+    async up(queryInterface, Sequelize) {
         await queryInterface.createTable('author_violations', {
             id: {
                 type: Sequelize.INTEGER,
@@ -74,12 +74,13 @@ module.exports = {
         await queryInterface.addIndex('author_violations', ['type']);
     },
 
-   async down({ context: queryInterface, Sequelize }) {
+    async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('author_violations');
         await queryInterface.sequelize.query("DROP TYPE IF EXISTS \"enum_author_violations_type\";");
         await queryInterface.sequelize.query("DROP TYPE IF EXISTS \"enum_author_violations_status\";");
     }
 };
+
 
 
 

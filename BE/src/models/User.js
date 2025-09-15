@@ -54,6 +54,12 @@ const User = sequelize.define('User', {
             key: 'id'
         }
     },
+    avatar: {
+        type: DataTypes.STRING(500),
+        allowNull: true,
+        defaultValue: null,
+        field: 'avatar'
+    },
     isActive: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

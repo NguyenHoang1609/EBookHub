@@ -121,7 +121,7 @@ function Register({ onClose, onSwitchToLogin }) {
                         </div>
                     )}
 
-                    <div  className="register-form" >
+                    <form className="register-form" onSubmit={handleSubmit}>
                         <div className="form-group">
                             <input
                                 type="text"
@@ -226,7 +226,6 @@ function Register({ onClose, onSwitchToLogin }) {
                             type="submit"
                             className="submit-btn"
                             disabled={loading}
-                            onClick={(e) => handleSubmit(e)}
                             style={{
                                 opacity: loading ? 0.7 : 1,
                                 cursor: loading ? 'not-allowed' : 'pointer'
@@ -234,7 +233,7 @@ function Register({ onClose, onSwitchToLogin }) {
                         >
                             {loading ? 'Đang đăng ký...' : 'Đăng ký'}
                         </button>
-                    </div>
+                    </form>
 
                     <div className="divider">
                         <span className="divider-text">Hoặc đăng ký với</span>

@@ -1,0 +1,220 @@
+// EBook Platform Database ERD
+// Generated for dbdiagram.io
+
+Table users {
+  id integer [primary key, increment]
+  name varchar(255) [not null]
+  email varchar(255) [not null, unique]
+  phone bigint
+  address text
+  password varchar(255) [not null]
+  group_id integer [ref: > groups.id, default: 3]
+  is_active boolean [not null, default: true]
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    email [unique]
+  }
+}
+
+Table groups {
+  id integer [primary key, increment]
+  name varchar(255) [not null, unique]
+  description text
+  is_active boolean [not null, default: true]
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    name [unique]
+    is_active
+  }
+}
+
+Table roles {
+  id integer [primary key, increment]
+  url varchar(500) [not null]
+  description text
+  method enum('GET','POST','PUT','DELETE','PATCH') [not null, default: 'GET']
+  is_active boolean [not null, default: true]
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    (url, method) [unique]
+    method
+    is_active
+  }
+}
+
+Table group_roles {
+  id integer [primary key, increment]
+  group_id integer [not null, ref: > groups.id]
+  role_id integer [not null, ref: > roles.id]
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    (group_id, role_id) [unique]
+    group_id
+    role_id
+  }
+}
+
+Table ebooks {
+  ebook_id integer [primary key, increment]
+  author_id integer [not null, ref: > users.id]
+  title varchar(500) [not null]
+  description text
+  file_path varchar(500) [default: '']
+  view_count integer [not null, default: 0]
+  status enum('draft','published','archived','pending_review') [not null, default: 'draft']
+  cover_image varchar(500)
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    author_id
+    status
+    title
+  }
+}
+
+Table pages {
+  page_id integer [primary key, increment]
+  ebook_id integer [not null, ref: > ebooks.ebook_id]
+  page_number integer [not null]
+  title varchar(255)
+  content longtext
+  status enum('draft','published','archived') [not null, default: 'draft']
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    ebook_id
+    page_number
+    status
+    (ebook_id, page_number) [unique]
+  }
+}
+
+Table saved_pages {
+  id integer [primary key, increment]
+  book_id integer [not null, ref: > ebooks.ebook_id]
+  user_id integer [not null, ref: > users.id]
+  number_page integer [not null]
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    (book_id, user_id) [unique]
+    user_id
+  }
+}
+
+Table review_ratings {
+  id integer [primary key, increment]
+  ebook_id integer [not null, ref: > ebooks.ebook_id]
+  user_id integer [not null, ref: > users.id]
+  rating integer [not null, note: 'Range: 1-5']
+  review_text text
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    (ebook_id, user_id) [unique]
+    ebook_id
+    user_id
+    rating
+  }
+}
+
+Table payments {
+  id integer [primary key, increment]
+  user_id integer [not null, ref: > users.id]
+  ebook_id integer [not null, ref: > ebooks.ebook_id]
+  amount decimal(10,2) [not null]
+  description text
+  account_number varchar(100)
+  status enum('pending','completed','failed','refunded','cancelled') [not null, default: 'pending']
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    user_id
+    ebook_id
+    status
+    created_at
+  }
+}
+
+Table notifications {
+  id integer [primary key, increment]
+  sender_id integer [not null, ref: > users.id]
+  receiver_id integer [not null, ref: > users.id]
+  book_id integer [ref: > ebooks.ebook_id]
+  message text [not null]
+  is_read boolean [not null, default: false]
+  type enum('system','user','admin','payment','review') [not null, default: 'user']
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    sender_id
+    receiver_id
+    book_id
+    is_read
+    type
+    created_at
+  }
+}
+
+Table library_wishlists {
+  id integer [primary key, increment]
+  user_id integer [not null, ref: > users.id]
+  ebook_id integer [not null, ref: > ebooks.ebook_id]
+  type enum('library','wishlist') [not null, default: 'wishlist']
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    (user_id, ebook_id, type) [unique]
+    user_id
+    ebook_id
+    type
+  }
+}
+
+Table author_violations {
+  id integer [primary key, increment]
+  author_id integer [not null, ref: > users.id]
+  ebook_id integer [ref: > ebooks.ebook_id]
+  reported_by integer [not null, ref: > users.id]
+  type enum('copyright','plagiarism','abuse','spam','other') [not null, default: 'other']
+  reason text [not null]
+  status enum('open','under_review','resolved','dismissed') [not null, default: 'open']
+  action_taken text
+  created_at timestamp
+  updated_at timestamp
+  
+  Indexes {
+    author_id
+    ebook_id
+    reported_by
+    status
+    type
+  }
+}
+
+// Relationship Notes:
+// - Users belong to Groups (many-to-one)
+// - Groups have many Roles through GroupRole junction table (many-to-many)
+// - Users can author many Ebooks (one-to-many)
+// - Ebooks have many Pages (one-to-many)
+// - Users can save pages from Ebooks (many-to-many through saved_pages)
+// - Users can review and rate Ebooks (many-to-many through review_ratings)
+// - Users can purchase Ebooks (many-to-many through payments)
+// - Users can send/receive notifications (many-to-many through notifications)
+// - Users can add Ebooks to library or wishlist (many-to-many through library_wishlists)
+// - Author violations reported by users against authors and optionally ebooks

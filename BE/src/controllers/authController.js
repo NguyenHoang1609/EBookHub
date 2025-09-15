@@ -111,9 +111,9 @@ const logout = async (req, res) => {
 };
 
 
-const getProfile = async (req, res) => {
+const checkAccount = async (req, res) => {
     try {
-        console.log('Get profile request received for user:', req.user?.email);
+        console.log('Check account request received for user:', req.user?.email);
 
         if (!req.user) {
             return res.status(401).json({
@@ -123,7 +123,7 @@ const getProfile = async (req, res) => {
             });
         }
 
-        const result = await authService.getUserProfile(req.user.email);
+        const result = true;
 
         if (result.EC === 0) {
             return res.status(200).json(result);
@@ -145,5 +145,5 @@ export default {
     register,
     login,
     logout,
-    getProfile
+    checkAccount
 };

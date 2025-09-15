@@ -94,10 +94,10 @@ const authAPI = {
 
     getProfile: async () => {
         try {
-            const response = await API.get('/auth/profile');
+            const response = await API.get('/auth/account');
             return {
                 success: true,
-                data: response.data,
+                data: response.data.DT,
                 message: response.data.EM
             };
         } catch (error) {
@@ -177,6 +177,28 @@ const userAPI = {
     updateUser: async (id, userData) => {
         try {
             const response = await API.put(`/users/${id}`, userData);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to update user',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    updateUserWithAvatar: async (id, formData) => {
+        try {
+            const response = await API.put(`/users/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
             return {
                 success: true,
                 data: response.data,

@@ -13,6 +13,7 @@ const Group = require('./Group');
 const Role = require('./Role');
 const GroupRole = require('./GroupRole');
 const AuthorViolation = require('./AuthorViolation');
+const Category = require('./Category');
 
 // Define associations
 // User associations
@@ -38,6 +39,7 @@ Ebook.hasMany(Payment, { foreignKey: 'ebookId', as: 'payments' });
 Ebook.hasMany(Notification, { foreignKey: 'bookId', as: 'notifications' });
 Ebook.hasMany(LibraryWishlist, { foreignKey: 'ebookId', as: 'libraryItems' });
 Ebook.hasMany(AuthorViolation, { foreignKey: 'ebookId', as: 'violations' });
+Ebook.hasMany(Category, { foreignKey: 'ebookId', as: 'categories' });
 
 // Page associations
 Page.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });

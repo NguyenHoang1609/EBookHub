@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Navigation.scss';
 import Login from './Login';
 import Register from './Register';
+import { authAPI } from '../../Util/Api';
 
 function Navigation(props) {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showRegisterModal, setShowRegisterModal] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
+    const [showUserDropdown, setShowUserDropdown] = useState(false);
 
     const handleLoginClick = () => {
         setShowLoginModal(true);
@@ -26,8 +30,59 @@ function Navigation(props) {
     };
 
     const handleSwitchToLogin = () => {
-        // setShowRegisterModal(false);
-        // setShowLoginModal(true);
+        setShowRegisterModal(false);
+        setShowLoginModal(true);
+    };
+
+    // Check authentication status on component mount
+    useEffect(() => {
+        checkAuthStatus();
+    }, []);
+
+    const checkAuthStatus = async () => {
+        try {
+            let userData = localStorage.getItem('userData');
+            console.log('userData', userData);
+            const result = await authAPI.getProfile();
+            if (result.success) {
+                setIsAuthenticated(true);
+                setUser(result.data);
+                // Store user data in localStorage
+                localStorage.setItem('userData', JSON.stringify(result.data));
+            } else {
+                setIsAuthenticated(true);
+                setUser(userData);
+                // localStorage.removeItem('userData');
+            }
+        } catch (error) {
+            console.error('Auth check failed:', error);
+            setIsAuthenticated(false);
+            setUser(null);
+            localStorage.removeItem('userData');
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await authAPI.logout();
+            setIsAuthenticated(false);
+            setUser(null);
+            localStorage.removeItem('userData');
+            setShowUserDropdown(false);
+            // Redirect to home or refresh page
+            window.location.reload();
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+
+    const handleUserProfileClick = () => {
+        // Navigate to user profile page
+        window.location.href = '/profile';
+    };
+
+    const getDefaultAvatar = () => {
+        return 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&h=100&q=80';
     };
 
     return (
@@ -110,16 +165,41 @@ function Navigation(props) {
                         </div>
                     </div>
                     <div className="auth-section">
-                        <div className="register-button" onClick={handleRegisterClick}>
-                            <div className="register-button-content">
-                                <div className="register-text">Đăng ký</div>
+                        {isAuthenticated && user ? (
+                            <div className="user-profile-section">
+                                <div className="user-avatar" onClick={() => setShowUserDropdown(!showUserDropdown)}>
+                                    <img
+                                        src={user.avatar || getDefaultAvatar()}
+                                        alt="User Avatar"
+                                        className="avatar-image"
+                                    />
+                                    <span className="dropdown-arrow">▼</span>
+                                </div>
+                                {showUserDropdown && (
+                                    <div className="user-dropdown">
+                                        <div className="dropdown-item" onClick={handleUserProfileClick}>
+                                            <span>Hồ sơ của tôi</span>
+                                        </div>
+                                        <div className="dropdown-item" onClick={handleLogout}>
+                                            <span>Đăng xuất</span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                        <div className="login-button" onClick={handleLoginClick}>
-                            <div className="login-button-content">
-                                <div className="login-text">Đăng nhập</div>
-                            </div>
-                        </div>
+                        ) : (
+                            <>
+                                <div className="register-button" onClick={handleRegisterClick}>
+                                    <div className="register-button-content">
+                                        <div className="register-text">Đăng ký</div>
+                                    </div>
+                                </div>
+                                <div className="login-button" onClick={handleLoginClick}>
+                                    <div className="login-button-content">
+                                        <div className="login-text">Đăng nhập</div>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

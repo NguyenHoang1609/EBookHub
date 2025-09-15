@@ -35,6 +35,11 @@ module.exports = {
                 allowNull: true,
                 defaultValue: 3
             },
+            avatar: {
+                type: Sequelize.STRING(500),
+                allowNull: true,
+                defaultValue: null
+            },
             is_active: {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,

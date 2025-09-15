@@ -115,6 +115,12 @@ const updateUser = async (req, res) => {
         const { id } = req.params;
         const { name, email, phone, address, groupId, isActive } = req.body;
 
+        // Handle avatar upload if file is present
+        let avatarPath = null;
+        if (req.file) {
+            avatarPath = `/avatar/${req.file.filename}`;
+        }
+
         if (!id || isNaN(parseInt(id))) {
             return res.status(400).json({
                 DT: '',
@@ -129,7 +135,8 @@ const updateUser = async (req, res) => {
             phone,
             address,
             groupId: groupId ? parseInt(groupId) : null,
-            isActive: isActive !== undefined ? Boolean(isActive) : null
+            isActive: isActive !== undefined ? Boolean(isActive) : null,
+            avatar: avatarPath
         });
 
         if (result.EC === 0) {
