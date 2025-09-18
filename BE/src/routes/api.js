@@ -4,6 +4,7 @@ import authController from '../controllers/authController'
 import pageController from '../controllers/pageController'
 import userController from '../controllers/userController'
 import ebookController from '../controllers/ebookController'
+import commentController from '../controllers/commentController'
 import { uploadAvatar, handleUploadError } from '../middleware/upload'
 
 const router = express.Router();
@@ -48,6 +49,20 @@ router.get('/pages/:pageId', pageController.getPageById);
 router.get('/pages/ebook/:ebookId/page/:pageNumber', pageController.getPageByNumber);
 router.put('/pages/:pageId', pageController.updatePage);
 router.delete('/pages/:pageId', pageController.deletePage);
+
+// Comment routes
+router.get('/comments/ebook/:ebookId', commentController.getCommentsByEbook);
+router.get('/comments/ebook/:ebookId/stats', commentController.getCommentStats);
+router.post('/comments', commentController.createComment);
+router.put('/comments/:commentId', commentController.updateComment);
+router.delete('/comments/:commentId', commentController.deleteComment);
+
+// Admin comment routes
+router.get('/comments/admin', commentController.getAllCommentsForAdmin);
+router.get('/comments/statistics', commentController.getCommentStatistics);
+router.get('/comments/user/:userId', commentController.getCommentsByUser);
+router.put('/comments/:commentId/status', commentController.toggleCommentStatus);
+router.delete('/comments/bulk', commentController.bulkDeleteComments);
 
 
 

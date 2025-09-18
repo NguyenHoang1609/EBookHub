@@ -1,21 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './SideBar.scss';
 
 const SideBar = ({ onNavigation, activeSection }) => {
     const [isLightMode, setIsLightMode] = useState(true);
+    const [userRole, setUserRole] = useState(null);
 
-    const navItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: '/Iconly/Bold/Home.svg' },
-        { id: 'book', label: 'Book', icon: '/Iconly/Bold/Edit-Square.svg' },
-        { id: 'media', label: 'Media', icon: '/Iconly/Bold/Image.svg' },
-        { id: 'pages', label: 'Pages', icon: '/Iconly/Bold/Document.svg' },
-        { id: 'comments', label: 'Comments', icon: '/Iconly/Bold/Chat.svg', badge: 1 },
-        { id: 'appearance', label: 'Appearance', icon: '/Iconly/Bold/Category.svg' },
-        { id: 'plugins', label: 'Plugins', icon: '/Iconly/Bold/Bag.svg' },
-        { id: 'users', label: 'Users', icon: '/Iconly/Bold/3-User.svg' },
-        { id: 'settings', label: 'Settings', icon: '/Iconly/Bold/Setting.svg' },
-        { id: 'tools', label: 'Tools', icon: '/Iconly/Bold/Filter.svg' },
+    // All navigation items with role restrictions
+    const allNavItems = [
+        { id: 'dashboard', label: 'Dashboard', icon: '/Iconly/Bold/Home.svg', roles: [1] }, // Admin only
+        { id: 'book', label: 'Book', icon: '/Iconly/Bold/Edit-Square.svg', roles: [1, 2] }, // Admin and Author
+        { id: 'media', label: 'Media', icon: '/Iconly/Bold/Image.svg', roles: [1] }, // Admin only
+        { id: 'pages', label: 'Pages', icon: '/Iconly/Bold/Document.svg', roles: [1] }, // Admin only
+        { id: 'comment', label: 'Comments', icon: '/Iconly/Bold/Chat.svg', badge: 1, roles: [1] }, // Admin only
+        { id: 'appearance', label: 'Appearance', icon: '/Iconly/Bold/Category.svg', roles: [1] }, // Admin only
+        { id: 'plugins', label: 'Plugins', icon: '/Iconly/Bold/Bag.svg', roles: [1] }, // Admin only
+        { id: 'users', label: 'Users', icon: '/Iconly/Bold/3-User.svg', roles: [1] }, // Admin only
+        { id: 'settings', label: 'Settings', icon: '/Iconly/Bold/Setting.svg', roles: [1] }, // Admin only
+        { id: 'tools', label: 'Tools', icon: '/Iconly/Bold/Filter.svg', roles: [1] }, // Admin only
     ];
+    // Filter navigation items based on user role
+    const navItems = allNavItems.filter(item => {
+        if (!userRole) return false;
+        return item.roles.includes(userRole);
+    });
+
+    // Check user role from localStorage on component mount
+    useEffect(() => {
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                const role = user.groupId; // groupId corresponds to role (1=Admin, 2=Author, 3=User)
+                setUserRole(role);
+
+                // If user role is 3 (regular user), redirect to home page
+                if (role === 3) {
+                    alert('Access denied. Regular users are not allowed to access the system dashboard.');
+                    window.location.href = '/';
+                    return;
+                }
+            } catch (error) {
+                console.error('Error parsing user data from localStorage:', error);
+                // If userData is corrupted, redirect to home
+                window.location.href = '/';
+            }
+        } else {
+            // If no user data, redirect to home
+            window.location.href = '/';
+        }
+    }, []);
 
     const handleNavClick = (itemId) => {
         if (onNavigation) {
@@ -25,6 +58,16 @@ const SideBar = ({ onNavigation, activeSection }) => {
 
     const handleLightModeToggle = () => {
         setIsLightMode(!isLightMode);
+    };
+
+    const handleLogout = () => {
+        // Clear all user data from localStorage
+        localStorage.removeItem('userData');
+        localStorage.removeItem('token');
+        localStorage.removeItem('isLoggedIn');
+
+        // Navigate to home page
+        window.location.href = '/';
     };
 
     return (
@@ -66,8 +109,7 @@ const SideBar = ({ onNavigation, activeSection }) => {
                 </div>
             </div>
             <div className="sidebar-bottom">
-
-                <div className="nav-link active">
+                <div className="nav-link active" onClick={handleLogout}>
                     <div className="nav-content">
                         <div className="icon-wrapper">
                             <div className="icon">

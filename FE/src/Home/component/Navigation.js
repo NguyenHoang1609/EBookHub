@@ -42,11 +42,12 @@ function Navigation(props) {
     const checkAuthStatus = async () => {
         try {
             let userData = localStorage.getItem('userData');
-            console.log('userData', userData);
-            const result = await authAPI.getProfile();
+            console.log('userData nav', userData);
+            const result = await authAPI.getProfile(JSON.parse(userData));
             if (result.success) {
                 setIsAuthenticated(true);
                 setUser(result.data);
+                console.log('result.data', result.data);
                 // Store user data in localStorage
                 localStorage.setItem('userData', JSON.stringify(result.data));
             } else {
@@ -89,7 +90,9 @@ function Navigation(props) {
         <div className="navigation-container">
             <div className="navigation-content">
                 <div className="left-section">
-                    <div className="logo-section">
+                    <div
+                  
+                    className="logo-section">
                         <img className="logo-image" src="https://placehold.co/115x38" />
                         <div className="logo-icon-container">
                             <img className="logo-icon" src="https://placehold.co/33x26" />
@@ -169,7 +172,7 @@ function Navigation(props) {
                             <div className="user-profile-section">
                                 <div className="user-avatar" onClick={() => setShowUserDropdown(!showUserDropdown)}>
                                     <img
-                                        src={user.avatar || getDefaultAvatar()}
+                                        src={`${'http://localhost:8080/public'}${user.avatar || getDefaultAvatar()}`}
                                         alt="User Avatar"
                                         className="avatar-image"
                                     />

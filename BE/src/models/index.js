@@ -14,6 +14,7 @@ const Role = require('./Role');
 const GroupRole = require('./GroupRole');
 const AuthorViolation = require('./AuthorViolation');
 const Category = require('./Category');
+const Comment = require('./Comment');
 
 // Define associations
 // User associations
@@ -24,6 +25,7 @@ User.hasMany(ReviewRating, { foreignKey: 'userId', as: 'reviews' });
 User.hasMany(Payment, { foreignKey: 'userId', as: 'payments' });
 User.hasMany(LibraryWishlist, { foreignKey: 'userId', as: 'libraryItems' });
 User.hasMany(SavedPage, { foreignKey: 'userId', as: 'savedPages' });
+User.hasMany(Comment, { foreignKey: 'userId', as: 'comments' });
 User.belongsTo(Group, { foreignKey: 'groupId', as: 'group' });
 
 // User notification associations (sender/receiver)
@@ -40,6 +42,7 @@ Ebook.hasMany(Notification, { foreignKey: 'bookId', as: 'notifications' });
 Ebook.hasMany(LibraryWishlist, { foreignKey: 'ebookId', as: 'libraryItems' });
 Ebook.hasMany(AuthorViolation, { foreignKey: 'ebookId', as: 'violations' });
 Ebook.hasMany(Category, { foreignKey: 'ebookId', as: 'categories' });
+Ebook.hasMany(Comment, { foreignKey: 'ebookId', as: 'comments' });
 
 // Page associations
 Page.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
@@ -92,6 +95,12 @@ Role.belongsToMany(Group, {
 GroupRole.belongsTo(Group, { foreignKey: 'groupId', as: 'group' });
 GroupRole.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
 
+// Comment associations
+Comment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+Comment.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
+Comment.belongsTo(Comment, { foreignKey: 'parentCommentId', as: 'parentComment' });
+Comment.hasMany(Comment, { foreignKey: 'parentCommentId', as: 'replies' });
+
 // Export all models and sequelize instance
 module.exports = {
     sequelize,
@@ -106,5 +115,6 @@ module.exports = {
     Group,
     Role,
     GroupRole,
-    AuthorViolation
+    AuthorViolation,
+    Comment
 };

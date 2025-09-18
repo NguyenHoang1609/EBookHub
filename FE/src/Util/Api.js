@@ -92,9 +92,12 @@ const authAPI = {
         }
     },
 
-    getProfile: async () => {
+    getProfile: async (userData) => {
         try {
-            const response = await API.get('/auth/account');
+            console.log('userData api', userData);
+            const response = await API.get('/auth/account?email=' + userData.email, {
+
+            });
             return {
                 success: true,
                 data: response.data.DT,
@@ -563,6 +566,213 @@ const pageAPI = {
     }
 };
 
+const commentAPI = {
+    getCommentsByEbook: async (currentUser, ebookId, params = {}) => {
+        try {
+            const queryParams = new URLSearchParams();
+            Object.keys(params).forEach(key => {
+                if (params[key] !== undefined && params[key] !== null) {
+                    queryParams.append(key, params[key]);
+                }
+            });
+
+            const url = `/comments/ebook/${ebookId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch comments',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getCommentStats: async (ebookId) => {
+        try {
+            const response = await API.get(`/comments/ebook/${ebookId}/stats`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch comment statistics',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    createComment: async (commentData) => {
+        try {
+            const response = await API.post('/comments', commentData);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to create comment',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    updateComment: async (commentId, content) => {
+        try {
+            const response = await API.put(`/comments/${commentId}`, { content });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to update comment',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    deleteComment: async (commentId) => {
+        try {
+            const response = await API.delete(`/comments/${commentId}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to delete comment',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    // Admin-specific comment functions
+    getAllComments: async (params = {}) => {
+        try {
+            const queryParams = new URLSearchParams();
+            Object.keys(params).forEach(key => {
+                if (params[key] !== undefined && params[key] !== null) {
+                    queryParams.append(key, params[key]);
+                }
+            });
+
+            const url = `/comments/admin${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch all comments',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    toggleCommentStatus: async (commentId, isActive) => {
+        try {
+            const response = await API.put(`/comments/${commentId}/status`, { isActive });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to toggle comment status',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getCommentsByUser: async (userId, params = {}) => {
+        try {
+            const queryParams = new URLSearchParams();
+            Object.keys(params).forEach(key => {
+                if (params[key] !== undefined && params[key] !== null) {
+                    queryParams.append(key, params[key]);
+                }
+            });
+
+            const url = `/comments/user/${userId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch user comments',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    bulkDeleteComments: async (commentIds) => {
+        try {
+            const response = await API.delete('/comments/bulk', { data: { commentIds } });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to delete comments',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getCommentStatistics: async () => {
+        try {
+            const response = await API.get('/comments/statistics');
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch comment statistics',
+                error: error.response?.data || error.message
+            };
+        }
+    }
+};
+
 const apiUtils = {
     isAuthenticated: async () => {
         try {
@@ -583,4 +793,4 @@ const apiUtils = {
 };
 
 export default API;
-export { authAPI, userAPI, ebookAPI, pageAPI, apiUtils };
+export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, apiUtils };

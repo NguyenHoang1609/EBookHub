@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { authAPI } from '../../Util/Api';
 import './Login.scss';
+import { useNavigate } from 'react-router-dom';
 
 function Login({ onClose, onSwitchToRegister }) {
     const [formData, setFormData] = useState({
@@ -10,7 +11,7 @@ function Login({ onClose, onSwitchToRegister }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
+    const navigate = useNavigate();
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -45,6 +46,7 @@ function Login({ onClose, onSwitchToRegister }) {
                 localStorage.setItem('isLoggedIn', 'true');
 
                 alert('Đăng nhập thành công!');
+                window.location.reload();
                 onClose();
             } else {
                 setError(result.message || 'Đăng nhập thất bại');

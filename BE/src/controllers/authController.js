@@ -113,9 +113,9 @@ const logout = async (req, res) => {
 
 const checkAccount = async (req, res) => {
     try {
-        console.log('Check account request received for user:', req.user?.email);
+        console.log('Check account request received for user:', req.query);
 
-        if (!req.user) {
+        if (!req.query?.email) {
             return res.status(401).json({
                 DT: '',
                 EC: -1,
@@ -123,7 +123,7 @@ const checkAccount = async (req, res) => {
             });
         }
 
-        const result = true;
+        const result = await authService.getUserProfile(req.query?.email);
 
         if (result.EC === 0) {
             return res.status(200).json(result);

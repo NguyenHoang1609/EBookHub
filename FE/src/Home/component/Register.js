@@ -75,8 +75,9 @@ function Register({ onClose, onSwitchToLogin }) {
 
             if (result.success && result.data.EC === 0) {
                 console.log('Registration successful:', result.data);
-                alert('Đăng ký thành công! Vui lòng đăng nhập.');
                 onSwitchToLogin();
+                alert('Đăng ký thành công! Vui lòng đăng nhập.');
+                // onSwitchToLogin();
             } else {
                 setError(result.message || 'Đăng ký thất bại');
             }
@@ -121,7 +122,7 @@ function Register({ onClose, onSwitchToLogin }) {
                         </div>
                     )}
 
-                    <form className="register-form" onSubmit={handleSubmit}>
+                    <div className="register-form" onSubmit={handleSubmit}>
                         <div className="form-group">
                             <input
                                 type="text"
@@ -230,10 +231,11 @@ function Register({ onClose, onSwitchToLogin }) {
                                 opacity: loading ? 0.7 : 1,
                                 cursor: loading ? 'not-allowed' : 'pointer'
                             }}
+                            onClick={(e) => handleSubmit(e)}
                         >
                             {loading ? 'Đang đăng ký...' : 'Đăng ký'}
                         </button>
-                    </form>
+                    </div>
 
                     <div className="divider">
                         <span className="divider-text">Hoặc đăng ký với</span>

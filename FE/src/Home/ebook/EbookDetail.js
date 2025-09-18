@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ebookAPI } from '../../Util/Api';
 import Navigation from '../component/Navigation';
 import Footer from '../component/Footer';
+import Review from './components/Review';
 import './EbookDetail.scss';
 
 const EbookDetail = () => {
@@ -330,72 +331,8 @@ const EbookDetail = () => {
                 </div>
 
                 {/* Reviews Section */}
-                <div className="reviews-section">
-                    <h2>Độc giả nói gì về "{ebook.title}"</h2>
-                    <div className="reviews-header">
-                        <span className="comments-count">Bình luận (4)</span>
-                        <span className="reviews-count">Đánh giá & nhận xét (13)</span>
-                    </div>
+                <Review ebook={ebook} />
 
-                    {/* Sample Reviews */}
-                    <div className="review-item">
-                        <div className="reviewer-info">
-                            <div className="reviewer-avatar">
-                                <img src="https://placehold.co/42x42" alt="User" />
-                            </div>
-                            <div className="reviewer-details">
-                                <span className="reviewer-name">tel_0977904***</span>
-                                <span className="review-date">2 ngày trước</span>
-                            </div>
-                        </div>
-                        <div className="review-content">
-                            <p>em nâng cấp rồi sao vẫn chỉ đọc được phần mở và phần kết ạ</p>
-                        </div>
-                        <div className="review-reply">
-                            <div className="reply-avatar">
-                                <img src="https://placehold.co/42x42" alt="User" />
-                            </div>
-                            <div className="reply-details">
-                                <span className="reply-name">0773302***</span>
-                                <span className="reply-date">1 ngày trước</span>
-                            </div>
-                            <div className="reply-content">
-                                <p>bạn lướt xuống</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="review-item">
-                        <div className="reviewer-info">
-                            <div className="reviewer-avatar">
-                                <img src="https://placehold.co/42x42" alt="User" />
-                            </div>
-                            <div className="reviewer-details">
-                                <span className="reviewer-name">0907344***</span>
-                                <span className="review-date">3 ngày trước</span>
-                            </div>
-                        </div>
-                        <div className="review-content">
-                            <p>Luôn biết ơn những người đã hy sinh cho Tổ Quốc vì tự do dân tộc.</p>
-                        </div>
-                    </div>
-
-                    <div className="review-item">
-                        <div className="reviewer-info">
-                            <div className="reviewer-avatar">
-                                <img src="https://placehold.co/42x42" alt="User" />
-                            </div>
-                            <div className="reviewer-details">
-                                <span className="reviewer-name">Amai</span>
-                                <span className="review-date">4 ngày trước</span>
-                            </div>
-                        </div>
-                        <div className="review-content">
-                            <p>14:22 2/9/2025, kết thúc câu chuyện vào đúng cái ngày Đại lễ 80</p>
-                            <p>năm của Đất Nước, biết ơn vì tất cả</p>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Related Books Sections */}
                 <div className="related-books-section">
