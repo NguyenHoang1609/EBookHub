@@ -452,6 +452,25 @@ const ebookAPI = {
                 error: error.response?.data || error.message
             };
         }
+    },
+
+    getFavouriteBooks: async (userId, limit = 10) => {
+        try {
+            const url = `/ebooks/favourite/${userId}?limit=${limit}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch favourite books',
+                error: error.response?.data || error.message
+            };
+        }
     }
 };
 
@@ -773,6 +792,204 @@ const commentAPI = {
     }
 };
 
+const typeAPI = {
+    getAllTypes: async (params = {}) => {
+        try {
+            const queryParams = new URLSearchParams();
+            Object.keys(params).forEach(key => {
+                if (params[key] !== undefined && params[key] !== null) {
+                    queryParams.append(key, params[key]);
+                }
+            });
+
+            const url = `/types${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch types',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getTypeById: async (id) => {
+        try {
+            const response = await API.get(`/types/${id}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch type',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    createType: async (typeData) => {
+        try {
+            const response = await API.post('/types', typeData);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to create type',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    updateType: async (id, typeData) => {
+        try {
+            const response = await API.put(`/types/${id}`, typeData);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to update type',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    deleteType: async (id) => {
+        try {
+            const response = await API.delete(`/types/${id}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to delete type',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getUserFavouriteTypes: async (userId) => {
+        try {
+            const response = await API.get(`/users/${userId}/favourite-types`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch user favourite types',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    addUserFavouriteType: async (userId, typeId) => {
+        try {
+            const response = await API.post(`/users/${userId}/favourite-types`, { typeId });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to add favourite type',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    removeUserFavouriteType: async (userId, typeId) => {
+        try {
+            const response = await API.delete(`/users/${userId}/favourite-types/${typeId}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to remove favourite type',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getEbooksByType: async (typeId, params = {}) => {
+        try {
+            const queryParams = new URLSearchParams();
+            Object.keys(params).forEach(key => {
+                if (params[key] !== undefined && params[key] !== null) {
+                    queryParams.append(key, params[key]);
+                }
+            });
+
+            const url = `/types/${typeId}/ebooks${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch ebooks by type',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    addTypesToEbook: async (ebookId, typeIds) => {
+        try {
+            const response = await API.post(`/ebooks/${ebookId}/types`, { typeIds });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to add types to ebook',
+                error: error.response?.data || error.message
+            };
+        }
+    }
+};
+
 const apiUtils = {
     isAuthenticated: async () => {
         try {
@@ -793,4 +1010,4 @@ const apiUtils = {
 };
 
 export default API;
-export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, apiUtils };
+export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, apiUtils };

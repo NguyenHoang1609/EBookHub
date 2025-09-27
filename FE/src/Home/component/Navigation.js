@@ -90,9 +90,7 @@ function Navigation(props) {
         <div className="navigation-container">
             <div className="navigation-content">
                 <div className="left-section">
-                    <div
-                  
-                    className="logo-section">
+                    <div className="logo-section">
                         <img className="logo-image" src="https://placehold.co/115x38" />
                         <div className="logo-icon-container">
                             <img className="logo-icon" src="https://placehold.co/33x26" />

@@ -150,7 +150,7 @@ function Login({ onClose, onSwitchToRegister }) {
                         </button>
                     </form>
 
-                    <div className="divider">
+                    {/* <div className="divider">
                         <span className="divider-text">Hoặc đăng nhập với</span>
                     </div>
 
@@ -170,7 +170,7 @@ function Login({ onClose, onSwitchToRegister }) {
                             </svg>
                             Google
                         </button>
-                    </div>
+                    </div> */}
 
                     <div className="register-link">
                         Bạn chưa có tài khoản?

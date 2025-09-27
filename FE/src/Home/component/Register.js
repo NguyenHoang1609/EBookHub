@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { authAPI } from '../../Util/Api';
+import FavouriteTypeForm from './FavouriteTypeForm';
 import './Register.scss';
 
 function Register({ onClose, onSwitchToLogin }) {
@@ -14,6 +15,8 @@ function Register({ onClose, onSwitchToLogin }) {
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showFavouriteTypes, setShowFavouriteTypes] = useState(false);
+    const [registeredUser, setRegisteredUser] = useState(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -75,9 +78,12 @@ function Register({ onClose, onSwitchToLogin }) {
 
             if (result.success && result.data.EC === 0) {
                 console.log('Registration successful:', result.data);
-                onSwitchToLogin();
-                alert('Đăng ký thành công! Vui lòng đăng nhập.');
-                // onSwitchToLogin();
+
+                // Store registered user data for favourite types form
+                setRegisteredUser(result.data.DT);
+
+                // Show favourite types form instead of immediate redirect
+                setShowFavouriteTypes(true);
             } else {
                 setError(result.message || 'Đăng ký thất bại');
             }
@@ -96,6 +102,29 @@ function Register({ onClose, onSwitchToLogin }) {
     const toggleConfirmPasswordVisibility = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
+
+    const handleFavouriteTypesComplete = () => {
+        // After user completes favourite types selection, redirect to login
+        alert('Đăng ký thành công! Vui lòng đăng nhập.');
+        onSwitchToLogin();
+    };
+
+    const handleFavouriteTypesSkip = () => {
+        // User skipped favourite types selection, redirect to login
+        alert('Đăng ký thành công! Vui lòng đăng nhập.');
+        onSwitchToLogin();
+    };
+
+    // Show favourite types form if registration was successful
+    if (showFavouriteTypes && registeredUser) {
+        return (
+            <FavouriteTypeForm
+                userData={registeredUser}
+                onComplete={handleFavouriteTypesComplete}
+                onSkip={handleFavouriteTypesSkip}
+            />
+        );
+    }
 
     return (
         <div className="register-container">
@@ -122,7 +151,7 @@ function Register({ onClose, onSwitchToLogin }) {
                         </div>
                     )}
 
-                    <div className="register-form" onSubmit={handleSubmit}>
+                    <div className="register-form">
                         <div className="form-group">
                             <input
                                 type="text"
@@ -231,13 +260,13 @@ function Register({ onClose, onSwitchToLogin }) {
                                 opacity: loading ? 0.7 : 1,
                                 cursor: loading ? 'not-allowed' : 'pointer'
                             }}
-                            onClick={(e) => handleSubmit(e)}
+                            onClick={handleSubmit}
                         >
                             {loading ? 'Đang đăng ký...' : 'Đăng ký'}
                         </button>
                     </div>
 
-                    <div className="divider">
+                    {/* <div className="divider">
                         <span className="divider-text">Hoặc đăng ký với</span>
                     </div>
 
@@ -257,12 +286,12 @@ function Register({ onClose, onSwitchToLogin }) {
                             </svg>
                             Google
                         </button>
-                    </div>
+                    </div> */}
 
-                    <div className="terms-text">
+                    {/* <div className="terms-text">
                         Bằng việc nhấn "Đăng ký", bạn đã đọc và đồng ý với điều<br />
                         kiện và điều khoản của Waka
-                    </div>
+                    </div> */}
 
                     <div className="login-link">
                         Bạn đã có tài khoản?

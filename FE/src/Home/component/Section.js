@@ -13,7 +13,8 @@ function Section(props) {
         apiType = "getTopBooks",
         apiParams = {},
         showRanking = true,
-        showMemberBadge = true
+        showMemberBadge = true,
+        userId = null // Add userId prop for favourite books
     } = props;
 
     const [ebooks, setEbooks] = useState([]);
@@ -22,7 +23,7 @@ function Section(props) {
     const navigate = useNavigate();
     useEffect(() => {
         fetchEbooks();
-    }, [apiType, apiParams]);
+    }, [apiType, apiParams, userId]);
 
     console.log(ebooks);
 
@@ -39,6 +40,14 @@ function Section(props) {
                     break;
                 case 'getTopBooks':
                     result = await ebookAPI.getTopBooks(apiParams.limit || 10);
+                    break;
+                case 'getFavouriteBooks':
+                    if (!userId) {
+                        setError('User ID is required for favourite books');
+                        setEbooks([]);
+                        return;
+                    }
+                    result = await ebookAPI.getFavouriteBooks(userId, apiParams.limit || 10);
                     break;
                 default:
                     result = await ebookAPI.getTopBooks(10);

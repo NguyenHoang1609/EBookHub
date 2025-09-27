@@ -322,6 +322,12 @@ const getAllEbooks = async (queryParams) => {
                     model: db.User,
                     as: 'author',
                     attributes: ['id', 'email', 'name']
+                },
+                {
+                    model: db.Type,
+                    as: 'types',
+                    through: { attributes: [] },
+                    attributes: ['typeId', 'name', 'description']
                 }
             ],
 
@@ -369,6 +375,12 @@ const getEbookById = async (ebookId, includePages = false) => {
                 model: db.User,
                 as: 'author',
                 attributes: ['id', 'email', 'name']
+            },
+            {
+                model: db.Type,
+                as: 'types',
+                through: { attributes: [] },
+                attributes: ['typeId', 'name', 'description']
             }
         ];
 
@@ -592,6 +604,12 @@ const getTopBooks = async (limit = 10) => {
                     model: db.User,
                     as: 'author',
                     attributes: ['id', 'email', 'name']
+                },
+                {
+                    model: db.Type,
+                    as: 'types',
+                    through: { attributes: [] },
+                    attributes: ['typeId', 'name', 'description']
                 }
             ],
             order: [['viewCount', 'DESC']],
@@ -617,6 +635,94 @@ const getTopBooks = async (limit = 10) => {
     }
 };
 
+const getFavouriteBooks = async (userId, limit = 10) => {
+    try {
+        if (!userId) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'User ID is required!'
+            };
+        }
+
+        // First, get user's favourite types
+        const userFavouriteTypes = await db.UserFavouriteType.findAll({
+            where: { userId: parseInt(userId) },
+            include: [
+                {
+                    model: db.Type,
+                    as: 'type',
+                    attributes: ['typeId', 'name']
+                }
+            ]
+        });
+
+        if (userFavouriteTypes.length === 0) {
+            return {
+                DT: {
+                    ebooks: [],
+                    totalItems: 0,
+                    message: 'No favourite types found for user'
+                },
+                EC: 0,
+                EM: 'No favourite types found for user!'
+            };
+        }
+
+        const favouriteTypeIds = userFavouriteTypes.map(uf => uf.typeId);
+
+        // Get ebooks that match user's favourite types
+        const ebooks = await db.Ebook.findAll({
+            where: {
+                status: 'published'
+            },
+            include: [
+                {
+                    model: db.User,
+                    as: 'author',
+                    attributes: ['id', 'email', 'name']
+                },
+                {
+                    model: db.Type,
+                    as: 'types',
+                    through: { attributes: [] },
+                    where: {
+                        typeId: {
+                            [Op.in]: favouriteTypeIds
+                        }
+                    },
+                    attributes: ['typeId', 'name', 'description'],
+                    required: true
+                }
+            ],
+            order: [['viewCount', 'DESC']],
+            limit: parseInt(limit),
+            distinct: true
+        });
+
+        return {
+            DT: {
+                ebooks: ebooks,
+                totalItems: ebooks.length,
+                favouriteTypes: userFavouriteTypes.map(uf => ({
+                    typeId: uf.type.typeId,
+                    name: uf.type.name
+                }))
+            },
+            EC: 0,
+            EM: 'Favourite books retrieved successfully!'
+        };
+
+    } catch (error) {
+        console.log('Get favourite books error:', error);
+        return {
+            DT: '',
+            EC: -1,
+            EM: 'Failed to retrieve favourite books!'
+        };
+    }
+};
+
 export default {
     createEbook,
     uploadEbook,
@@ -625,5 +731,6 @@ export default {
     updateEbook,
     deleteEbook,
     getEbookStats,
-    getTopBooks
+    getTopBooks,
+    getFavouriteBooks
 };

@@ -9,6 +9,7 @@ const SideBar = ({ onNavigation, activeSection }) => {
     const allNavItems = [
         { id: 'dashboard', label: 'Dashboard', icon: '/Iconly/Bold/Home.svg', roles: [1] }, // Admin only
         { id: 'book', label: 'Book', icon: '/Iconly/Bold/Edit-Square.svg', roles: [1, 2] }, // Admin and Author
+        { id: 'type', label: 'Types', icon: '/Iconly/Bold/Category.svg', roles: [1] }, // Admin only
         { id: 'media', label: 'Media', icon: '/Iconly/Bold/Image.svg', roles: [1] }, // Admin only
         { id: 'pages', label: 'Pages', icon: '/Iconly/Bold/Document.svg', roles: [1] }, // Admin only
         { id: 'comment', label: 'Comments', icon: '/Iconly/Bold/Chat.svg', badge: 1, roles: [1] }, // Admin only

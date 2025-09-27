@@ -4,6 +4,7 @@ import SideBar from './SideBar';
 import ManageUser from './components/user/ManageUser';
 import ManageEbook from './components/book/ManageEbook';
 import ManageComment from './components/comment/ManageComment';
+import ManageType from './components/type/ManageType';
 
 const Dashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -18,6 +19,8 @@ const Dashboard = () => {
                 return <ManageUser />;
             case 'book':
                 return <ManageEbook />;
+            case 'type':
+                return <ManageType />;
             case 'comment':
                 return <ManageComment />;
             case 'dashboard':

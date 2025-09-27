@@ -15,6 +15,9 @@ const GroupRole = require('./GroupRole');
 const AuthorViolation = require('./AuthorViolation');
 const Category = require('./Category');
 const Comment = require('./Comment');
+const Type = require('./Type');
+const EbookType = require('./EbookType');
+const UserFavouriteType = require('./UserFavouriteType');
 
 // Define associations
 // User associations
@@ -27,6 +30,14 @@ User.hasMany(LibraryWishlist, { foreignKey: 'userId', as: 'libraryItems' });
 User.hasMany(SavedPage, { foreignKey: 'userId', as: 'savedPages' });
 User.hasMany(Comment, { foreignKey: 'userId', as: 'comments' });
 User.belongsTo(Group, { foreignKey: 'groupId', as: 'group' });
+
+// User-Type many-to-many associations (favourite types)
+User.belongsToMany(Type, {
+    through: UserFavouriteType,
+    foreignKey: 'userId',
+    otherKey: 'typeId',
+    as: 'favouriteTypes'
+});
 
 // User notification associations (sender/receiver)
 User.hasMany(Notification, { foreignKey: 'senderId', as: 'sentNotifications' });
@@ -43,6 +54,14 @@ Ebook.hasMany(LibraryWishlist, { foreignKey: 'ebookId', as: 'libraryItems' });
 Ebook.hasMany(AuthorViolation, { foreignKey: 'ebookId', as: 'violations' });
 Ebook.hasMany(Category, { foreignKey: 'ebookId', as: 'categories' });
 Ebook.hasMany(Comment, { foreignKey: 'ebookId', as: 'comments' });
+
+// Ebook-Type many-to-many associations
+Ebook.belongsToMany(Type, {
+    through: EbookType,
+    foreignKey: 'ebookId',
+    otherKey: 'typeId',
+    as: 'types'
+});
 
 // Page associations
 Page.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
@@ -101,6 +120,28 @@ Comment.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
 Comment.belongsTo(Comment, { foreignKey: 'parentCommentId', as: 'parentComment' });
 Comment.hasMany(Comment, { foreignKey: 'parentCommentId', as: 'replies' });
 
+// Type associations
+Type.belongsToMany(Ebook, {
+    through: EbookType,
+    foreignKey: 'typeId',
+    otherKey: 'ebookId',
+    as: 'ebooks'
+});
+
+Type.belongsToMany(User, {
+    through: UserFavouriteType,
+    foreignKey: 'typeId',
+    otherKey: 'userId',
+    as: 'favouriteUsers'
+});
+
+// Junction table associations
+EbookType.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
+EbookType.belongsTo(Type, { foreignKey: 'typeId', as: 'type' });
+
+UserFavouriteType.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+UserFavouriteType.belongsTo(Type, { foreignKey: 'typeId', as: 'type' });
+
 // Export all models and sequelize instance
 module.exports = {
     sequelize,
@@ -116,5 +157,8 @@ module.exports = {
     Role,
     GroupRole,
     AuthorViolation,
-    Comment
+    Comment,
+    Type,
+    EbookType,
+    UserFavouriteType
 };

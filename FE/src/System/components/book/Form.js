@@ -31,14 +31,15 @@ import {
     Image as ImageIcon,
     Check as CheckIcon
 } from '@mui/icons-material';
-import { ebookAPI, userAPI } from '../../../Util/Api';
+import { ebookAPI, userAPI, typeAPI } from '../../../Util/Api';
 
 const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     const [formData, setFormData] = useState({
         authorId: '',
         title: '',
         description: '',
-        status: 'draft'
+        status: 'draft',
+        typeIds: []
     });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
@@ -50,18 +51,22 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     const [selectedCoverImage, setSelectedCoverImage] = useState(null);
     const [authors, setAuthors] = useState([]);
     const [loadingAuthors, setLoadingAuthors] = useState(false);
+    const [types, setTypes] = useState([]);
+    const [loadingTypes, setLoadingTypes] = useState(false);
     const [uploadMode, setUploadMode] = useState(false); // true for PDF upload, false for manual creation
 
     useEffect(() => {
         if (open) {
             fetchAuthors();
+            fetchTypes();
             if (ebook && !isViewMode) {
                 // Edit mode - populate form with ebook data
                 setFormData({
                     authorId: ebook.authorId || '',
                     title: ebook.title || '',
                     description: ebook.description || '',
-                    status: ebook.status || 'draft'
+                    status: ebook.status || 'draft',
+                    typeIds: ebook.types ? ebook.types.map(type => type.typeId) : []
                 });
                 setUploadMode(false);
             } else if (ebook && isViewMode) {
@@ -70,7 +75,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     authorId: ebook.authorId || '',
                     title: ebook.title || '',
                     description: ebook.description || '',
-                    status: ebook.status || 'draft'
+                    status: ebook.status || 'draft',
+                    typeIds: ebook.types ? ebook.types.map(type => type.typeId) : []
                 });
                 setUploadMode(false);
             } else {
@@ -79,7 +85,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     authorId: '',
                     title: '',
                     description: '',
-                    status: 'draft'
+                    status: 'draft',
+                    typeIds: []
                 });
                 setUploadMode(false);
             }
@@ -106,6 +113,20 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
         }
     };
 
+    const fetchTypes = async () => {
+        setLoadingTypes(true);
+        try {
+            const result = await typeAPI.getAllTypes({ pageSize: 100, isActive: true });
+            if (result.success && result.data?.DT?.types) {
+                setTypes(result.data.DT.types);
+            }
+        } catch (err) {
+            console.error('Failed to fetch types:', err);
+        } finally {
+            setLoadingTypes(false);
+        }
+    };
+
     const handleInputChange = (field) => (event) => {
         const value = event.target.value;
         setFormData(prev => ({
@@ -118,6 +139,22 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             setErrors(prev => ({
                 ...prev,
                 [field]: ''
+            }));
+        }
+    };
+
+    const handleTypeChange = (event) => {
+        const value = event.target.value;
+        setFormData(prev => ({
+            ...prev,
+            typeIds: typeof value === 'string' ? value.split(',').map(id => parseInt(id)) : value
+        }));
+
+        // Clear error for types
+        if (errors.typeIds) {
+            setErrors(prev => ({
+                ...prev,
+                typeIds: ''
             }));
         }
     };
@@ -167,6 +204,13 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             newErrors.title = 'Title is required';
         } else if (formData.title.trim().length < 3) {
             newErrors.title = 'Title must be at least 3 characters';
+        }
+
+        // Type validation
+        if (!formData.typeIds || formData.typeIds.length === 0) {
+            newErrors.typeIds = 'At least one type is required';
+        } else if (formData.typeIds.length > 5) {
+            newErrors.typeIds = 'Maximum 5 types allowed';
         }
 
         // PDF file validation for upload mode
@@ -248,9 +292,25 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             if (ebook && !isViewMode) {
                 // Update existing ebook
                 result = await ebookAPI.updateEbook(ebook.ebookId, submitData);
+
+                // Update types separately
+                if (result.success && formData.typeIds.length > 0) {
+                    const typeResult = await typeAPI.addTypesToEbook(ebook.ebookId, formData.typeIds);
+                    if (!typeResult.success) {
+                        console.warn('Failed to update types:', typeResult.message);
+                    }
+                }
             } else if (!ebook) {
                 // Create new ebook
                 result = await ebookAPI.createEbook(submitData);
+
+                // Add types to newly created ebook
+                if (result.success && result.data?.DT?.ebookId && formData.typeIds.length > 0) {
+                    const typeResult = await typeAPI.addTypesToEbook(result.data.DT.ebookId, formData.typeIds);
+                    if (!typeResult.success) {
+                        console.warn('Failed to add types to new ebook:', typeResult.message);
+                    }
+                }
             } else {
                 // View mode - no action needed
                 setLoading(false);
@@ -541,6 +601,48 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                 placeholder="Enter a brief description of the ebook"
                             />
                         </Grid>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth error={!!errors.typeIds}>
+                                <InputLabel>Types (1-5 required)</InputLabel>
+                                <Select
+                                    multiple
+                                    value={formData.typeIds}
+                                    onChange={handleTypeChange}
+                                    disabled={isViewMode || loadingTypes}
+                                    label="Types (1-5 required)"
+                                    renderValue={(selected) => (
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                            {selected.map((value) => {
+                                                const type = types.find(t => t.typeId === value);
+                                                return (
+                                                    <Chip
+                                                        key={value}
+                                                        label={type ? type.name : `Type ${value}`}
+                                                        size="small"
+                                                    />
+                                                );
+                                            })}
+                                        </Box>
+                                    )}
+                                >
+                                    {types.map((type) => (
+                                        <MenuItem key={type.typeId} value={type.typeId}>
+                                            {type.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                {errors.typeIds && (
+                                    <Typography color="error" variant="caption">
+                                        {errors.typeIds}
+                                    </Typography>
+                                )}
+                                {!loadingTypes && (
+                                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                                        Selected: {formData.typeIds.length}/5 types
+                                    </Typography>
+                                )}
+                            </FormControl>
+                        </Grid>
                     </Grid>
 
                     {/* Ebook Details (View Mode) */}
@@ -603,6 +705,24 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                         {formatDate(ebook.updatedAt)}
                                     </Typography>
                                 </Grid>
+                                {ebook.types && ebook.types.length > 0 && (
+                                    <Grid item xs={12}>
+                                        <Typography variant="subtitle2" color="text.secondary">
+                                            Types
+                                        </Typography>
+                                        <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                            {ebook.types.map((type) => (
+                                                <Chip
+                                                    key={type.typeId}
+                                                    label={type.name}
+                                                    color="primary"
+                                                    variant="outlined"
+                                                    size="small"
+                                                />
+                                            ))}
+                                        </Box>
+                                    </Grid>
+                                )}
                                 {ebook.coverImage && (
                                     <Grid item xs={12}>
                                         <Typography variant="subtitle2" color="text.secondary">

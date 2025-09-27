@@ -5,6 +5,7 @@ import pageController from '../controllers/pageController'
 import userController from '../controllers/userController'
 import ebookController from '../controllers/ebookController'
 import commentController from '../controllers/commentController'
+import typeController from '../controllers/typeController'
 import { uploadAvatar, handleUploadError } from '../middleware/upload'
 
 const router = express.Router();
@@ -37,6 +38,7 @@ router.post('/ebooks/upload', ebookController.uploadMultiple.fields([
 ]), ebookController.uploadEbook);
 router.get('/ebooks', ebookController.getAllEbooks);
 router.get('/ebooks/top', ebookController.getTopBooks);
+router.get('/ebooks/favourite/:userId', ebookController.getFavouriteBooks);
 router.get('/ebooks/stats', ebookController.getEbookStats);
 router.get('/ebooks/:ebookId', ebookController.getEbookById);
 router.put('/ebooks/:ebookId', ebookController.updateEbook);
@@ -63,6 +65,22 @@ router.get('/comments/statistics', commentController.getCommentStatistics);
 router.get('/comments/user/:userId', commentController.getCommentsByUser);
 router.put('/comments/:commentId/status', commentController.toggleCommentStatus);
 router.delete('/comments/bulk', commentController.bulkDeleteComments);
+
+// Type routes
+router.get('/types', typeController.getAllTypes);
+router.get('/types/:id', typeController.getTypeById);
+router.post('/types', typeController.createType);
+router.put('/types/:id', typeController.updateType);
+router.delete('/types/:id', typeController.deleteType);
+
+// User favourite types routes
+router.get('/users/:userId/favourite-types', typeController.getUserFavouriteTypes);
+router.post('/users/:userId/favourite-types', typeController.addUserFavouriteType);
+router.delete('/users/:userId/favourite-types/:typeId', typeController.removeUserFavouriteType);
+
+// Ebook types routes
+router.get('/types/:typeId/ebooks', typeController.getEbooksByType);
+router.post('/ebooks/:ebookId/types', typeController.addTypesToEbook);
 
 
 

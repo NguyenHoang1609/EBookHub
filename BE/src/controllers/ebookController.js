@@ -335,6 +335,39 @@ const getTopBooks = async (req, res) => {
     }
 };
 
+const getFavouriteBooks = async (req, res) => {
+    try {
+        console.log('Get favourite books request received:', req.params, req.query);
+
+        const { userId } = req.params;
+        const { limit = 10 } = req.query;
+
+        if (!userId) {
+            return res.status(400).json({
+                DT: '',
+                EC: -1,
+                EM: 'User ID is required!'
+            });
+        }
+
+        const result = await ebookService.getFavouriteBooks(parseInt(userId), parseInt(limit));
+
+        if (result.EC === 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.log('Get favourite books controller error:', error);
+        return res.status(500).json({
+            DT: '',
+            EC: -1,
+            EM: 'Internal server error while fetching favourite books'
+        });
+    }
+};
+
 export default {
     createEbook,
     uploadEbook,
@@ -344,6 +377,7 @@ export default {
     deleteEbook,
     getEbookStats,
     getTopBooks,
+    getFavouriteBooks,
     upload: upload.single('pdfFile'),
     uploadMultiple: uploadMultiple
 };
