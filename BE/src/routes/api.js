@@ -6,6 +6,8 @@ import userController from '../controllers/userController'
 import ebookController from '../controllers/ebookController'
 import commentController from '../controllers/commentController'
 import typeController from '../controllers/typeController'
+import authorViolationController from '../controllers/author_violationController'
+import contentModerationController from '../controllers/contentModerationController'
 import { uploadAvatar, handleUploadError } from '../middleware/upload'
 
 const router = express.Router();
@@ -81,6 +83,29 @@ router.delete('/users/:userId/favourite-types/:typeId', typeController.removeUse
 // Ebook types routes
 router.get('/types/:typeId/ebooks', typeController.getEbooksByType);
 router.post('/ebooks/:ebookId/types', typeController.addTypesToEbook);
+
+// Author violation routes
+router.post('/violations', authorViolationController.createViolation);
+router.get('/violations', authorViolationController.getAllViolations);
+router.get('/violations/stats', authorViolationController.getViolationStats);
+router.get('/violations/:id', authorViolationController.getViolationById);
+router.put('/violations/:id/status', authorViolationController.updateViolationStatus);
+router.delete('/violations/:id', authorViolationController.deleteViolation);
+router.put('/ebooks/:ebookId/status', authorViolationController.updateEbookStatus);
+
+// Content moderation routes
+router.post('/moderation/words', contentModerationController.createModerationWord);
+router.get('/moderation/words', contentModerationController.getAllModerationWords);
+router.get('/moderation/words/stats', contentModerationController.getModerationStats);
+router.get('/moderation/words/:id', contentModerationController.getModerationWordById);
+router.put('/moderation/words/:id', contentModerationController.updateModerationWord);
+router.delete('/moderation/words/:id', contentModerationController.deleteModerationWord);
+router.delete('/moderation/words/bulk', contentModerationController.bulkDeleteModerationWords);
+
+// Content validation routes
+router.post('/moderation/validate', contentModerationController.validateContent);
+router.post('/moderation/validate/ebook/:ebookId', contentModerationController.validateEbookContent);
+router.post('/moderation/validate/all-ebooks', contentModerationController.validateAllEbooks);
 
 
 

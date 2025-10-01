@@ -5,6 +5,8 @@ import ManageUser from './components/user/ManageUser';
 import ManageEbook from './components/book/ManageEbook';
 import ManageComment from './components/comment/ManageComment';
 import ManageType from './components/type/ManageType';
+import ManageViolation from './components/violation/ManageViolation';
+import ManageModeration from './components/moderation/ManageModeration';
 
 const Dashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
@@ -23,6 +25,10 @@ const Dashboard = () => {
                 return <ManageType />;
             case 'comment':
                 return <ManageComment />;
+            case 'violation':
+                return <ManageViolation />;
+            case 'moderation':
+                return <ManageModeration />;
             case 'dashboard':
             default:
                 return (

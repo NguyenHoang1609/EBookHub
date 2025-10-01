@@ -46,7 +46,7 @@ const Ebook = sequelize.define('Ebook', {
         }
     },
     status: {
-        type: DataTypes.ENUM('draft', 'published', 'archived', 'pending_review'),
+        type: DataTypes.ENUM('draft', 'published', 'archived', 'pending_review', 'blocked'),
         allowNull: false,
         defaultValue: 'draft'
     },

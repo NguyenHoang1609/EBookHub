@@ -37,7 +37,7 @@ module.exports = {
                 defaultValue: 0
             },
             status: {
-                type: Sequelize.ENUM('draft', 'published', 'archived', 'pending_review'),
+                type: Sequelize.ENUM('draft', 'published', 'archived', 'pending_review', 'blocked'),
                 allowNull: false,
                 defaultValue: 'draft'
             },

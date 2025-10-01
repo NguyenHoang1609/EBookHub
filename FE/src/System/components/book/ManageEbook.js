@@ -70,8 +70,22 @@ const ManageEbook = () => {
     const [stats, setStats] = useState(null);
     const [statsLoading, setStatsLoading] = useState(false);
     const [statsError, setStatsError] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
+        // Get current user data and role from localStorage
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                setCurrentUser(user);
+                setUserRole(user.groupId); // groupId corresponds to role (1=Admin, 2=Author, 3=User)
+            } catch (error) {
+                console.error('Error parsing user data from localStorage:', error);
+            }
+        }
+
         fetchEbooks();
         fetchStats();
         fetchAuthors();
@@ -82,19 +96,22 @@ const ManageEbook = () => {
             fetchEbooks();
         }, 500);
         return () => clearTimeout(timer);
-    }, [searchTerm, statusFilter, authorFilter, page, rowsPerPage]);
+    }, [searchTerm, statusFilter, authorFilter, page, rowsPerPage, userRole, currentUser]);
 
     const fetchEbooks = async () => {
         setLoading(true);
         setError('');
 
         try {
+            // If user role is 2 (Author), only fetch their own ebooks
+            const authorIdFilter = userRole === 2 ? currentUser?.id : (authorFilter || undefined);
+
             const result = await ebookAPI.getAllEbooks({
                 page: page + 1,
                 limit: rowsPerPage,
                 search: searchTerm || undefined,
                 status: statusFilter || undefined,
-                authorId: authorFilter || undefined
+                authorId: authorIdFilter
             });
 
             if (result.success) {
@@ -115,7 +132,10 @@ const ManageEbook = () => {
         setStatsLoading(true);
         setStatsError('');
         try {
-            const result = await ebookAPI.getEbookStats();
+            // If user role is 2 (Author), only fetch their own ebook statistics
+            const authorIdFilter = userRole === 2 ? currentUser?.id : null;
+
+            const result = await ebookAPI.getEbookStats(authorIdFilter);
             if (result.success) {
                 setStats(result.data.DT);
             } else {
@@ -276,7 +296,7 @@ const ManageEbook = () => {
                 {/* Header */}
                 <Box className="header-section">
                     <Typography variant="h4" component="h1" className="page-title">
-                        Ebook Management
+                        {userRole === 2 ? 'My Ebooks' : 'Ebook Management'}
                     </Typography>
                     <Box className="header-actions">
                         <Button
@@ -299,7 +319,7 @@ const ManageEbook = () => {
                         </Alert>
                     )}
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} md={3}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <Card className="stat-card stat-total" elevation={1}>
                                 <CardContent>
                                     <Box className="stat-content">
@@ -316,7 +336,7 @@ const ManageEbook = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <Card className="stat-card stat-published" elevation={1}>
                                 <CardContent>
                                     <Box className="stat-content">
@@ -333,7 +353,7 @@ const ManageEbook = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <Card className="stat-card stat-views" elevation={1}>
                                 <CardContent>
                                     <Box className="stat-content">
@@ -350,23 +370,7 @@ const ManageEbook = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Card className="stat-card stat-pages" elevation={1}>
-                                <CardContent>
-                                    <Box className="stat-content">
-                                        <Box className="stat-icon">
-                                            <PagesIcon />
-                                        </Box>
-                                        <Box>
-                                            <Typography className="stat-label">Total Pages</Typography>
-                                            <Typography className="stat-value">
-                                                {statsLoading ? <CircularProgress size={20} /> : (stats?.totalPages ?? 0)}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        </Grid>
+
                     </Grid>
                 </Box>
 
@@ -406,24 +410,27 @@ const ManageEbook = () => {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <FormControl fullWidth>
-                                <InputLabel>Author</InputLabel>
-                                <Select
-                                    value={authorFilter}
-                                    onChange={handleAuthorFilterChange}
-                                    label="Author"
-                                >
-                                    <MenuItem value="">All Authors</MenuItem>
-                                    {authors.map((author) => (
-                                        <MenuItem key={author.id} value={author.id}>
-                                            {author.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} md={2}>
+                        {/* Only show author filter for non-Author users (role !== 2) */}
+                        {userRole !== 2 && (
+                            <Grid item xs={12} sm={6} md={3}>
+                                <FormControl fullWidth>
+                                    <InputLabel>Author</InputLabel>
+                                    <Select
+                                        value={authorFilter}
+                                        onChange={handleAuthorFilterChange}
+                                        label="Author"
+                                    >
+                                        <MenuItem value="">All Authors</MenuItem>
+                                        {authors.map((author) => (
+                                            <MenuItem key={author.id} value={author.id}>
+                                                {author.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        )}
+                        <Grid item xs={12} md={userRole === 2 ? 5 : 2}>
                             <IconButton onClick={() => { fetchEbooks(); fetchStats(); }} disabled={loading || statsLoading}>
                                 <RefreshIcon />
                             </IconButton>

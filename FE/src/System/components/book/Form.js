@@ -31,7 +31,7 @@ import {
     Image as ImageIcon,
     Check as CheckIcon
 } from '@mui/icons-material';
-import { ebookAPI, userAPI, typeAPI } from '../../../Util/Api';
+import { ebookAPI, userAPI, typeAPI, contentModerationAPI } from '../../../Util/Api';
 
 const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     const [formData, setFormData] = useState({
@@ -54,9 +54,25 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     const [types, setTypes] = useState([]);
     const [loadingTypes, setLoadingTypes] = useState(false);
     const [uploadMode, setUploadMode] = useState(false); // true for PDF upload, false for manual creation
+    const [currentUser, setCurrentUser] = useState(null);
+    const [userRole, setUserRole] = useState(null);
+    const [validatingContent, setValidatingContent] = useState(false);
+    const [contentValidationResult, setContentValidationResult] = useState(null);
 
     useEffect(() => {
         if (open) {
+            // Get current user data and role from localStorage
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    setCurrentUser(user);
+                    setUserRole(user.groupId); // groupId corresponds to role (1=Admin, 2=Author, 3=User)
+                } catch (error) {
+                    console.error('Error parsing user data from localStorage:', error);
+                }
+            }
+
             fetchAuthors();
             fetchTypes();
             if (ebook && !isViewMode) {
@@ -96,8 +112,20 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             setSelectedFile(null);
             setSelectedCoverImage(null);
             setUploadProgress(0);
+            setValidatingContent(false);
+            setContentValidationResult(null);
         }
     }, [ebook, isViewMode, open]);
+
+    // Set authorId for role 2 users when creating new ebook
+    useEffect(() => {
+        if (userRole === 2 && currentUser && !ebook && !isViewMode && open) {
+            setFormData(prev => ({
+                ...prev,
+                authorId: currentUser.id
+            }));
+        }
+    }, [userRole, currentUser, ebook, isViewMode, open]);
 
     const fetchAuthors = async () => {
         setLoadingAuthors(true);
@@ -194,8 +222,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     const validateForm = () => {
         const newErrors = {};
 
-        // Author validation
-        if (!formData.authorId) {
+        // Author validation (skip for role 2 users as they can't change author)
+        if (userRole !== 2 && !formData.authorId) {
             newErrors.authorId = 'Author is required';
         }
 
@@ -236,6 +264,35 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
         }
     };
 
+    const validateEbookContent = async (ebookId) => {
+        setValidatingContent(true);
+        setContentValidationResult(null);
+
+        try {
+            const result = await contentModerationAPI.validateEbookContent(ebookId);
+
+            if (result.success) {
+                setContentValidationResult(result.data.DT);
+
+                if (!result.data.DT.isValid) {
+                    setError(`Content validation failed: ${result.data.DT.violations.length} inappropriate words found. Ebook has been blocked.`);
+                    return false;
+                } else {
+                    setSuccess('Content validation passed! Ebook is safe for publication.');
+                    return true;
+                }
+            } else {
+                setError('Content validation failed: ' + result.message);
+                return false;
+            }
+        } catch (err) {
+            setError('Content validation failed: ' + err.message);
+            return false;
+        } finally {
+            setValidatingContent(false);
+        }
+    };
+
     const handleUpload = async () => {
         if (!selectedFile) return;
 
@@ -260,9 +317,26 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             if (result.success) {
                 setSuccess(result.message || 'Ebook uploaded and processed successfully!');
                 setUploadProgress(100);
-                setTimeout(() => {
-                    onClose(true); // Refresh the ebook list
-                }, 2000);
+
+                // Get the ebook ID from the result
+                const uploadedEbookId = result.data?.DT?.ebook?.ebookId;
+
+                if (uploadedEbookId) {
+                    // Validate content after successful upload
+                    setTimeout(async () => {
+                        const isValid = await validateEbookContent(uploadedEbookId);
+
+                        if (isValid) {
+                            setTimeout(() => {
+                                onClose(true); // Refresh the ebook list
+                            }, 2000);
+                        }
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        onClose(true); // Refresh the ebook list
+                    }, 2000);
+                }
             } else {
                 setError(result.message || 'Upload failed');
                 setUploadProgress(0);
@@ -333,7 +407,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     };
 
     const handleClose = () => {
-        if (!loading && !uploading) {
+        if (!loading && !uploading && !validatingContent) {
             onClose();
         }
     };
@@ -394,6 +468,16 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                         </Box>
                     )}
 
+                    {/* Content Validation Progress */}
+                    {validatingContent && (
+                        <Box sx={{ mb: 3 }}>
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                Validating content for inappropriate material...
+                            </Typography>
+                            <LinearProgress />
+                        </Box>
+                    )}
+
                     {/* Alerts */}
                     {error && (
                         <Alert severity="error" onClose={() => setError('')} sx={{ mb: 2 }}>
@@ -406,6 +490,81 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                         </Alert>
                     )}
 
+                    {/* Content Validation Results */}
+                    {contentValidationResult && (
+                        <Box sx={{ mb: 3 }}>
+                            <Typography variant="h6" sx={{ mb: 2, color: 'primary.main' }}>
+                                Content Validation Results
+                            </Typography>
+
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="subtitle2" color="text.secondary">
+                                        Validation Status
+                                    </Typography>
+                                    <Chip
+                                        icon={contentValidationResult.isValid ? <CheckIcon /> : <CancelIcon />}
+                                        label={contentValidationResult.isValid ? 'PASSED' : 'FAILED'}
+                                        color={contentValidationResult.isValid ? 'success' : 'error'}
+                                        size="small"
+                                        sx={{ mt: 0.5 }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="subtitle2" color="text.secondary">
+                                        Violations Found
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ mt: 0.5 }}>
+                                        {contentValidationResult.violations?.length || 0} inappropriate words
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="subtitle2" color="text.secondary">
+                                        Severity Level
+                                    </Typography>
+                                    <Chip
+                                        label={contentValidationResult.severity?.toUpperCase() || 'LOW'}
+                                        color={contentValidationResult.severity === 'critical' ? 'error' :
+                                            contentValidationResult.severity === 'high' ? 'warning' :
+                                                contentValidationResult.severity === 'medium' ? 'info' : 'success'}
+                                        size="small"
+                                        sx={{ mt: 0.5 }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="subtitle2" color="text.secondary">
+                                        Total Pages Scanned
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ mt: 0.5 }}>
+                                        {contentValidationResult.totalPages || 0} pages
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+
+                            {/* Violations List */}
+                            {contentValidationResult.violations && contentValidationResult.violations.length > 0 && (
+                                <Box sx={{ mt: 2 }}>
+                                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                                        Detected Violations:
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                        {contentValidationResult.violations.map((violation, index) => (
+                                            <Chip
+                                                key={index}
+                                                label={`${violation.word} (${violation.severity})`}
+                                                color={violation.severity === 'critical' ? 'error' :
+                                                    violation.severity === 'high' ? 'warning' :
+                                                        violation.severity === 'medium' ? 'info' : 'default'}
+                                                size="small"
+                                                variant="outlined"
+                                            />
+                                        ))}
+                                    </Box>
+                                </Box>
+                            )}
+                        </Box>
+                    )}
+
                     {/* Creation Mode Toggle */}
                     {!ebook && !isViewMode && (
                         <Box sx={{ mb: 3 }}>
@@ -413,7 +572,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                 How would you like to create the ebook?
                             </Typography>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={12}>
                                     <Paper
                                         sx={{
                                             p: 2,
@@ -432,25 +591,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                         </Typography>
                                     </Paper>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Paper
-                                        sx={{
-                                            p: 2,
-                                            cursor: 'pointer',
-                                            border: !uploadMode ? '2px solid' : '1px solid',
-                                            borderColor: !uploadMode ? 'primary.main' : 'divider'
-                                        }}
-                                        onClick={() => setUploadMode(false)}
-                                    >
-                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                            <BookIcon sx={{ mr: 1 }} />
-                                            <Typography variant="h6">Manual Creation</Typography>
-                                        </Box>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Create ebook manually and add pages later
-                                        </Typography>
-                                    </Paper>
-                                </Grid>
+
                             </Grid>
                         </Box>
                     )}
@@ -539,29 +680,32 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     </Typography>
 
                     <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth error={!!errors.authorId}>
-                                <InputLabel>Author</InputLabel>
-                                <Select
-                                    value={formData.authorId}
-                                    onChange={handleInputChange('authorId')}
-                                    disabled={isViewMode || loadingAuthors}
-                                    label="Author"
-                                >
-                                    {authors.map((author) => (
-                                        <MenuItem key={author.id} value={author.id}>
-                                            {author.name} ({author.email})
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                                {errors.authorId && (
-                                    <Typography color="error" variant="caption">
-                                        {errors.authorId}
-                                    </Typography>
-                                )}
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
+                        {/* Only show author selection for non-Author users (role !== 2) */}
+                        {userRole !== 2 && (
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth error={!!errors.authorId}>
+                                    <InputLabel>Author</InputLabel>
+                                    <Select
+                                        value={formData.authorId}
+                                        onChange={handleInputChange('authorId')}
+                                        disabled={isViewMode || loadingAuthors}
+                                        label="Author"
+                                    >
+                                        {authors.map((author) => (
+                                            <MenuItem key={author.id} value={author.id}>
+                                                {author.name} ({author.email})
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {errors.authorId && (
+                                        <Typography color="error" variant="caption">
+                                            {errors.authorId}
+                                        </Typography>
+                                    )}
+                                </FormControl>
+                            </Grid>
+                        )}
+                        <Grid item xs={12} sm={userRole === 2 ? 12 : 6}>
                             <FormControl fullWidth>
                                 <InputLabel>Status</InputLabel>
                                 <Select
@@ -782,17 +926,17 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             </DialogContent>
 
             <DialogActions>
-                <Button onClick={handleClose} disabled={loading || uploading}>
+                <Button onClick={handleClose} disabled={loading || uploading || validatingContent}>
                     {isViewMode ? 'Close' : 'Cancel'}
                 </Button>
                 {!isViewMode && (
                     <Button
                         onClick={handleSubmit}
                         variant="contained"
-                        disabled={loading || uploading}
-                        startIcon={(loading || uploading) ? <CircularProgress size={20} /> : null}
+                        disabled={loading || uploading || validatingContent}
+                        startIcon={(loading || uploading || validatingContent) ? <CircularProgress size={20} /> : null}
                     >
-                        {uploading ? 'Uploading...' : loading ? 'Saving...' :
+                        {uploading ? 'Uploading...' : validatingContent ? 'Validating Content...' : loading ? 'Saving...' :
                             (uploadMode && !ebook ? 'Upload & Process' :
                                 ebook ? 'Update Ebook' : 'Create Ebook')}
                     </Button>

@@ -13,6 +13,7 @@ const Group = require('./Group');
 const Role = require('./Role');
 const GroupRole = require('./GroupRole');
 const AuthorViolation = require('./AuthorViolation');
+const ContentModeration = require('./ContentModeration');
 const Category = require('./Category');
 const Comment = require('./Comment');
 const Type = require('./Type');
@@ -88,6 +89,10 @@ AuthorViolation.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
 AuthorViolation.belongsTo(User, { foreignKey: 'reportedBy', as: 'reporter' });
 AuthorViolation.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
 
+// ContentModeration associations
+ContentModeration.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+ContentModeration.belongsTo(User, { foreignKey: 'updatedBy', as: 'updater' });
+
 // LibraryWishlist associations
 LibraryWishlist.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 LibraryWishlist.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
@@ -157,6 +162,7 @@ module.exports = {
     Role,
     GroupRole,
     AuthorViolation,
+    ContentModeration,
     Comment,
     Type,
     EbookType,

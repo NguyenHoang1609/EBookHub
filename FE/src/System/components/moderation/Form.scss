@@ -1,0 +1,535 @@
+// Variables
+$primary-color   : #1976d2;
+$secondary-color : #dc004e;
+$success-color   : #2e7d32;
+$warning-color   : #ed6c02;
+$error-color     : #d32f2f;
+$info-color      : #0288d1;
+$text-primary    : #333333;
+$text-secondary  : #666666;
+$background-light: #f8f9fa;
+$border-color    : #e0e0e0;
+$border-radius   : 8px;
+$box-shadow      : 0 4px 16px rgba(0, 0, 0, 0.1);
+$transition      : all 0.3s ease;
+
+// Mixins
+@mixin flex-center {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+}
+
+@mixin flex-between {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+}
+
+// Dialog styles
+.moderation-form-dialog {
+    .MuiDialog-paper {
+        border-radius: 12px;
+        box-shadow   : $box-shadow;
+        max-height   : 90vh;
+    }
+
+    // Dialog title
+    .dialog-title {
+        background   : linear-gradient(135deg, $primary-color 0%, lighten($primary-color, 20%) 100%);
+        color        : white;
+        padding      : 20px 24px;
+        border-radius: 12px 12px 0 0;
+
+        .MuiTypography-root {
+            color      : white;
+            font-weight: 600;
+        }
+
+        .MuiSvgIcon-root {
+            color: white;
+        }
+    }
+
+    // Dialog content
+    .dialog-content {
+        padding   : 24px;
+        background: white;
+
+        .alert {
+            margin-bottom: 16px;
+            border-radius: $border-radius;
+        }
+
+        // Form fields
+        .form-field {
+            .MuiOutlinedInput-root {
+                border-radius: $border-radius;
+                transition   : $transition;
+
+                &:hover {
+                    .MuiOutlinedInput-notchedOutline {
+                        border-color: $primary-color;
+                    }
+                }
+
+                &.Mui-focused {
+                    .MuiOutlinedInput-notchedOutline {
+                        border-color: $primary-color;
+                        border-width: 2px;
+                    }
+                }
+            }
+
+            .MuiInputLabel-root {
+                &.Mui-focused {
+                    color: $primary-color;
+                }
+            }
+
+            .MuiFormHelperText-root {
+                &.Mui-error {
+                    color: $error-color;
+                }
+            }
+        }
+
+        // Select fields
+        .MuiFormControl-root {
+            .MuiOutlinedInput-root {
+                border-radius: $border-radius;
+            }
+
+            .MuiInputLabel-root {
+                &.Mui-focused {
+                    color: $primary-color;
+                }
+            }
+        }
+
+        // Switch component
+        .MuiFormControlLabel-root {
+            .MuiSwitch-root {
+                .MuiSwitch-switchBase {
+                    &.Mui-checked {
+                        color: $primary-color;
+
+                        +.MuiSwitch-track {
+                            background-color: $primary-color;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Preview section
+        .MuiDivider-root {
+            border-color: $border-color;
+            margin      : 24px 0;
+        }
+
+        // Preview box
+        .MuiBox-root {
+            &.preview-box {
+                background   : $background-light;
+                border       : 1px solid $border-color;
+                border-radius: $border-radius;
+                padding      : 16px;
+                margin-bottom: 16px;
+
+                .MuiChip-root {
+                    border-radius: 4px;
+                    font-weight  : 500;
+                }
+            }
+
+            &.info-box {
+                background   : lighten($info-color, 45%);
+                border       : 1px solid $info-color;
+                border-radius: $border-radius;
+                padding      : 16px;
+
+                .MuiTypography-root {
+                    color      : darken($info-color, 20%);
+                    line-height: 1.6;
+                }
+            }
+        }
+
+        // Typography
+        .MuiTypography-h6 {
+            color        : $primary-color;
+            font-weight  : 600;
+            margin-bottom: 16px;
+        }
+
+        .MuiTypography-body2 {
+            color: $text-secondary;
+        }
+    }
+
+    // Dialog actions
+    .dialog-actions {
+        padding      : 16px 24px;
+        background   : $background-light;
+        border-radius: 0 0 12px 12px;
+        border-top   : 1px solid $border-color;
+
+        .MuiButton-root {
+            border-radius : $border-radius;
+            text-transform: none;
+            font-weight   : 500;
+            padding       : 8px 24px;
+
+            &.MuiButton-contained {
+                background: $primary-color;
+                box-shadow: 0 2px 8px rgba($primary-color, 0.3);
+
+                &:hover {
+                    background: darken($primary-color, 10%);
+                    box-shadow: 0 4px 12px rgba($primary-color, 0.4);
+                }
+
+                &:disabled {
+                    background: lighten($primary-color, 30%);
+                    color     : white;
+                }
+            }
+
+            &.MuiButton-outlined {
+                border-color: $border-color;
+                color       : $text-primary;
+
+                &:hover {
+                    border-color: $primary-color;
+                    background  : lighten($primary-color, 45%);
+                }
+            }
+        }
+    }
+}
+
+// Chip variants
+.MuiChip-root {
+    &.severity-critical {
+        background-color: $error-color;
+        color           : white;
+    }
+
+    &.severity-high {
+        background-color: $warning-color;
+        color           : white;
+    }
+
+    &.severity-medium {
+        background-color: $info-color;
+        color           : white;
+    }
+
+    &.severity-low {
+        background-color: $success-color;
+        color           : white;
+    }
+
+    &.category-profanity {
+        background-color: $error-color;
+        color           : white;
+    }
+
+    &.category-violence {
+        background-color: $warning-color;
+        color           : white;
+    }
+
+    &.category-hate_speech {
+        background-color: $error-color;
+        color           : white;
+    }
+
+    &.category-sexual {
+        background-color: $warning-color;
+        color           : white;
+    }
+
+    &.category-spam {
+        background-color: $info-color;
+        color           : white;
+    }
+
+    &.category-political {
+        background-color: $text-secondary;
+        color           : white;
+    }
+
+    &.category-religious {
+        background-color: $text-secondary;
+        color           : white;
+    }
+
+    &.category-other {
+        background-color: $border-color;
+        color           : $text-primary;
+    }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .moderation-form-dialog {
+        .MuiDialog-paper {
+            margin    : 16px;
+            max-height: calc(100vh - 32px);
+        }
+
+        .dialog-title {
+            padding: 16px 20px;
+
+            .MuiTypography-h5 {
+                font-size: 1.25rem;
+            }
+        }
+
+        .dialog-content {
+            padding: 20px;
+        }
+
+        .dialog-actions {
+            padding       : 12px 20px;
+            flex-direction: column;
+            gap           : 8px;
+
+            .MuiButton-root {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .moderation-form-dialog {
+        .MuiDialog-paper {
+            margin    : 8px;
+            max-height: calc(100vh - 16px);
+        }
+
+        .dialog-title {
+            padding: 12px 16px;
+
+            .MuiTypography-h5 {
+                font-size: 1.1rem;
+            }
+        }
+
+        .dialog-content {
+            padding: 16px;
+        }
+
+        .dialog-actions {
+            padding: 8px 16px;
+        }
+    }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+    .moderation-form-dialog {
+        .MuiDialog-paper {
+            background: #2d2d30;
+            color     : #ffffff;
+        }
+
+        .dialog-title {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+        }
+
+        .dialog-content {
+            background: #2d2d30;
+
+            .MuiTextField-root {
+                .MuiOutlinedInput-root {
+                    background: #383838;
+                    color     : #ffffff;
+
+                    .MuiOutlinedInput-notchedOutline {
+                        border-color: #505050;
+                    }
+
+                    &:hover .MuiOutlinedInput-notchedOutline {
+                        border-color: #64b5f6;
+                    }
+
+                    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+                        border-color: #64b5f6;
+                    }
+                }
+
+                .MuiInputLabel-root {
+                    color: #b0b0b0;
+
+                    &.Mui-focused {
+                        color: #64b5f6;
+                    }
+                }
+
+                .MuiFormHelperText-root {
+                    color: #b0b0b0;
+
+                    &.Mui-error {
+                        color: #f44336;
+                    }
+                }
+            }
+
+            .MuiFormControl-root {
+                .MuiOutlinedInput-root {
+                    background: #383838;
+                    color     : #ffffff;
+
+                    .MuiOutlinedInput-notchedOutline {
+                        border-color: #505050;
+                    }
+
+                    &:hover .MuiOutlinedInput-notchedOutline {
+                        border-color: #64b5f6;
+                    }
+
+                    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+                        border-color: #64b5f6;
+                    }
+                }
+
+                .MuiInputLabel-root {
+                    color: #b0b0b0;
+
+                    &.Mui-focused {
+                        color: #64b5f6;
+                    }
+                }
+            }
+
+            .MuiBox-root {
+                &.preview-box {
+                    background  : #383838;
+                    border-color: #505050;
+                }
+
+                &.info-box {
+                    background  : rgba(2, 136, 209, 0.2);
+                    border-color: #0288d1;
+                }
+            }
+
+            .MuiTypography-h6 {
+                color: #64b5f6;
+            }
+
+            .MuiTypography-body2 {
+                color: #b0b0b0;
+            }
+        }
+
+        .dialog-actions {
+            background      : #383838;
+            border-top-color: #505050;
+
+            .MuiButton-root {
+                &.MuiButton-outlined {
+                    border-color: #505050;
+                    color       : #ffffff;
+
+                    &:hover {
+                        border-color: #64b5f6;
+                        background  : rgba(100, 181, 246, 0.1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Animation keyframes
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity  : 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity  : 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+// Apply animations
+.moderation-form-dialog {
+    .MuiDialog-paper {
+        animation: slideInUp 0.3s ease-out;
+    }
+
+    .dialog-title {
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    .dialog-content {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .dialog-actions {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .MuiButton-root {
+        transition: $transition;
+
+        &:hover {
+            animation: pulse 0.3s ease-in-out;
+        }
+    }
+}
+
+// Focus states for accessibility
+.MuiButton-root:focus {
+    outline       : 2px solid $primary-color;
+    outline-offset: 2px;
+}
+
+.MuiTextField-root:focus-within {
+    outline       : 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius : $border-radius;
+}
+
+.MuiFormControl-root:focus-within {
+    outline       : 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius : $border-radius;
+}
+
+.MuiSwitch-root:focus {
+    outline       : 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius : 12px;
+}

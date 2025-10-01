@@ -42,6 +42,7 @@ function Section(props) {
                     result = await ebookAPI.getTopBooks(apiParams.limit || 10);
                     break;
                 case 'getFavouriteBooks':
+                    console.log('getFavouritebooks')
                     if (!userId) {
                         setError('User ID is required for favourite books');
                         setEbooks([]);

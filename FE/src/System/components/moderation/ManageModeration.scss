@@ -1,0 +1,512 @@
+// Variables
+$primary-color   : #1976d2;
+$secondary-color : #dc004e;
+$success-color   : #2e7d32;
+$warning-color   : #ed6c02;
+$error-color     : #d32f2f;
+$info-color      : #0288d1;
+$text-primary    : #333333;
+$text-secondary  : #666666;
+$background-light: #f8f9fa;
+$border-color    : #e0e0e0;
+$border-radius   : 8px;
+$box-shadow      : 0 2px 8px rgba(0, 0, 0, 0.1);
+$transition      : all 0.3s ease;
+
+// Mixins
+@mixin flex-center {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+}
+
+@mixin flex-between {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+}
+
+@mixin card-hover {
+    transition: $transition;
+    cursor    : pointer;
+
+    &:hover {
+        transform : translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+}
+
+// Main container
+.manage-moderation-container {
+    padding   : 24px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+    .manage-moderation-paper {
+        padding      : 24px;
+        border-radius: 12px;
+        box-shadow   : 0 8px 24px rgba(0, 0, 0, 0.12);
+        background   : white;
+    }
+
+    // Header section
+    .header-section {
+        @include flex-between;
+        margin-bottom : 24px;
+        padding-bottom: 16px;
+        border-bottom : 1px solid $border-color;
+
+        .header-content {
+            .page-title {
+                color      : $primary-color;
+                font-weight: 600;
+                margin     : 0 0 8px 0;
+                font-size  : 2rem;
+            }
+
+            .page-subtitle {
+                color    : $text-secondary;
+                margin   : 0;
+                font-size: 1rem;
+            }
+        }
+
+        .header-actions {
+            display    : flex;
+            gap        : 12px;
+            align-items: center;
+
+            .MuiButton-root {
+                border-radius : $border-radius;
+                text-transform: none;
+                font-weight   : 500;
+            }
+        }
+    }
+
+    // Alert styles
+    .alert {
+        margin-bottom: 16px;
+        border-radius: $border-radius;
+    }
+
+    // Stats section
+    .stats-section {
+        margin-bottom: 24px;
+
+        .stat-card {
+            border-radius: $border-radius;
+            @include card-hover;
+            height: 100%;
+
+            .stat-content {
+                @include flex-center;
+                gap    : 16px;
+                padding: 20px;
+
+                .stat-icon {
+                    width        : 48px;
+                    height       : 48px;
+                    border-radius: $border-radius;
+                    @include flex-center;
+                    background: linear-gradient(135deg, $primary-color 0%, lighten($primary-color, 20%) 100%);
+
+                    svg {
+                        font-size: 24px;
+                        color    : white;
+                    }
+                }
+
+                .stat-info {
+                    flex: 1;
+
+                    .stat-label {
+                        font-size    : 14px;
+                        color        : $text-secondary;
+                        margin-bottom: 4px;
+                        font-weight  : 500;
+                    }
+
+                    .stat-value {
+                        font-size  : 24px;
+                        font-weight: 700;
+                        color      : $text-primary;
+                        line-height: 1;
+                    }
+                }
+            }
+
+            // Stat card variants
+            &.stat-total .stat-icon {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            &.stat-active .stat-icon {
+                background: linear-gradient(135deg, $success-color 0%, lighten($success-color, 20%) 100%);
+            }
+
+            &.stat-inactive .stat-icon {
+                background: linear-gradient(135deg, $text-secondary 0%, lighten($text-secondary, 20%) 100%);
+            }
+
+            &.stat-critical .stat-icon {
+                background: linear-gradient(135deg, $error-color 0%, lighten($error-color, 20%) 100%);
+            }
+        }
+    }
+
+    // Search section
+    .search-section {
+        margin-bottom: 24px;
+        padding      : 20px;
+        background   : $background-light;
+        border-radius: $border-radius;
+        border       : 1px solid $border-color;
+
+        .search-field {
+            background   : white;
+            border-radius: $border-radius;
+
+            .MuiOutlinedInput-root {
+                border-radius: $border-radius;
+            }
+        }
+
+        .MuiFormControl-root {
+            .MuiOutlinedInput-root {
+                border-radius: $border-radius;
+            }
+        }
+    }
+
+    // Bulk actions
+    .bulk-actions {
+        @include flex-between;
+        padding      : 12px 16px;
+        background   : $background-light;
+        border-radius: $border-radius;
+        margin-bottom: 16px;
+        border       : 1px solid $border-color;
+
+        .MuiButton-root {
+            border-radius : $border-radius;
+            text-transform: none;
+        }
+    }
+
+    // Table container
+    .table-container {
+        border-radius: $border-radius;
+        border       : 1px solid $border-color;
+        margin-bottom: 16px;
+        overflow     : hidden;
+
+        .loading-container {
+            @include flex-center;
+            flex-direction: column;
+            padding       : 48px;
+            gap           : 16px;
+
+            .MuiCircularProgress-root {
+                color: $primary-color;
+            }
+        }
+
+        .MuiTableHead-root {
+            background: $background-light;
+
+            .MuiTableCell-head {
+                font-weight  : 600;
+                color        : $text-primary;
+                border-bottom: 2px solid $border-color;
+            }
+        }
+
+        .MuiTableBody-root {
+            .MuiTableRow-root {
+                transition: background-color 0.2s ease;
+
+                &:hover {
+                    background-color: lighten($background-light, 2%);
+                }
+
+                .word-text {
+                    font-weight: 500;
+                    color      : $text-primary;
+                }
+
+                .MuiTableCell-root {
+                    border-bottom-color: lighten($border-color, 5%);
+                }
+            }
+        }
+    }
+
+    // Pagination
+    .pagination {
+        background   : $background-light;
+        border-radius: $border-radius;
+        border       : 1px solid $border-color;
+    }
+
+    // Chip styles
+    .MuiChip-root {
+        border-radius: 4px;
+        font-weight  : 500;
+    }
+
+    // Button styles
+    .MuiButton-root {
+        border-radius : $border-radius;
+        text-transform: none;
+        font-weight   : 500;
+    }
+
+    // Icon button styles
+    .MuiIconButton-root {
+        transition: $transition;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+
+    // Menu styles
+    .MuiMenu-paper {
+        border-radius: $border-radius;
+        box-shadow   : $box-shadow;
+    }
+
+    .MuiMenuItem-root {
+        border-radius: 4px;
+        margin       : 4px 8px;
+    }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .manage-moderation-container {
+        padding: 16px;
+
+        .manage-moderation-paper {
+            padding: 16px;
+        }
+
+        .header-section {
+            flex-direction: column;
+            gap           : 16px;
+            align-items   : flex-start;
+
+            .header-actions {
+                width          : 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        .stats-section {
+            .stat-card {
+                .stat-content {
+                    flex-direction: column;
+                    text-align    : center;
+                    gap           : 8px;
+
+                    .stat-icon {
+                        width : 40px;
+                        height: 40px;
+
+                        svg {
+                            font-size: 20px;
+                        }
+                    }
+
+                    .stat-value {
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+
+        .search-section {
+            padding: 16px;
+
+            .MuiGrid-item {
+                margin-bottom: 8px;
+            }
+        }
+
+        .table-container {
+            overflow-x: auto;
+
+            .MuiTable-root {
+                min-width: 800px;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .manage-moderation-container {
+        .header-section {
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        .stats-section {
+            .stat-card {
+                .stat-content {
+                    .stat-value {
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+    .manage-moderation-container {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d30 100%);
+
+        .manage-moderation-paper {
+            background: #2d2d30;
+            color     : #ffffff;
+        }
+
+        .header-section {
+            border-bottom-color: #404040;
+
+            .page-title {
+                color: #64b5f6;
+            }
+
+            .page-subtitle {
+                color: #b0b0b0;
+            }
+        }
+
+        .search-section {
+            background  : #383838;
+            border-color: #505050;
+
+            .search-field {
+                background: #2d2d30;
+            }
+        }
+
+        .table-container {
+            border-color: #505050;
+
+            .MuiTableHead-root {
+                background: #383838;
+
+                .MuiTableCell-head {
+                    color              : #ffffff;
+                    border-bottom-color: #505050;
+                }
+            }
+
+            .MuiTableBody-root {
+                .MuiTableRow-root {
+                    &:hover {
+                        background-color: #383838;
+                    }
+
+                    .MuiTableCell-root {
+                        color              : #ffffff;
+                        border-bottom-color: #404040;
+                    }
+
+                    .word-text {
+                        color: #ffffff;
+                    }
+                }
+            }
+        }
+
+        .pagination {
+            background  : #383838;
+            border-color: #505050;
+            color       : #ffffff;
+        }
+
+        .bulk-actions {
+            background  : #383838;
+            border-color: #505050;
+            color       : #ffffff;
+        }
+    }
+}
+
+// Animation keyframes
+@keyframes fadeInUp {
+    from {
+        opacity  : 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity  : 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity  : 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity  : 1;
+        transform: translateX(0);
+    }
+}
+
+// Apply animations
+.manage-moderation-container {
+    animation: fadeInUp 0.6s ease-out;
+
+    .stat-card {
+        animation: fadeInUp 0.6s ease-out;
+
+        &:hover {
+            animation: pulse 0.6s ease-in-out;
+        }
+    }
+
+    .header-section {
+        animation: slideIn 0.5s ease-out;
+    }
+}
+
+// Focus states for accessibility
+.MuiButton-root:focus {
+    outline       : 2px solid $primary-color;
+    outline-offset: 2px;
+}
+
+.MuiIconButton-root:focus {
+    outline       : 2px solid $primary-color;
+    outline-offset: 2px;
+}
+
+.MuiCheckbox-root:focus {
+    outline       : 2px solid $primary-color;
+    outline-offset: 2px;
+}

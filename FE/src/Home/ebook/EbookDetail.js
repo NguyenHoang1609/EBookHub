@@ -4,6 +4,7 @@ import { ebookAPI } from '../../Util/Api';
 import Navigation from '../component/Navigation';
 import Footer from '../component/Footer';
 import Review from './components/Review';
+import ReportModal from './components/ReportModal';
 import './EbookDetail.scss';
 
 const EbookDetail = () => {
@@ -15,8 +16,13 @@ const EbookDetail = () => {
     const [bookType, setBookType] = useState('Sách điện tử');
     const [contentType, setContentType] = useState('Đầy đủ');
     const [showFullDescription, setShowFullDescription] = useState(false);
-
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [user, setUser] = useState(null);
     useEffect(() => {
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
         const fetchEbook = async () => {
             try {
                 setLoading(true);
@@ -85,6 +91,10 @@ const EbookDetail = () => {
 
     const handleReadBook = () => {
         navigate(`/reader/${id}`);
+    };
+
+    const handleReportViolation = () => {
+        setShowReportModal(true);
     };
 
     if (loading) {
@@ -287,6 +297,11 @@ const EbookDetail = () => {
                                     <path d="M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12C9 11.76 8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5C21 3.34 19.66 2 18 2C16.34 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12C3 13.66 4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.92 18 21.92C19.61 21.92 20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08Z" fill="white" />
                                 </svg>
                             </button>
+                            <button className="action-btn report-btn" onClick={handleReportViolation}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
 
@@ -414,6 +429,15 @@ const EbookDetail = () => {
             </div>
 
             <Footer />
+
+            {/* Report Modal */}
+            <ReportModal
+                isOpen={showReportModal}
+                onClose={() => setShowReportModal(false)}
+                ebook={ebook}
+                user={user}
+                author={ebook?.author}
+            />
         </div>
     );
 };

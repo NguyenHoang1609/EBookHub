@@ -458,6 +458,7 @@ const ebookAPI = {
         try {
             const url = `/ebooks/favourite/${userId}?limit=${limit}`;
             const response = await API.get(url);
+            console.log('getFavouriteBooks', response.data);
             return {
                 success: true,
                 data: response.data,
@@ -990,6 +991,335 @@ const typeAPI = {
     }
 };
 
+const violationAPI = {
+    createViolation: async (violationData) => {
+        try {
+            const response = await API.post('/violations', violationData);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to create violation report',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getAllViolations: async (params = {}) => {
+        try {
+            const queryParams = new URLSearchParams();
+            Object.keys(params).forEach(key => {
+                if (params[key] !== undefined && params[key] !== null) {
+                    queryParams.append(key, params[key]);
+                }
+            });
+
+            const url = `/violations${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch violations',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getViolationById: async (id) => {
+        try {
+            const response = await API.get(`/violations/${id}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch violation',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    updateViolationStatus: async (id, status, actionTaken) => {
+        try {
+            const response = await API.put(`/violations/${id}/status`, {
+                status,
+                actionTaken
+            });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to update violation status',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    deleteViolation: async (id) => {
+        try {
+            const response = await API.delete(`/violations/${id}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to delete violation',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getViolationStats: async () => {
+        try {
+            const response = await API.get('/violations/stats');
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch violation statistics',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    updateEbookStatus: async (ebookId, status) => {
+        try {
+            const response = await API.put(`/ebooks/${ebookId}/status`, { status });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to update ebook status',
+                error: error.response?.data || error.message
+            };
+        }
+    }
+};
+
+const contentModerationAPI = {
+    createModerationWord: async (moderationData) => {
+        try {
+            const response = await API.post('/moderation/words', moderationData);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to create moderation word',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getAllModerationWords: async (params = {}) => {
+        try {
+            const queryParams = new URLSearchParams();
+            Object.keys(params).forEach(key => {
+                if (params[key] !== undefined && params[key] !== null) {
+                    queryParams.append(key, params[key]);
+                }
+            });
+
+            const url = `/moderation/words${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch moderation words',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getModerationWordById: async (id) => {
+        try {
+            const response = await API.get(`/moderation/words/${id}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch moderation word',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    updateModerationWord: async (id, moderationData) => {
+        try {
+            const response = await API.put(`/moderation/words/${id}`, moderationData);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to update moderation word',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    deleteModerationWord: async (id) => {
+        try {
+            const response = await API.delete(`/moderation/words/${id}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to delete moderation word',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    bulkDeleteModerationWords: async (moderationIds) => {
+        try {
+            const response = await API.delete('/moderation/words/bulk', { data: { moderationIds } });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to delete moderation words',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getModerationStats: async () => {
+        try {
+            const response = await API.get('/moderation/words/stats');
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch moderation statistics',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    validateContent: async (content) => {
+        try {
+            const response = await API.post('/moderation/validate', { content });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to validate content',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    validateEbookContent: async (ebookId) => {
+        try {
+            const response = await API.post(`/moderation/validate/ebook/${ebookId}`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to validate ebook content',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    validateAllEbooks: async () => {
+        try {
+            const response = await API.post('/moderation/validate/all-ebooks');
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to validate all ebooks',
+                error: error.response?.data || error.message
+            };
+        }
+    }
+};
+
 const apiUtils = {
     isAuthenticated: async () => {
         try {
@@ -1010,4 +1340,4 @@ const apiUtils = {
 };
 
 export default API;
-export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, apiUtils };
+export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, violationAPI, contentModerationAPI, apiUtils };
