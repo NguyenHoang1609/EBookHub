@@ -67,17 +67,6 @@ const checkStatus = async (req, res) => {
     }
 };
 
-const getByUserId = async (req, res) => {
-    try {
-        const { userId } = req.query;
-        if (!userId) return res.status(400).json({ success: false, message: 'userId is required' });
-        const data = await paymentService.getPaymentsByUserId(Number(userId));
-        return res.status(200).json({ success: true, data: { DT: data } });
-    } catch (e) {
-        return res.status(500).json({ success: false, message: e.message });
-    }
-};
-
-export default { create, list, getById, update, remove, webhook, checkStatus, getByUserId };
+export default { create, list, getById, update, remove, webhook, checkStatus };
 
 

@@ -76,7 +76,7 @@ const Payment = () => {
     };
 
     return (
-        <div className={styles.payment}>
+        <div className={styles.page}>
             <Navigation />
             <div className={styles.container}>
                 <div className={styles.header}>
@@ -87,7 +87,7 @@ const Payment = () => {
                 <div className={styles.tiersGrid}>
                     {TIERS.map(t => (
                         <div key={t.id} className={`${styles.card} ${selectedTier.id === t.id ? styles.active : ''}`} onClick={() => setSelectedTier(t)}>
-
+                            {t.id === '12m' && <div className={styles.badge}>Phổ biến</div>}
                             <div className={styles.cardHeader}>
                                 <div className={styles.plan}>{t.label}</div>
                                 <div className={styles.price}>{t.price.toLocaleString('vi-VN')}đ</div>

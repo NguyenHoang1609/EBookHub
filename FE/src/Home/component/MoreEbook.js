@@ -93,40 +93,17 @@ const MoreEbook = () => {
                 onClick={() => {
                     navigate(`/book/${ebook.ebookId}`);
                 }}
-                className="ebook-card"
+                className="book-item"
             >
-                <div className="ebook-content">
-                    <div className="ebook-image-container">
-                        <div className="ebook-image-wrapper">
-                            <img
-                                className="ebook-image"
-                                src={`http://localhost:8080/public${coverImage}`}
-                                alt={bookTitle}
-                            />
+                <div className="book-content">
+                    <div className="book-image-container">
+                        <div className="book-image-wrapper">
+                            <img className="book-image" src={`http://localhost:8080/public${coverImage}`} alt={bookTitle} />
                         </div>
-                        <div className="ebook-overlay" />
+                        <div className="book-overlay" />
                     </div>
-                    <div className="ebook-info">
-                        <div className="ebook-title">
-                            <div className="title-text">{bookTitle}</div>
-                        </div>
-                        <div className="ebook-author">
-                            <span className="author-name">{ebook.author?.name || 'Unknown Author'}</span>
-                        </div>
-                        {ebook.types && ebook.types.length > 0 && (
-                            <div className="ebook-types">
-                                {ebook.types.slice(0, 2).map((type, idx) => (
-                                    <span key={idx} className="type-tag">
-                                        {type.name}
-                                    </span>
-                                ))}
-                                {ebook.types.length > 2 && (
-                                    <span className="type-tag more">
-                                        +{ebook.types.length - 2}
-                                    </span>
-                                )}
-                            </div>
-                        )}
+                    <div className="book-title">
+                        <div className="title-text title-15-50">{bookTitle}</div>
                     </div>
                 </div>
             </div>
@@ -145,7 +122,9 @@ const MoreEbook = () => {
         <div className="more-ebook-container">
             <Navbar />
             <div className="more-ebook-header">
-                <h1 className="header-title">Tất cả sách</h1>
+                <div className="header-content">
+                    <h1 className="header-title">Tất cả sách</h1>
+                </div>
 
                 <div className="filters-section">
                     <div className="search-box">
@@ -181,9 +160,11 @@ const MoreEbook = () => {
                 </div>
             )}
 
-            <div className="ebooks-grid">
+            <div className="books-grid-container">
                 {ebooks.length > 0 ? (
-                    ebooks.map((ebook, index) => renderBookItem(ebook, index))
+                    <div className="books-grid">
+                        {ebooks.map((ebook, index) => renderBookItem(ebook, index))}
+                    </div>
                 ) : (
                     <div className="no-ebooks-message">
                         Không tìm thấy sách nào

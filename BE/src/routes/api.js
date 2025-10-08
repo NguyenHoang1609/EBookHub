@@ -9,7 +9,6 @@ import typeController from '../controllers/typeController'
 import authorViolationController from '../controllers/author_violationController'
 import contentModerationController from '../controllers/contentModerationController'
 import paymentController from '../controllers/paymentController'
-import audioController from '../controllers/audioController'
 import { uploadAvatar, handleUploadError } from '../middleware/upload'
 import libraryWishlistController from '../controllers/libraryWishlistController'
 import savedPageController from '../controllers/savedPageController'
@@ -114,30 +113,14 @@ router.post('/moderation/validate/comment', contentModerationController.validate
 
 // Payment routes
 router.get('/payments', paymentController.list);
-router.get('/payments/user', paymentController.getByUserId);
 router.post('/payments', paymentController.create);
-// Polling status endpoint - must be before /payments/:id to avoid route conflict
-router.get('/payments/status', paymentController.checkStatus);
 router.get('/payments/:id', paymentController.getById);
 router.put('/payments/:id', paymentController.update);
 router.delete('/payments/:id', paymentController.remove);
 // Webhook (as GET per requirement)
-router.post('/webhook/payment', paymentController.webhook);
-
-// Audio (TTS) route
-router.post('/audio', audioController.textToSpeech);
-
-// LibraryWishlist (Favourite Books) routes
-router.post('/wishlist', libraryWishlistController.add);
-router.delete('/wishlist', libraryWishlistController.remove);
-router.get('/wishlist', libraryWishlistController.list);
-router.get('/wishlist/check', libraryWishlistController.check);
-
-// SavedPage (Reading Progress) routes
-router.post('/saved-page', savedPageController.saveOrUpdate);
-router.delete('/saved-page', savedPageController.remove);
-router.get('/saved-page', savedPageController.list);
-router.get('/saved-page/get', savedPageController.get);
+router.get('/webhook/payment', paymentController.webhook);
+// Polling status endpoint
+router.get('/payments/status', paymentController.checkStatus);
 
 
 const initApiRoutes = (app) => {

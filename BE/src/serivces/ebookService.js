@@ -344,12 +344,22 @@ const getAllEbooks = async (queryParams) => {
             }
         ];
 
-        // Add type filtering if typeId is provided
-        if (typeId) {
-            includeOptions[1].where = {
-                typeId: typeId
-            };
-            includeOptions[1].required = true; // This makes it an INNER JOIN
+        // Add type filtering when typeId is provided; filter on Type with INNER JOIN
+        if (typeId !== undefined && typeId !== null && `${typeId}`.trim() !== '') {
+            let typeIds = [];
+            if (Array.isArray(typeId)) {
+                typeIds = typeId.map((t) => parseInt(t)).filter((n) => !Number.isNaN(n));
+            } else if (typeof typeId === 'string' && typeId.includes(',')) {
+                typeIds = typeId.split(',').map((t) => parseInt(t.trim())).filter((n) => !Number.isNaN(n));
+            } else {
+                const single = parseInt(typeId);
+                if (!Number.isNaN(single)) typeIds = [single];
+            }
+
+            if (typeIds.length > 0) {
+                includeOptions[1].where = { typeId: { [Op.in]: typeIds } };
+                includeOptions[1].required = true; // enforce INNER JOIN to filter ebooks by these types
+            }
         }
 
         const { count, rows } = await db.Ebook.findAndCountAll({

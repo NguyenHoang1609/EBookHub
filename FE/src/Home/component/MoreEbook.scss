@@ -1,50 +1,64 @@
 .more-ebook-container {
-
-    margin    : 5% auto;
+    width     : 100%;
+    margin-top: 100px;
     padding   : 20px;
     min-height: 100vh;
+    background: #121214;
 
     .loading-message {
         text-align: center;
         padding   : 60px 20px;
         font-size : 18px;
-        color     : #666;
+        color     : #F2F2F2;
     }
 
     .more-ebook-header {
-        margin-bottom: 30px;
+        align-items    : center;
+        display        : flex;
+        justify-content: space-between;
+        width          : 100%;
+        margin-bottom  : 2%;
 
-        .header-title {
-            font-size    : 28px;
-            font-weight  : 700;
-            color        : #333;
-            margin-bottom: 20px;
-            text-align   : center;
+        .header-content {
+            flex-direction : column;
+            justify-content: flex-start;
+            align-items    : flex-start;
+            display        : flex;
+
+            .header-title {
+                justify-content: center;
+                display        : flex;
+                flex-direction : column;
+                color          : #F2F2F2;
+                font-size      : 1.69rem; // 25.39px ≈ 1.69rem
+                font-family    : 'Inter';
+                font-weight    : 500;
+                line-height    : 1.73rem; // 26px ≈ 1.73rem
+                word-wrap      : break-word;
+            }
         }
 
         .filters-section {
             display        : flex;
             gap            : 20px;
             align-items    : center;
-            justify-content: center;
+            justify-content: flex-end;
             flex-wrap      : wrap;
 
             .search-box {
-                flex     : 1;
-                min-width: 300px;
-                max-width: 400px;
-
                 .search-input {
-                    width        : 100%;
-                    padding      : 12px 16px;
-                    border       : 2px solid #e1e5e9;
-                    border-radius: 8px;
-                    font-size    : 16px;
+                    width        : 200px;
+                    padding      : 8px 12px;
+                    border       : 1px solid #666;
+                    border-radius: 4px;
+                    font-size    : 14px;
+                    background   : rgba(255, 255, 255, 0.1);
+                    color        : #F2F2F2;
                     transition   : border-color 0.3s ease;
 
                     &:focus {
                         outline     : none;
-                        border-color: #007bff;
+                        border-color: #15B088;
                     }
 
                     &::placeholder {
@@ -55,18 +69,24 @@
 
             .type-filter {
                 .type-select {
-                    padding         : 12px 16px;
-                    border          : 2px solid #e1e5e9;
-                    border-radius   : 8px;
-                    font-size       : 16px;
-                    background-color: white;
-                    cursor          : pointer;
-                    transition      : border-color 0.3s ease;
-                    min-width       : 200px;
+                    padding      : 8px 12px;
+                    border       : 1px solid #666;
+                    border-radius: 4px;
+                    font-size    : 14px;
+                    background   : rgba(255, 255, 255, 0.1);
+                    color        : #F2F2F2;
+                    cursor       : pointer;
+                    transition   : border-color 0.3s ease;
+                    min-width    : 150px;
 
                     &:focus {
                         outline     : none;
-                        border-color: #007bff;
+                        border-color: #15B088;
+                    }
+
+                    option {
+                        background: #121214;
+                        color     : #F2F2F2;
                     }
                 }
             }
@@ -76,133 +96,43 @@
     .error-message {
         text-align      : center;
         padding         : 20px;
-        background-color: #f8d7da;
-        color           : #721c24;
+        background-color: rgba(248, 215, 218, 0.1);
+        color           : #ff6b6b;
         border-radius   : 8px;
         margin-bottom   : 20px;
+        border          : 1px solid rgba(255, 107, 107, 0.3);
     }
 
-    .ebooks-grid {
-        display              : grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap                  : 24px;
-        margin-bottom        : 40px;
+    .books-grid-container {
+        width          : 100%;
+        max-width      : 96.53%; // 1448px/1500px ≈ 96.53%
+        overflow       : visible;
+        flex-direction : column;
+        justify-content: flex-start;
+        align-items    : flex-start;
+        display        : flex;
+        position       : relative;
+        margin-bottom  : 40px;
 
-        .ebook-card {
-            background   : white;
-            border-radius: 12px;
-            box-shadow   : 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow     : hidden;
-            transition   : all 0.3s ease;
-            cursor       : pointer;
-
-            &:hover {
-                transform : translateY(-4px);
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            }
-
-            .ebook-content {
-                .ebook-image-container {
-                    position: relative;
-                    width   : 100%;
-                    height  : 200px;
-                    overflow: hidden;
-
-                    .ebook-image-wrapper {
-                        width : 100%;
-                        height: 100%;
-
-                        .ebook-image {
-                            width     : 100%;
-                            height    : 100%;
-                            object-fit: cover;
-                            transition: transform 0.3s ease;
-                        }
-                    }
-
-                    .ebook-overlay {
-                        position: absolute;
-                        top     : 0;
-                        left    : 0;
-                        right   : 0;
-                        bottom  : 0;
-                        background: linear-gradient(to bottom,
-                                rgba(0, 0, 0, 0) 0%,
-                                rgba(0, 0, 0, 0.1) 100%);
-                        opacity   : 0;
-                        transition: opacity 0.3s ease;
-                    }
-                }
-
-                .ebook-info {
-                    padding: 16px;
-
-                    .ebook-title {
-                        margin-bottom: 8px;
-
-                        .title-text {
-                            font-size         : 16px;
-                            font-weight       : 600;
-                            color             : #333;
-                            line-height       : 1.4;
-                            display           : -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            overflow          : hidden;
-                        }
-                    }
-
-                    .ebook-author {
-                        margin-bottom: 12px;
-
-                        .author-name {
-                            font-size : 14px;
-                            color     : #666;
-                            font-style: italic;
-                        }
-                    }
-
-                    .ebook-types {
-                        display  : flex;
-                        flex-wrap: wrap;
-                        gap      : 6px;
-
-                        .type-tag {
-                            background-color: #f0f0f0;
-                            color           : #555;
-                            padding         : 4px 8px;
-                            border-radius   : 12px;
-                            font-size       : 12px;
-                            font-weight     : 500;
-
-                            &.more {
-                                background-color: #e9ecef;
-                                color           : #6c757d;
-                            }
-                        }
-                    }
-                }
-            }
-
-            &:hover {
-                .ebook-image {
-                    transform: scale(1.05);
-                }
-
-                .ebook-overlay {
-                    opacity: 1;
-                }
-            }
+        .books-grid {
+            padding-right  : 3.33%; // 50px/1500px ≈ 3.33%
+            justify-content: flex-start;
+            align-items    : flex-start;
+            gap            : 2.8%; // 42px/1500px ≈ 2.8%
+            display        : flex;
+            flex-wrap      : wrap;
+            width          : 100%;
         }
 
         .no-ebooks-message {
-            grid-column     : 1 / -1;
-            text-align      : center;
-            padding         : 60px 20px;
-            font-size       : 18px;
-            color           : #666;
-            background-color: #f8f9fa;
-            border-radius   : 12px;
+            width        : 100%;
+            text-align   : center;
+            padding      : 60px 20px;
+            font-size    : 18px;
+            color        : #F2F2F2;
+            background   : rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin       : 20px 0;
         }
     }
 
@@ -214,19 +144,19 @@
         margin-top     : 40px;
 
         .pagination-btn {
-            padding         : 12px 24px;
-            border          : 2px solid #007bff;
-            background-color: white;
-            color           : #007bff;
-            border-radius   : 8px;
-            font-size       : 16px;
+            padding         : 8px 16px;
+            border          : 1px solid #15B088;
+            background-color: transparent;
+            color           : #15B088;
+            border-radius   : 4px;
+            font-size       : 14px;
             font-weight     : 500;
             cursor          : pointer;
             transition      : all 0.3s ease;
 
             &:hover:not(:disabled) {
-                background-color: #007bff;
-                color           : white;
+                background-color: #15B088;
+                color           : #F2F2F2;
             }
 
             &:disabled {
@@ -240,12 +170,12 @@
             flex-direction: column;
             align-items   : center;
             gap           : 4px;
-            font-size     : 16px;
-            color         : #333;
+            font-size     : 14px;
+            color         : #F2F2F2;
 
             .total-items {
-                font-size: 14px;
-                color    : #666;
+                font-size: 12px;
+                color    : #999;
             }
         }
     }
@@ -257,30 +187,38 @@
         padding: 15px;
 
         .more-ebook-header {
-            .header-title {
-                font-size: 24px;
+            flex-direction: column;
+            gap           : 15px;
+
+            .header-content {
+                .header-title {
+                    font-size: 1.5rem;
+                }
             }
 
             .filters-section {
                 flex-direction: column;
                 gap           : 15px;
+                width         : 100%;
 
                 .search-box {
-                    min-width: 100%;
-                    max-width: 100%;
+                    .search-input {
+                        width: 100%;
+                    }
                 }
 
                 .type-filter {
                     .type-select {
-                        min-width: 100%;
+                        width: 100%;
                     }
                 }
             }
         }
 
-        .ebooks-grid {
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap                  : 16px;
+        .books-grid-container {
+            .books-grid {
+                gap: 16px;
+            }
         }
 
         .pagination-container {
@@ -297,40 +235,128 @@
 
 @media (max-width: 480px) {
     .more-ebook-container {
-        .ebooks-grid {
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap                  : 12px;
+        .books-grid-container {
+            .books-grid {
+                gap: 12px;
+            }
+        }
+    }
+}
+
+// Import book item styles from Section.scss
+.book-item {
+    flex-direction : column;
+    width          : 100%;
+    max-width      : 224px;
+    justify-content: flex-start;
+    align-items    : flex-start;
+    display        : flex;
+    cursor         : pointer;
+
+    .book-content {
+        align-self     : stretch;
+        flex-direction : column;
+        justify-content: flex-start;
+        align-items    : flex-start;
+        gap            : 1.07%; // 16px/1500px ≈ 1.07%
+        display        : flex;
+
+        .book-image-container {
+            align-self     : stretch;
+            position       : relative;
+            flex-direction : column;
+            justify-content: flex-start;
+            align-items    : flex-start;
+            display        : flex;
+
+            .book-image-wrapper {
+                align-self   : stretch;
+                height       : 21.86rem; // 327.97px ≈ 21.86rem
+                position     : relative;
+                overflow     : visible;
+                border-radius: 0.8rem; // 12px ≈ 0.8rem
+
+                .book-image {
+                    width     : 100%;
+                    height    : 100%;
+                    position  : absolute;
+                    left      : 0;
+                    top       : 0;
+                    object-fit: cover;
+                }
+            }
+
+            .book-overlay {
+                width        : 100%;
+                height       : 21.86rem; // 327.97px ≈ 21.86rem
+                left         : 0;
+                top          : 0;
+                position     : absolute;
+                background   : linear-gradient(90deg, rgba(2, 0, 36, 0.39) 0%, rgba(0, 0, 0, 0.50) 2%, rgba(255, 255, 255, 0.36) 3%, rgba(0, 0, 0, 0.33) 5%, rgba(247, 254, 255, 0.28) 10%, rgba(247, 254, 255, 0) 48%);
+                border-radius: 0.8rem; // 12px ≈ 0.8rem
+            }
         }
 
-        .ebook-card {
-            .ebook-content {
-                .ebook-image-container {
-                    height: 160px;
+        .book-title {
+            align-self     : stretch;
+            height         : 2.73rem; // 41px ≈ 2.73rem
+            overflow       : visible;
+            flex-direction : column;
+            justify-content: flex-start;
+            align-items    : flex-start;
+            display        : flex;
+            padding-top    : 10px;
+
+            .title-text {
+                align-self     : stretch;
+                justify-content: start;
+                display        : flex;
+                align-items    : flex-start;
+                text-align     : left;
+                flex-direction : column;
+                color          : #F2F2F2;
+                font-family    : 'Inter';
+                font-weight    : 500;
+                line-height    : 1.33rem; // 20px ≈ 1.33rem
+                word-wrap      : break-word;
+
+                &.title-15-50 {
+                    font-size: 1.03rem; // 15.50px ≈ 1.03rem
                 }
 
-                .ebook-info {
-                    padding: 12px;
+                &.title-15-38 {
+                    font-size: 1.025rem; // 15.38px ≈ 1.025rem
+                }
 
-                    .ebook-title {
-                        .title-text {
-                            font-size: 14px;
-                        }
-                    }
-
-                    .ebook-author {
-                        .author-name {
-                            font-size: 12px;
-                        }
-                    }
-
-                    .ebook-types {
-                        .type-tag {
-                            font-size: 11px;
-                            padding  : 3px 6px;
-                        }
-                    }
+                &.title-15-62 {
+                    font-size: 1.04rem; // 15.62px ≈ 1.04rem
                 }
             }
         }
+    }
+}
+
+// Responsive design for book items
+@media (max-width: 1200px) {
+    .book-item {
+        width: 18.5%; // Slightly larger on medium screens
+    }
+}
+
+@media (max-width: 992px) {
+    .book-item {
+        width: 23%; // Even larger on smaller screens
+    }
+}
+
+@media (max-width: 768px) {
+    .book-item {
+        width: 48%; // 2 columns on mobile
+    }
+}
+
+@media (max-width: 480px) {
+    .book-item {
+        width: 100%; // 1 column on very small screens
     }
 }

@@ -6,6 +6,7 @@ import EbookDetail from '../Home/ebook/EbookDetail.js';
 import Reader from '../Home/ebook/Reader.js';
 import UserProfile from '../Home/profile/UserProfile.js';
 import MoreEbook from '../Home/component/MoreEbook.js';
+import Payment from '../Home/payment/Payment.js';
 function RouteIndex(props) {
     return (
         <div>

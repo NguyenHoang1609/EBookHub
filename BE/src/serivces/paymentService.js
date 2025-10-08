@@ -59,6 +59,7 @@ async function handleWebhook(queryOrBody = {}) {
         await Payment.create({
             webhookId,
             userId: 0,
+            ebookId: null,
             amount: (transferAmount || 0),
             description: content || null,
             accountNumber: accountNumber || null,
@@ -82,6 +83,7 @@ async function handleWebhook(queryOrBody = {}) {
         await Payment.create({
             webhookId,
             userId: userIdFromContent,
+            ebookId: null,
             amount: (transferAmount || 0),
             description: content || null,
             accountNumber: accountNumber || null,
@@ -108,6 +110,7 @@ async function handleWebhook(queryOrBody = {}) {
     await Payment.create({
         webhookId,
         userId: user.id,
+        ebookId: null,
         amount: (transferAmount || 0),
         description: content || null,
         accountNumber: accountNumber || null,
@@ -133,30 +136,17 @@ async function handleWebhook(queryOrBody = {}) {
 }
 
 async function checkPaymentStatus({ userId, amount }) {
-
     const payments = await Payment.findAll({
         where: { userId, status: 'completed' },
         order: [['created_at', 'DESC']],
         limit: 5
     });
-    console.log('payments', payments);
-
     const matched = payments.find(p => Number(p.transferAmount || p.amount) === Number(amount || VIP_PRICE_VND));
     const user = await User.findByPk(userId);
-    console.log('matched', matched);
-    console.log('user', user);
     return {
         hasPaid: !!matched,
         isVip: !!user?.isVip,
     };
-}
-
-async function getPaymentsByUserId(userId) {
-    if (!userId) return [];
-    return await Payment.findAll({
-        where: { userId },
-        order: [['created_at', 'DESC']]
-    });
 }
 
 export default {
@@ -167,8 +157,7 @@ export default {
     deletePayment,
     handleWebhook,
     checkPaymentStatus,
-    extractUserIdFromContent,
-    getPaymentsByUserId
+    extractUserIdFromContent
 };
 
 
