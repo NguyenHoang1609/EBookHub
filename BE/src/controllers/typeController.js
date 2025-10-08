@@ -5,7 +5,7 @@ const getAllTypes = async (req, res) => {
     try {
         console.log('Get all types request received');
 
-        const { page = 0, pageSize = 10, search, isActive, sortBy = 'name', sortOrder = 'ASC' } = req.query;
+        const { page = 0, pageSize = 100, search, isActive, sortBy = 'name', sortOrder = 'ASC' } = req.query;
 
         const result = await typeService.getAllTypes({
             page: parseInt(page),

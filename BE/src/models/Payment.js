@@ -8,6 +8,12 @@ const Payment = sequelize.define('Payment', {
         autoIncrement: true,
         allowNull: false
     },
+    webhookId: {
+        type: DataTypes.BIGINT,
+        allowNull: true,
+        field: 'webhook_id',
+        comment: 'Transaction ID from SePay webhook'
+    },
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -17,15 +23,7 @@ const Payment = sequelize.define('Payment', {
             key: 'id'
         }
     },
-    ebookId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        field: 'ebook_id',
-        references: {
-            model: 'ebooks',
-            key: 'ebook_id'
-        }
-    },
+
     amount: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
@@ -42,6 +40,53 @@ const Payment = sequelize.define('Payment', {
         allowNull: true,
         field: 'account_number'
     },
+    gateway: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
+    transactionDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'transaction_date'
+    },
+    code: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+    },
+    content: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    transferType: {
+        type: DataTypes.ENUM('in', 'out'),
+        allowNull: true,
+        field: 'transfer_type'
+    },
+    transferAmount: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        field: 'transfer_amount'
+    },
+    accumulated: {
+        type: DataTypes.BIGINT,
+        allowNull: true
+    },
+    subAccount: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        field: 'sub_account'
+    },
+    referenceCode: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        unique: false,
+        field: 'reference_code'
+    },
+    rawDescription: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        field: 'raw_description'
+    },
     status: {
         type: DataTypes.ENUM('pending', 'completed', 'failed', 'refunded', 'cancelled'),
         allowNull: false,
@@ -56,9 +101,7 @@ const Payment = sequelize.define('Payment', {
         {
             fields: ['user_id']
         },
-        {
-            fields: ['ebook_id']
-        },
+
         {
             fields: ['status']
         },
@@ -67,5 +110,5 @@ const Payment = sequelize.define('Payment', {
         }
     ]
 });
-
+// Payment.sync({ alter: true });
 module.exports = Payment;

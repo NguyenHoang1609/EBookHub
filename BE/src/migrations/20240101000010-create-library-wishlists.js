@@ -29,11 +29,7 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE'
             },
-            type: {
-                type: Sequelize.ENUM('library', 'wishlist'),
-                allowNull: false,
-                defaultValue: 'wishlist'
-            },
+
             created_at: {
                 allowNull: false,
                 type: Sequelize.DATE,

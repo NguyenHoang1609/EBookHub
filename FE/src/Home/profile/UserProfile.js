@@ -21,16 +21,14 @@ function UserProfile() {
     }, []);
 
     const getDefaultAvatar = () => {
-        return 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&h=100&q=80';
+        return 'https://307a0e78.vws.vegacdn.vn/view/v2/image/img.avatar/0/0/38/19886/10182067.jpg?v=11&w=200&h=200';
     };
 
     const navigationItems = [
         { id: 'account', label: 'Quản lý tài khoản', icon: '👤', active: true },
         { id: 'library', label: 'Tủ sách cá nhân', icon: '📚', active: false },
-        { id: 'orders', label: 'Quản lý đơn hàng', icon: '📋', active: false, hasDropdown: true },
-        { id: 'achievements', label: 'Thành tích', icon: '🏆', active: false },
         { id: 'history', label: 'Lịch sử giao dịch', icon: '💳', active: false },
-        { id: 'support', label: 'Hỗ trợ khách hàng', icon: '📞', active: false }
+
     ];
 
     const renderMainContent = () => {
@@ -75,27 +73,18 @@ function UserProfile() {
                             <div className="user-info">
 
                                 <div className="user-avatar">
-                                    <h3 className="username">{user.name}</h3>
                                     <img
-                                        src={`${'http://localhost:8080/public'}${user.avatar || getDefaultAvatar()}`}
+                                        src={user.avatar ? `${'http://localhost:8080/public'}${user.avatar}` : getDefaultAvatar()}
                                         alt="User Avatar"
                                         className="avatar-image"
                                     />
+                                    <h3 className="username">{user.name}</h3>
+
                                 </div>
                                 <div className="user-stats">
-                                    <p className="stats-text">1,500 Sồi có hạn đến ngày 31/10/2025</p>
-                                    <div className="currency-stats">
-                                        <div className="currency-item">
-                                            <span className="currency-icon soi">🌰</span>
-                                            <span className="currency-value soi">1,500</span>
-                                        </div>
-                                        <div className="currency-item">
-                                            <span className="currency-icon la">🍃</span>
-                                            <span className="currency-value la">0</span>
-                                        </div>
-                                    </div>
+
+
                                     <div className="action-buttons">
-                                        <button className="recharge-btn">Nạp sồi</button>
                                         <button className="membership-btn">Trở thành hội viên</button>
                                     </div>
                                 </div>
@@ -118,9 +107,7 @@ function UserProfile() {
                     </div>
 
                     <div className="main-content">
-                        <div className="content-header">
-                            <h1>Quản lý thông tin</h1>
-                        </div>
+
 
                         <div className="content-body">
                             {renderMainContent()}

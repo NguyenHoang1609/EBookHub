@@ -26,14 +26,15 @@ const SavedPage = sequelize.define('SavedPage', {
             key: 'id'
         }
     },
-    numberPage: {
+    pageNumber: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        field: 'number_page',
+        field: 'page_number',
         validate: {
             min: 1
         }
-    }
+    },
+
 }, {
     tableName: 'saved_pages',
     timestamps: true,
@@ -49,5 +50,7 @@ const SavedPage = sequelize.define('SavedPage', {
         }
     ]
 });
+
+// SavedPage.sync({ alter: true });
 
 module.exports = SavedPage;

@@ -92,6 +92,4 @@ const ContentModeration = sequelize.define('ContentModeration', {
     ]
 });
 
-// ContentModeration.sync({alter:true})
-
 module.exports = ContentModeration;

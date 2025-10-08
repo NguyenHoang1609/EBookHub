@@ -459,7 +459,6 @@ const removeUserFavouriteType = async (userId, typeId) => {
 };
 
 // Get ebooks by type
-// Get ebooks by type
 const getEbooksByType = async (typeId, options = {}) => {
     try {
         if (!typeId || isNaN(parseInt(typeId))) {

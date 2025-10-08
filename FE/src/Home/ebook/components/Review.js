@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { commentAPI, authAPI } from '../../../Util/Api';
+import { commentAPI, authAPI, contentModerationAPI } from '../../../Util/Api';
 import './Review.scss';
 
 const Review = ({ ebook }) => {
@@ -85,6 +85,18 @@ const Review = ({ ebook }) => {
 
         setSubmitting(true);
         try {
+            // Validate comment content before posting
+            const validationResult = await contentModerationAPI.validateCommentContent(newComment.trim());
+
+            if (!validationResult.success) {
+                alert('Failed to validate comment: ' + validationResult.message);
+                return;
+            }
+
+            if (!validationResult.data.DT.isValid) {
+                alert(validationResult.data.DT.message);
+                return;
+            }
 
             const result = await commentAPI.createComment({
                 userData: currentUser,
@@ -96,6 +108,8 @@ const Review = ({ ebook }) => {
                 setNewComment('');
                 fetchComments();
                 fetchCommentStats();
+            } else {
+                alert(result.message);
             }
         } catch (error) {
             alert('Failed to post comment');
@@ -109,6 +123,19 @@ const Review = ({ ebook }) => {
 
         setSubmitting(true);
         try {
+            // Validate reply content before posting
+            const validationResult = await contentModerationAPI.validateCommentContent(replyContent.trim());
+
+            if (!validationResult.success) {
+                alert('Failed to validate reply: ' + validationResult.message);
+                return;
+            }
+
+            if (!validationResult.data.DT.isValid) {
+                alert(validationResult.data.DT.message);
+                return;
+            }
+
             const result = await commentAPI.createComment({
                 userData: currentUser,
                 ebookId: ebook.ebookId,

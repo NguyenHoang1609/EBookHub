@@ -23,7 +23,9 @@ import {
     ListItem,
     ListItemText,
     ListItemAvatar,
-    Avatar
+    Avatar,
+    Switch,
+    FormControlLabel
 } from '@mui/material';
 import {
     CloudUpload as UploadIcon,
@@ -39,7 +41,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
         title: '',
         description: '',
         status: 'draft',
-        typeIds: []
+        typeIds: [],
+        isVipEbook: false
     });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
@@ -82,7 +85,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     title: ebook.title || '',
                     description: ebook.description || '',
                     status: ebook.status || 'draft',
-                    typeIds: ebook.types ? ebook.types.map(type => type.typeId) : []
+                    typeIds: ebook.types ? ebook.types.map(type => type.typeId) : [],
+                    isVipEbook: !!ebook.isVipEbook
                 });
                 setUploadMode(false);
             } else if (ebook && isViewMode) {
@@ -92,7 +96,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     title: ebook.title || '',
                     description: ebook.description || '',
                     status: ebook.status || 'draft',
-                    typeIds: ebook.types ? ebook.types.map(type => type.typeId) : []
+                    typeIds: ebook.types ? ebook.types.map(type => type.typeId) : [],
+                    isVipEbook: !!ebook.isVipEbook
                 });
                 setUploadMode(false);
             } else {
@@ -102,7 +107,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     title: '',
                     description: '',
                     status: 'draft',
-                    typeIds: []
+                    typeIds: [],
+                    isVipEbook: false
                 });
                 setUploadMode(false);
             }
@@ -365,7 +371,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             let result;
             if (ebook && !isViewMode) {
                 // Update existing ebook
-                result = await ebookAPI.updateEbook(ebook.ebookId, submitData);
+                result = await ebookAPI.updateEbook(ebook.ebookId, { ...submitData, isVipEbook: !!formData.isVipEbook });
 
                 // Update types separately
                 if (result.success && formData.typeIds.length > 0) {
@@ -376,7 +382,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                 }
             } else if (!ebook) {
                 // Create new ebook
-                result = await ebookAPI.createEbook(submitData);
+                result = await ebookAPI.createEebook ? await ebookAPI.createEebook({ ...submitData, isVipEbook: !!formData.isVipEbook }) : await ebookAPI.createEbook({ ...submitData, isVipEbook: !!formData.isVipEebook });
 
                 // Add types to newly created ebook
                 if (result.success && result.data?.DT?.ebookId && formData.typeIds.length > 0) {
@@ -503,7 +509,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                         Validation Status
                                     </Typography>
                                     <Chip
-                                        icon={contentValidationResult.isValid ? <CheckIcon /> :<div>x</div>}
+                                        icon={contentValidationResult.isValid ? <CheckIcon /> : <CancelIcon />}
                                         label={contentValidationResult.isValid ? 'PASSED' : 'FAILED'}
                                         color={contentValidationResult.isValid ? 'success' : 'error'}
                                         size="small"
@@ -744,6 +750,37 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                 disabled={isViewMode}
                                 placeholder="Enter a brief description of the ebook"
                             />
+                        </Grid>
+                        {/* VIP Ebook Switch */}
+                        <Grid item xs={12}>
+                            {isViewMode ? (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Typography variant="subtitle1">VIP Ebook:</Typography>
+                                    <Chip
+                                        label={formData.isVipEbook ? 'VIP' : 'Normal'}
+                                        color={formData.isVipEbook ? 'warning' : 'default'}
+                                        size="small"
+                                    />
+                                </Box>
+                            ) : (
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={!!formData.isVipEbook}
+                                            onChange={e => setFormData(prev => ({ ...prev, isVipEbook: e.target.checked }))}
+                                            name="isVipEbook"
+                                            color="warning"
+                                            disabled={isViewMode}
+                                        />
+                                    }
+                                    label={<span style={{ fontWeight: 500 }}>Mark as VIP Ebook</span>}
+                                />
+                            )}
+                            {!isViewMode && (
+                                <Typography variant="caption" color="text.secondary">
+                                    VIP ebooks may require special access or payment.
+                                </Typography>
+                            )}
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth error={!!errors.typeIds}>

@@ -18,7 +18,7 @@ function UserAccount({ user, setUser }) {
     const fileInputRef = useRef(null);
 
     const getDefaultAvatar = () => {
-        return 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&h=100&q=80';
+        return 'https://307a0e78.vws.vegacdn.vn/view/v2/image/img.avatar/0/0/38/19886/10182067.jpg?v=11&w=200&h=200';
     };
 
     const handleInputChange = (e) => {
@@ -113,14 +113,6 @@ function UserAccount({ user, setUser }) {
 
     return (
         <div className="user-account-container">
-            <div className="account-header">
-                <div className="tab-navigation">
-                    <div className="tab active">Thông tin cá nhân</div>
-                    <div className="tab">Địa chỉ</div>
-                    <div className="tab">Tài khoản và bảo mật</div>
-                    <div className="tab">Tài khoản liên kết</div>
-                </div>
-            </div>
 
             <form onSubmit={handleSubmit} className="account-form">
                 <div className="form-section">
@@ -243,7 +235,7 @@ function UserAccount({ user, setUser }) {
                     <div className="avatar-section">
                         <div className="avatar-display">
                             <img
-                                src={`${'http://localhost:8080/public'}${previewAvatar || user?.avatar || getDefaultAvatar()}`}
+                                src={previewAvatar || user?.avatar ? `${'http://localhost:8080/public'}${user.avatar}` : getDefaultAvatar()}
                                 alt="User Avatar"
                                 className="avatar-image"
                             />

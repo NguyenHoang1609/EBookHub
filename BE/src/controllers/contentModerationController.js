@@ -207,6 +207,26 @@ const validateAllEbooks = async (req, res) => {
     }
 };
 
+const validateCommentContent = async (req, res) => {
+    try {
+        const { content } = req.body;
+        const result = await contentModerationService.validateCommentContent(content);
+
+        if (result.EC === 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(400).json(result);
+        }
+    } catch (error) {
+        console.error('Validate comment content controller error:', error);
+        res.status(500).json({
+            DT: '',
+            EC: -1,
+            EM: 'Internal server error!'
+        });
+    }
+};
+
 export default {
     createModerationWord,
     getAllModerationWords,
@@ -217,5 +237,6 @@ export default {
     getModerationStats,
     validateContent,
     validateEbookContent,
-    validateAllEbooks
+    validateAllEbooks,
+    validateCommentContent
 };

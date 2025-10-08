@@ -83,51 +83,69 @@ function Navigation(props) {
     };
 
     const getDefaultAvatar = () => {
-        return 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&h=100&q=80';
+        return 'https://307a0e78.vws.vegacdn.vn/view/v2/image/img.avatar/0/0/38/19886/10182067.jpg?v=11&w=200&h=200';
     };
 
     return (
         <div className="navigation-container">
             <div className="navigation-content">
                 <div className="left-section">
-                    <div className="logo-section">
+                    <div
+                        onClick={() => { window.location.href = '/' }}
+                        className="logo-section">
                         <img className="logo-image" src="https://placehold.co/115x38" />
-                        <div className="logo-icon-container">
+                        {/* <div className="logo-icon-container">
                             <img className="logo-icon" src="https://placehold.co/33x26" />
-                        </div>
+                        </div> */}
                     </div>
+
                     <div className="navigation-menu">
-                        <div className="menu-item ebook">
+                        <div
+                            onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Trinh thám - Kinh dị')}`}
+                            className="menu-item ebook">
                             <div className="menu-item-content">
-                                <div className="menu-text">Sách điện tử</div>
+                                <div className="menu-text">Trinh thám - Kinh dị</div>
                             </div>
                         </div>
-                        <div className="menu-item member-books">
+                        <div
+                            onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Tài chính cá nhân')}`}
+                            className="menu-item member-books">
                             <div className="menu-item-content">
-                                <div className="menu-text">Sách hội viên</div>
+                                <div className="menu-text">Tài chính cá nhân</div>
                             </div>
                         </div>
-                        <div className="menu-item school-books">
+                        <div
+                            onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Tư duy sáng tạo')}`}
+                            className="menu-item school-books">
                             <div className="menu-item-content">
-                                <div className="menu-text">Sách hiệu sồi</div>
+                                <div className="menu-text">Tư duy sáng tạo</div>
                             </div>
                         </div>
-                        <div className="menu-item audiobooks">
+                        <div
+                            onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Ngôn tình')}`}
+                            className="menu-item audiobooks">
                             <div className="menu-item-content">
-                                <div className="menu-text">Sách nói</div>
+                                <div className="menu-text">Ngôn tình</div>
                             </div>
                         </div>
-                        <div className="menu-item comics">
+                        <div
+
+                            onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Hiện đại')}`}
+                            className="menu-item comics">
                             <div className="menu-item-content">
-                                <div className="menu-text">Truyện tranh</div>
+                                <div className="menu-text">Hiện đại</div>
                             </div>
                         </div>
-                        <div className="menu-item publishing">
+                        <div
+                            onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Cổ đại')}`}
+                            className="menu-item publishing">
                             <div className="menu-item-content">
-                                <div className="menu-text">Dịch vụ Xuất bản</div>
+                                <div className="menu-text">Cổ đại</div>
                             </div>
                         </div>
-                        <div className="menu-item see-more">
+                        <div
+                            onClick={() => window.location.href = '/more-ebook'}
+                            className="menu-item see-more">
                             <div className="menu-item-content">
                                 <div className="menu-text">Xem thêm</div>
                             </div>
@@ -148,19 +166,12 @@ function Navigation(props) {
                     </div> */}
 
                     <div className="subscription-section">
-                        <div className="subscription-button">
-                            <div className="subscription-icon">
-                                <div className="subscription-icon-container">
-                                    <div className="subscription-icon-wrapper">
-                                        <div className="subscription-icon-svg">
-                                            <div className="subscription-main" />
-                                            <div className="subscription-dot" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div
+                            onClick={() => window.location.href = '/payment'}
+                            className="subscription-button">
+                            <div
 
-                            <div className="subscription-text-container">
+                                className="subscription-text-container">
                                 <div className="subscription-text">Gói cước</div>
                             </div>
                         </div>
@@ -170,7 +181,7 @@ function Navigation(props) {
                             <div className="user-profile-section">
                                 <div className="user-avatar" onClick={() => setShowUserDropdown(!showUserDropdown)}>
                                     <img
-                                        src={`${'http://localhost:8080/public'}${user.avatar || getDefaultAvatar()}`}
+                                        src={user.avatar ? `${'http://localhost:8080/public'}${user.avatar}` : getDefaultAvatar()}
                                         alt="User Avatar"
                                         className="avatar-image"
                                     />

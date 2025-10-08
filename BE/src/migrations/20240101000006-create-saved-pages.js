@@ -29,7 +29,7 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE'
             },
-            number_page: {
+            page_number: {
                 type: Sequelize.INTEGER,
                 allowNull: false
             },

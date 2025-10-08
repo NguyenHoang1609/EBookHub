@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ebookAPI } from '../../Util/Api';
+import { wishlistAPI } from '../../Util/Api';
 import Navigation from '../component/Navigation';
 import Footer from '../component/Footer';
 import Review from './components/Review';
 import ReportModal from './components/ReportModal';
 import './EbookDetail.scss';
-
+import Section from '../component/Section';
 const EbookDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -18,6 +19,9 @@ const EbookDetail = () => {
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const [user, setUser] = useState(null);
+    const [isFavourite, setIsFavourite] = useState(false);
+    const [favLoading, setFavLoading] = useState(false);
+
     useEffect(() => {
         const userData = localStorage.getItem('userData');
         if (userData) {
@@ -43,6 +47,37 @@ const EbookDetail = () => {
             fetchEbook();
         }
     }, [id]);
+
+    // Check if book is in wishlist on load
+    useEffect(() => {
+        if (user && id) {
+            wishlistAPI.check(user.id, id).then(res => {
+                setIsFavourite(!!res.data);
+            });
+        }
+    }, [user, id]);
+
+    const handleToggleFavourite = async () => {
+        if (!user) {
+            alert('Bạn cần đăng nhập để sử dụng chức năng này.');
+            return;
+        }
+        setFavLoading(true);
+        if (isFavourite) {
+            const res = await wishlistAPI.remove(user.id, id);
+            if (res.success) {
+                setIsFavourite(false);
+            }
+            alert(res.message);
+        } else {
+            const res = await wishlistAPI.add(user.id, id);
+            if (res.success) {
+                setIsFavourite(true);
+            }
+            alert(res.message);
+        }
+        setFavLoading(false);
+    };
 
     const renderStars = (rating) => {
         const stars = [];
@@ -90,6 +125,11 @@ const EbookDetail = () => {
     };
 
     const handleReadBook = () => {
+        if (ebook?.isVipEbook && !user?.isVip) {
+            alert('Cuốn sách này chỉ dành cho tài khoản VIP. Vui lòng nâng cấp để đọc.');
+            navigate('/payment');
+            return;
+        }
         navigate(`/reader/${id}`);
     };
 
@@ -186,11 +226,11 @@ const EbookDetail = () => {
                                     <span className="rating-count">13 đánh giá</span>
                                 </div>
                             </div>
-                            <div className="trending-badge">
+                            {/* <div className="trending-badge">
                                 <span className="trending-number">#1</span>
                                 <span className="trending-text">trong Top xu hướng Sách điện tử</span>
                                 <div className="trending-arrow">→</div>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="book-info-grid">
@@ -200,7 +240,7 @@ const EbookDetail = () => {
                             </div>
                             <div className="info-item">
                                 <span className="info-label">Thể loại</span>
-                                <span className="info-value">Truyện - Tiểu thuyết</span>
+                                {ebook?.types[0]?.name}
                             </div>
                             <div className="info-item">
                                 <span className="info-label">Nhà xuất bản</span>
@@ -208,7 +248,12 @@ const EbookDetail = () => {
                             </div>
                             <div className="info-item">
                                 <span className="info-label">Gói cước</span>
-                                <span className="info-value">Hội viên</span>
+                                {ebook.isVipEbook ? (
+                                    <span className="info-value">Hội viên</span>
+                                ) : (
+                                    <span className="info-value">Thường</span>
+                                )}
+
                             </div>
                             <div className="info-item">
                                 <span className="info-label">Phát hành</span>
@@ -217,7 +262,7 @@ const EbookDetail = () => {
                         </div>
 
                         {/* Book Type Selection */}
-                        <div className="selection-section">
+                        {/* <div className="selection-section">
                             <span className="selection-label">Chọn loại sách</span>
                             <div className="selection-buttons">
                                 <button
@@ -239,10 +284,10 @@ const EbookDetail = () => {
                                     Sách giấy
                                 </button>
                             </div>
-                        </div>
+                        </div> */}
 
                         {/* Content Type Selection */}
-                        <div className="selection-section">
+                        {/* <div className="selection-section">
                             <span className="selection-label">Chọn nội dung</span>
                             <div className="selection-buttons">
                                 <button
@@ -258,7 +303,7 @@ const EbookDetail = () => {
                                     Tóm tắt
                                 </button>
                             </div>
-                        </div>
+                        </div> */}
 
                         {/* Book Description */}
                         <div className="book-description">
@@ -280,16 +325,11 @@ const EbookDetail = () => {
                         {/* Action Buttons */}
                         <div className="action-buttons">
                             <button className="read-book-btn" onClick={handleReadBook}>
-                                <div className="book-icon">
-                                    <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
-                                        <path d="M3 3H22V22H3V3Z" stroke="white" strokeWidth="2" />
-                                    </svg>
-                                </div>
                                 <span>Đọc sách</span>
                             </button>
-                            <button className="action-btn heart-btn">
+                            <button className={`action-btn heart-btn${isFavourite ? ' active' : ''}`} onClick={handleToggleFavourite} disabled={favLoading} title={isFavourite ? 'Bỏ khỏi yêu thích' : 'Thêm vào yêu thích'}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z" fill="white" />
+                                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z" fill={isFavourite ? '#ff4d4f' : 'white'} />
                                 </svg>
                             </button>
                             <button className="action-btn share-btn">
@@ -306,7 +346,7 @@ const EbookDetail = () => {
                     </div>
 
                     {/* Right Sidebar - Member Offer */}
-                    <div className="member-offer-section">
+                    {/* <div className="member-offer-section">
                         <div className="offer-container">
                             <div className="offer-header">
                                 <h3>ƯU ĐÃI HỘI VIÊN</h3>
@@ -342,7 +382,7 @@ const EbookDetail = () => {
                                 <button className="buy-package-btn">MUA GÓI NGAY</button>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Reviews Section */}
@@ -350,80 +390,26 @@ const EbookDetail = () => {
 
 
                 {/* Related Books Sections */}
-                <div className="related-books-section">
-                    <h2>Có thể bạn thích</h2>
-                    <div className="books-carousel">
-                        {/* Sample books */}
-                        {[1, 2, 3, 4, 5].map((book) => (
-                            <div key={book} className="book-card">
-                                <div className="book-card-cover">
-                                    <img src="https://placehold.co/266x328" alt={`Book ${book}`} />
-                                    <div className="book-badge">
-                                        <span>Hội viên</span>
-                                    </div>
-                                </div>
-                                <h3 className="book-card-title">Sample Book {book}</h3>
-                            </div>
-                        ))}
-                    </div>
-                </div>
 
                 <div className="related-books-section">
-                    <h2>Cùng tác giả</h2>
-                    <div className="books-carousel">
-                        {[1, 2].map((book) => (
-                            <div key={book} className="book-card">
-                                <div className="book-card-cover">
-                                    <img src="https://placehold.co/266x328" alt={`Author Book ${book}`} />
-                                    <div className="book-badge">
-                                        <span>Hội viên</span>
-                                    </div>
-                                </div>
-                                <h3 className="book-card-title">Author Book {book}</h3>
-                            </div>
-                        ))}
-                    </div>
-                </div>
 
-                <div className="related-books-section">
-                    <h2>Waka đề xuất</h2>
-                    <div className="books-carousel">
-                        {[1, 2, 3, 4, 5].map((book) => (
-                            <div key={book} className="book-card">
-                                <div className="book-card-cover">
-                                    <img src="https://placehold.co/266x328" alt={`Recommended Book ${book}`} />
-                                    <div className="book-badge">
-                                        <span>Hội viên</span>
-                                    </div>
-                                </div>
-                                <h3 className="book-card-title">Recommended Book {book}</h3>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="related-books-section">
-                    <h2>Được đọc nhiều</h2>
-                    <div className="books-carousel">
-                        {[1, 2, 3, 4, 5].map((book) => (
-                            <div key={book} className="book-card">
-                                <div className="book-card-cover">
-                                    <img src="https://placehold.co/266x328" alt={`Popular Book ${book}`} />
-                                    <div className="book-badge">
-                                        <span>Hội viên</span>
-                                    </div>
-                                </div>
-                                <h3 className="book-card-title">Popular Book {book}</h3>
-                            </div>
-                        ))}
-                    </div>
+                    <Section
+                        title="Sách mới nhất"
+                        apiType="getAllEbooks"
+                        apiParams={{
+                            page: 1,
+                            limit: 10,
+                            status: 'published'
+                        }}
+                        showRanking={false}
+                        showMemberBadge={false} />
                 </div>
 
                 {/* Partner Section */}
                 <div className="partner-section">
                     <h2>Đối tác</h2>
                     <div className="partner-banner">
-                        <img src="https://placehold.co/600x282" alt="Partner Banner" />
+                        <img src="https://307a0e78.vws.vegacdn.vn/view/v2/image/img.banner_web_v2/0/0/0/3508.jpg?v=8&w=1920&h=600" alt="Partner Banner" />
                     </div>
                 </div>
             </div>

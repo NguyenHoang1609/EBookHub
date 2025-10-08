@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageFlip } from 'page-flip';
 import { ebookAPI } from '../../Util/Api';
+import { audioAPI } from '../../Util/Api';
+import { savedPageAPI } from '../../Util/Api';
 import Navigation from '../component/Navigation';
 import Footer from '../component/Footer';
 import './Reader.scss';
@@ -14,9 +16,21 @@ const Reader = () => {
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [isReading, setIsReading] = useState(false);
+    const [audioUrl, setAudioUrl] = useState(null);
+    const [audioLoading, setAudioLoading] = useState(false);
+    const audioRef = useRef(null);
 
     const pageFlipRef = useRef(null);
     const bookRef = useRef(null);
+    const [saveStatus, setSaveStatus] = useState(null);
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const userData = localStorage.getItem('userData');
+        if (userData) setUser(JSON.parse(userData));
+    }, []);
 
     useEffect(() => {
         const fetchEbook = async () => {
@@ -197,6 +211,41 @@ const Reader = () => {
         navigate(`/book/${id}`);
     };
 
+    const handleSavePage = async () => {
+        if (!user) {
+            alert('Bạn cần đăng nhập để lưu trang.');
+            return;
+        }
+        setSaveLoading(true);
+        const bookId = ebook?.ebookId;
+        const pageNumber = currentPage + 1 - (ebook?.coverImage ? 1 : 0);
+        if (!bookId || pageNumber < 1) {
+            setSaveLoading(false);
+            alert('Không thể lưu trang này.');
+            return;
+        }
+        const res = await savedPageAPI.saveOrUpdate(user.id, bookId, pageNumber);
+        setSaveStatus(res.success ? 'saved' : 'error');
+        setSaveLoading(false);
+        alert(res.message);
+    };
+
+    // Helper to get text of two visible pages
+    const getVisiblePagesText = () => {
+        if (!ebook || !ebook.pages || ebook.pages.length === 0) return '';
+        // PageFlip: cover is page 0, then content pages start at 1
+        let leftPageIdx = currentPage;
+        let rightPageIdx = currentPage + 1;
+        // If cover exists, adjust
+        if (ebook.coverImage) {
+            leftPageIdx = currentPage - 1;
+            rightPageIdx = currentPage;
+        }
+        let leftText = (ebook.pages[leftPageIdx] && ebook.pages[leftPageIdx].content) || '';
+        let rightText = (ebook.pages[rightPageIdx] && ebook.pages[rightPageIdx].content) || '';
+        return (leftText + '\n' + rightText).trim();
+    };
+
     if (loading) {
         return (
             <div className="reader-container">
@@ -254,6 +303,52 @@ const Reader = () => {
                     <div className="book-info">
                         <h2>{ebook.title}</h2>
                     </div>
+                    <div className="audio-controls">
+                        <button
+                            className="audio-read-btn"
+                            onClick={async () => {
+                                setAudioLoading(true);
+                                setIsReading(false);
+                                setAudioUrl(null);
+                                const text = getVisiblePagesText();
+                                if (!text) {
+                                    setAudioLoading(false);
+                                    return;
+                                }
+                                const result = await audioAPI.textToSpeech(text);
+                                if (result.success) {
+                                    const url = URL.createObjectURL(result.data);
+                                    setAudioUrl(url);
+                                    setIsReading(true);
+                                }
+                                setAudioLoading(false);
+                            }}
+                            disabled={audioLoading}
+                        >
+                            {audioLoading ? 'Đang tạo...' : 'Đọc tự động'}
+                        </button>
+                        {audioUrl && (
+                            <>
+                                <audio ref={audioRef} src={audioUrl} autoPlay controls onEnded={() => setIsReading(false)} />
+                                <button className="audio-pause-btn" onClick={() => {
+                                    if (audioRef.current) {
+                                        if (!audioRef.current.paused) {
+                                            audioRef.current.pause();
+                                            setIsReading(false);
+                                        } else {
+                                            audioRef.current.play();
+                                            setIsReading(true);
+                                        }
+                                    }
+                                }}>
+                                    {isReading ? 'Pause' : 'Play'}
+                                </button>
+                            </>
+                        )}
+                    </div>
+                    <button className="save-page-btn" onClick={handleSavePage} disabled={saveLoading} title="Lưu trang này vào tủ sách cá nhân">
+                        {saveLoading ? 'Đang lưu...' : 'Lưu trang'}
+                    </button>
                 </div>
             </div>
 

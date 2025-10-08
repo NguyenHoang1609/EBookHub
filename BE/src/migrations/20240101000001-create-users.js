@@ -40,6 +40,11 @@ module.exports = {
                 allowNull: true,
                 defaultValue: null
             },
+            is_vip: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
+            },
             is_active: {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,

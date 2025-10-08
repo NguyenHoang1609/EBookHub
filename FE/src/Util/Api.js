@@ -1317,6 +1317,24 @@ const contentModerationAPI = {
                 error: error.response?.data || error.message
             };
         }
+    },
+
+    validateCommentContent: async (content) => {
+        try {
+            const response = await API.post('/moderation/validate/comment', { content });
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to validate comment content',
+                error: error.response?.data || error.message
+            };
+        }
     }
 };
 
@@ -1339,5 +1357,112 @@ const apiUtils = {
     }
 };
 
+const paymentAPI = {
+    list: async () => {
+        try {
+            const response = await API.get('/payments');
+            return { success: true, data: response.data };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to fetch payments', error: error.response?.data || error.message };
+        }
+    },
+    create: async (payload) => {
+        try {
+            const response = await API.post('/payments', payload);
+            return { success: true, data: response.data };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to create payment', error: error.response?.data || error.message };
+        }
+    },
+    status: async (userId, amount) => {
+        try {
+            const response = await API.get(`/payments/status?userId=${userId}&amount=${amount}`);
+            return { success: true, data: response.data };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to check payment status', error: error.response?.data || error.message };
+        }
+    }
+};
+
+const wishlistAPI = {
+    add: async (userId, ebookId) => {
+        try {
+            const response = await API.post('/wishlist', { userId, ebookId });
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to add to wishlist', error: error.response?.data || error.message };
+        }
+    },
+    remove: async (userId, ebookId) => {
+        try {
+            const response = await API.delete('/wishlist', { data: { userId, ebookId } });
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to remove from wishlist', error: error.response?.data || error.message };
+        }
+    },
+    list: async (userId) => {
+        try {
+            const response = await API.get(`/wishlist?userId=${userId}`);
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to fetch wishlist', error: error.response?.data || error.message };
+        }
+    },
+    check: async (userId, ebookId) => {
+        try {
+            const response = await API.get(`/wishlist/check?userId=${userId}&ebookId=${ebookId}`);
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to check wishlist', error: error.response?.data || error.message };
+        }
+    }
+};
+
+const savedPageAPI = {
+    saveOrUpdate: async (userId, bookId, pageNumber) => {
+        try {
+            const response = await API.post('/saved-page', { userId, bookId, pageNumber });
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to save page', error: error.response?.data || error.message };
+        }
+    },
+    remove: async (userId, bookId) => {
+        try {
+            const response = await API.delete('/saved-page', { data: { userId, bookId } });
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to remove saved page', error: error.response?.data || error.message };
+        }
+    },
+    list: async (userId) => {
+        try {
+            const response = await API.get(`/saved-page?userId=${userId}`);
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to fetch saved pages', error: error.response?.data || error.message };
+        }
+    },
+    get: async (userId, bookId) => {
+        try {
+            const response = await API.get(`/saved-page/get?userId=${userId}&bookId=${bookId}`);
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to fetch saved page', error: error.response?.data || error.message };
+        }
+    }
+};
+
+// Extend paymentAPI for user payment history
+paymentAPI.getByUser = async (userId) => {
+    try {
+        const response = await API.get(`/payments/user?userId=${userId}`);
+        return { success: true, data: response.data.data.DT };
+    } catch (error) {
+        return { success: false, message: error.response?.data?.EM || 'Failed to fetch payment history', error: error.response?.data || error.message };
+    }
+};
+
 export default API;
-export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, violationAPI, contentModerationAPI, apiUtils };
+export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, violationAPI, contentModerationAPI, apiUtils, paymentAPI, audioAPI, wishlistAPI, savedPageAPI };

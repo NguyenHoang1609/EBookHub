@@ -63,4 +63,83 @@
             }
         }
     }
+
+    .book-list {
+        display        : flex;
+        flex-wrap      : wrap;
+        gap            : 24px;
+        justify-content: flex-start;
+        margin-top     : 24px;
+    }
+
+    .book-item {
+        background    : #23272f;
+        border-radius : 12px;
+        box-shadow    : 0 2px 8px rgba(0, 0, 0, 0.12);
+        display       : flex;
+        flex-direction: row;
+        align-items   : center;
+        padding       : 16px;
+        min-width     : 320px;
+        max-width     : 400px;
+        width         : 100%;
+        gap           : 20px;
+        transition    : box-shadow 0.2s;
+
+        &:hover {
+            box-shadow: 0 4px 16px rgba(21, 176, 136, 0.15);
+        }
+    }
+
+    .book-cover {
+        width          : 80px;
+        height         : 110px;
+        background     : #181a20;
+        border-radius  : 8px;
+        overflow       : hidden;
+        display        : flex;
+        align-items    : center;
+        justify-content: center;
+
+        img {
+            width        : 100%;
+            height       : 100%;
+            object-fit   : cover;
+            border-radius: 8px;
+        }
+
+        .placeholder-cover {
+            color     : #b3b3b3;
+            font-size : 14px;
+            text-align: center;
+        }
+    }
+
+    .book-info {
+        flex          : 1;
+        display       : flex;
+        flex-direction: column;
+        gap           : 8px;
+
+        h4 {
+            color      : #fff;
+            font-size  : 18px;
+            margin     : 0 0 4px 0;
+            font-weight: 600;
+            text-align : left;
+        }
+
+        .book-meta {
+            color    : #b3b3b3;
+            font-size: 14px;
+        }
+
+        .progress-info {
+            color      : #15b088;
+            font-size  : 14px;
+            font-weight: 500;
+            margin-top : 4px;
+            text-align : left;
+        }
+    }
 }

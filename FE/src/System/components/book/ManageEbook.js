@@ -471,6 +471,7 @@ const ManageEbook = () => {
                                     <TableCell>Ebook</TableCell>
                                     <TableCell>Author</TableCell>
                                     <TableCell>Status</TableCell>
+                                    <TableCell>VIP-Only</TableCell>
                                     <TableCell>Views</TableCell>
                                     <TableCell>Created</TableCell>
                                     <TableCell align="center">Actions</TableCell>
@@ -524,6 +525,13 @@ const ManageEbook = () => {
                                             <Chip
                                                 label={ebook.status.replace('_', ' ').toUpperCase()}
                                                 color={getStatusColor(ebook.status)}
+                                                size="small"
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={ebook.isVipEbook ? 'VIP' : 'Public'}
+                                                color={ebook.isVipEbook ? 'warning' : 'default'}
                                                 size="small"
                                             />
                                         </TableCell>

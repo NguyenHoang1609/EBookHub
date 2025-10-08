@@ -50,6 +50,12 @@ const Ebook = sequelize.define('Ebook', {
         allowNull: false,
         defaultValue: 'draft'
     },
+    isVipEbook: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+        field: 'is_vip_ebook'
+    },
     coverImage: {
         type: DataTypes.STRING(500),
         allowNull: true,
@@ -74,6 +80,6 @@ const Ebook = sequelize.define('Ebook', {
 });
 
 // Remove individual sync call to prevent deadlocks
-Ebook.sync({ alter: true });
+// Ebook.sync({ alter: true });
 
 module.exports = Ebook;

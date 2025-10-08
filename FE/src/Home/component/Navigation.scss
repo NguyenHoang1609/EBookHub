@@ -13,7 +13,7 @@
 
     .navigation-content {
         align-self     : stretch;
-        min-height     : 88px;
+        min-height     : 50px;
         justify-content: space-between;
         align-items    : flex-start;
         display        : inline-flex;
@@ -24,13 +24,14 @@
             align-items    : center;
             gap            : 48px;
             display        : flex;
-            width          : 70%;
+            width          : 90%;
 
             .logo-section {
                 align-self     : stretch;
                 justify-content: center;
                 align-items    : center;
                 display        : flex;
+                cursor         : pointer;
 
                 .logo-image {
                     width    : 115px;
@@ -72,12 +73,15 @@
                     justify-content: flex-start;
                     align-items    : flex-start;
                     display        : inline-flex;
+                    cursor         : pointer;
+
 
                     .menu-item-content {
                         flex-direction : column;
                         justify-content: flex-start;
                         align-items    : flex-start;
                         display        : flex;
+
 
                         .menu-text {
                             justify-content   : center;
@@ -89,6 +93,11 @@
                             line-height       : 24px;
                             white-space       : nowrap;
                             // word-wrap      : break-word;
+                            transition        : all 0.3s ease;
+
+                            &:hover {
+                                color: #15B088;
+                            }
                         }
                     }
 
@@ -178,6 +187,7 @@
                     justify-content: flex-start;
                     align-items    : center;
                     display        : inline-flex;
+                    cursor         : pointer;
 
                     .subscription-icon {
                         width          : 16px;
@@ -239,7 +249,8 @@
                         flex-direction : column;
                         justify-content: flex-start;
                         align-items    : flex-start;
-                        display        : inline-flex;
+
+                        display: inline-flex;
 
                         .subscription-text {
                             justify-content: center;

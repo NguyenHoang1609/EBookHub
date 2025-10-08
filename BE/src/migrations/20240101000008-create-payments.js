@@ -9,6 +9,10 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
+            webhook_id: {
+                type: Sequelize.BIGINT,
+                allowNull: true
+            },
             user_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
@@ -19,16 +23,7 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE'
             },
-            ebook_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                references: {
-                    model: 'ebooks',
-                    key: 'ebook_id'
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE'
-            },
+
             amount: {
                 type: Sequelize.DECIMAL(10, 2),
                 allowNull: false
@@ -39,6 +34,46 @@ module.exports = {
             },
             account_number: {
                 type: Sequelize.STRING(100),
+                allowNull: true
+            },
+            gateway: {
+                type: Sequelize.STRING(100),
+                allowNull: true
+            },
+            transaction_date: {
+                type: Sequelize.DATE,
+                allowNull: true
+            },
+            code: {
+                type: Sequelize.STRING(255),
+                allowNull: true
+            },
+            content: {
+                type: Sequelize.TEXT,
+                allowNull: true
+            },
+            transfer_type: {
+                type: Sequelize.ENUM('in', 'out'),
+                allowNull: true
+            },
+            transfer_amount: {
+                type: Sequelize.INTEGER,
+                allowNull: true
+            },
+            accumulated: {
+                type: Sequelize.BIGINT,
+                allowNull: true
+            },
+            sub_account: {
+                type: Sequelize.STRING(100),
+                allowNull: true
+            },
+            reference_code: {
+                type: Sequelize.STRING(255),
+                allowNull: true
+            },
+            raw_description: {
+                type: Sequelize.TEXT,
                 allowNull: true
             },
             status: {
@@ -63,9 +98,7 @@ module.exports = {
             name: 'payments_user_id_index'
         });
 
-        await queryInterface.addIndex('payments', ['ebook_id'], {
-            name: 'payments_ebook_id_index'
-        });
+
 
         await queryInterface.addIndex('payments', ['status'], {
             name: 'payments_status_index'
@@ -74,9 +107,19 @@ module.exports = {
         await queryInterface.addIndex('payments', ['created_at'], {
             name: 'payments_created_at_index'
         });
+
+        await queryInterface.addIndex('payments', ['reference_code'], {
+            name: 'payments_reference_code_index'
+        });
     },
 
     async down(queryInterface, Sequelize) {
+        await queryInterface.removeIndex('payments', 'payments_reference_code_index');
+        await queryInterface.removeIndex('payments', 'payments_created_at_index');
+        await queryInterface.removeIndex('payments', 'payments_status_index');
+        await queryInterface.removeIndex('payments', 'payments_user_id_index');
+        await queryInterface.sequelize.query("DROP TYPE IF EXISTS \"enum_payments_transfer_type\";");
+        await queryInterface.sequelize.query("DROP TYPE IF EXISTS \"enum_payments_status\";");
         await queryInterface.dropTable('payments');
     }
 };

@@ -382,6 +382,27 @@ const UserForm = ({ open, user, isViewMode = false, groups = [], onClose }) => {
                         }
                     />
 
+                    {/* VIP Toggle */}
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={!!formData.isVip}
+                                onChange={handleSwitchChange('isVip')}
+                                disabled={isViewMode}
+                            />
+                        }
+                        label={
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Typography>VIP Member</Typography>
+                                <Chip
+                                    label={formData.isVip ? 'VIP' : 'Normal'}
+                                    color={formData.isVip ? 'warning' : 'default'}
+                                    size="small"
+                                />
+                            </Box>
+                        }
+                    />
+
                     {/* User Details (View Mode) */}
                     {isViewMode && user && (
                         <>

@@ -49,7 +49,6 @@ Ebook.belongsTo(User, { foreignKey: 'authorId', as: 'author' });
 Ebook.hasMany(Page, { foreignKey: 'ebookId', as: 'pages' });
 Ebook.hasMany(SavedPage, { foreignKey: 'bookId', as: 'savedPages' });
 Ebook.hasMany(ReviewRating, { foreignKey: 'ebookId', as: 'reviews' });
-Ebook.hasMany(Payment, { foreignKey: 'ebookId', as: 'payments' });
 Ebook.hasMany(Notification, { foreignKey: 'bookId', as: 'notifications' });
 Ebook.hasMany(LibraryWishlist, { foreignKey: 'ebookId', as: 'libraryItems' });
 Ebook.hasMany(AuthorViolation, { foreignKey: 'ebookId', as: 'violations' });
@@ -77,7 +76,7 @@ ReviewRating.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
 
 // Payment associations
 Payment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-Payment.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
+
 
 // Notification associations
 Notification.belongsTo(User, { foreignKey: 'senderId', as: 'sender' });

@@ -404,6 +404,7 @@ const ManageUser = () => {
                                     <TableCell>Email</TableCell>
                                     <TableCell>Phone</TableCell>
                                     <TableCell>Group</TableCell>
+                                    <TableCell>VIP</TableCell>
                                     <TableCell>Status</TableCell>
                                     <TableCell>Created</TableCell>
                                     <TableCell align="center">Actions</TableCell>
@@ -431,6 +432,13 @@ const ManageUser = () => {
                                                 size="small"
                                                 color="primary"
                                                 variant="outlined"
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={user.isVip ? 'VIP' : 'Normal'}
+                                                color={user.isVip ? 'warning' : 'default'}
+                                                size="small"
                                             />
                                         </TableCell>
                                         <TableCell>

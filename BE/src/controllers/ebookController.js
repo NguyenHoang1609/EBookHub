@@ -58,7 +58,7 @@ const createEbook = async (req, res) => {
     try {
         console.log('Create ebook request received:', req.body);
 
-        const { authorId, title, description, status } = req.body;
+        const { authorId, title, description, status, isVipEbook } = req.body;
 
         if (!authorId || !title) {
             return res.status(400).json({
@@ -72,7 +72,8 @@ const createEbook = async (req, res) => {
             authorId,
             title,
             description,
-            status
+            status,
+            isVipEbook
         });
 
         if (result.EC === 0) {
@@ -112,7 +113,7 @@ const uploadEbook = async (req, res) => {
             });
         }
 
-        const { authorId, title, description, status } = req.body;
+        const { authorId, title, description, status, isVipEbook } = req.body;
 
         if (!authorId || !title) {
             return res.status(400).json({
@@ -129,7 +130,8 @@ const uploadEbook = async (req, res) => {
             description,
             status,
             pdfPath: req.files.pdfFile[0].path,
-            originalName: req.files.pdfFile[0].originalname
+            originalName: req.files.pdfFile[0].originalname,
+            isVipEbook
         };
 
         // Add cover image if provided
@@ -159,14 +161,15 @@ const getAllEbooks = async (req, res) => {
     try {
         console.log('Get all ebooks request received:', req.query);
 
-        const { page = 1, limit = 10, status, authorId, search } = req.query;
+        const { page = 1, limit = 10, status, authorId, search, typeId } = req.query;
 
         const result = await ebookService.getAllEbooks({
             page: parseInt(page),
             limit: parseInt(limit),
             status,
             authorId,
-            search
+            search,
+            typeId
         });
 
         if (result.EC === 0) {
@@ -223,7 +226,7 @@ const updateEbook = async (req, res) => {
         console.log('Update ebook request received:', req.params, req.body);
 
         const { ebookId } = req.params;
-        const { title, description, status } = req.body;
+        const { title, description, status, isVipEbook } = req.body;
 
         if (!ebookId) {
             return res.status(400).json({
@@ -236,7 +239,8 @@ const updateEbook = async (req, res) => {
         const result = await ebookService.updateEbook(ebookId, {
             title,
             description,
-            status
+            status,
+            isVipEbook
         });
 
         if (result.EC === 0) {

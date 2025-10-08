@@ -34,14 +34,14 @@ const ManageViolation = () => {
 
     const violationStatuses = [
         { value: '', label: 'Tất cả trạng thái' },
-        { value: 'open', label: 'Mở' },
+        { value: 'open', label: 'Đang giải quyết' },
         { value: 'under_review', label: 'Đang xem xét' },
         { value: 'resolved', label: 'Đã giải quyết' },
         { value: 'dismissed', label: 'Đã bỏ qua' }
     ];
 
     const ebookStatuses = [
-        { value: 'published', label: 'Đã xuất bản' },
+        { value: 'published', label: 'Giữ nguyên' },
         { value: 'blocked', label: 'Bị chặn' },
         { value: 'pending_review', label: 'Chờ xem xét' },
         { value: 'archived', label: 'Lưu trữ' }

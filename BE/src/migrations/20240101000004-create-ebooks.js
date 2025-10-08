@@ -41,6 +41,11 @@ module.exports = {
                 allowNull: false,
                 defaultValue: 'draft'
             },
+            is_vip_ebook: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
+            },
             created_at: {
                 allowNull: false,
                 type: Sequelize.DATE,

@@ -12,10 +12,13 @@
         gap            : 1.33%; // 20px/1500px ≈ 1.33%
         display        : flex;
 
+
         .section-header {
-            justify-content: flex-start;
             align-items    : center;
             display        : flex;
+            justify-content: space-between;
+            width          : 100%;
+            margin-bottom  : 2%;
 
             .header-content {
                 flex-direction : column;
@@ -34,6 +37,14 @@
                     line-height    : 1.73rem; // 26px ≈ 1.73rem
                     word-wrap      : break-word;
                 }
+            }
+
+            .see-more-button {
+                color        : #15B088;
+                font-size    : 1.05rem; // 15.75px ≈ 1.05rem
+                font-weight  : 500;
+                cursor       : pointer;
+                padding-right: 2%;
             }
         }
 

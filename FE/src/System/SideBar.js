@@ -13,17 +13,16 @@ const SideBar = ({ onNavigation, activeSection }) => {
         { id: 'moderation', label: 'Moderation', icon: '/Iconly/Bold/Image.svg', roles: [1] }, // Admin only
         { id: 'violation', label: 'Violation', icon: '/Iconly/Bold/Document.svg', roles: [1] }, // Admin only
         { id: 'comment', label: 'Comments', icon: '/Iconly/Bold/Chat.svg', badge: 1, roles: [1] }, // Admin only
-        // { id: 'appearance', label: 'Appearance', icon: '/Iconly/Bold/Category.svg', roles: [1] }, // Admin only
-        // { id: 'plugins', label: 'Plugins', icon: '/Iconly/Bold/Bag.svg', roles: [1] }, // Admin only
         { id: 'users', label: 'Users', icon: '/Iconly/Bold/3-User.svg', roles: [1] }, // Admin only
-        // { id: 'settings', label: 'Settings', icon: '/Iconly/Bold/Setting.svg', roles: [1] }, // Admin only
-        // { id: 'tools', label: 'Tools', icon: '/Iconly/Bold/Filter.svg', roles: [1] }, // Admin only
     ];
     // Filter navigation items based on user role
     const navItems = allNavItems.filter(item => {
         if (!userRole) return false;
         return item.roles.includes(userRole);
     });
+
+
+    // [1,2] === [2] 
 
     // Check user role from localStorage on component mount
     useEffect(() => {

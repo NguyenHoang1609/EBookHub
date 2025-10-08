@@ -230,6 +230,80 @@
     }
 }
 
+.save-page-btn {
+    background   : #15b088;
+    color        : #fff;
+    border       : none;
+    padding      : 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-size    : 1rem;
+    font-weight  : 600;
+    cursor       : pointer;
+    margin-left  : 1rem;
+    transition   : background 0.2s;
+
+    &:hover:not(:disabled) {
+        background: #11997a;
+    }
+
+    &:disabled {
+        background: #b2dfdb;
+        color     : #888;
+        cursor    : not-allowed;
+    }
+}
+
+.audio-controls {
+    display    : flex;
+    align-items: center;
+    gap        : 1rem;
+    margin-left: 2rem;
+
+    .audio-read-btn {
+        background   : #81c784;
+        color        : #1a202c;
+        border       : none;
+        padding      : 0.5rem 1.2rem;
+        border-radius: 8px;
+        font-size    : 1rem;
+        font-weight  : 600;
+        cursor       : pointer;
+        transition   : background 0.2s;
+
+        &:hover:not(:disabled) {
+            background: #66bb6a;
+        }
+
+        &:disabled {
+            background: #b2dfdb;
+            color     : #888;
+            cursor    : not-allowed;
+        }
+    }
+
+    .audio-pause-btn {
+        background   : #4a5568;
+        color        : #e2e8f0;
+        border       : 1px solid #718096;
+        padding      : 0.5rem 1rem;
+        border-radius: 8px;
+        font-size    : 0.9rem;
+        font-weight  : 500;
+        cursor       : pointer;
+        margin-left  : 0.5rem;
+        transition   : background 0.2s;
+
+        &:hover {
+            background: #2d3748;
+        }
+    }
+
+    audio {
+        margin-left: 1rem;
+        height     : 32px;
+    }
+}
+
 // Page styles for PageFlip
 .page {
     background     : #1a202c;

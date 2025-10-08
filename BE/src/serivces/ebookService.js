@@ -57,6 +57,19 @@ const createEbook = async (ebookData) => {
             };
         }
 
+        // Check if ebook title already exists
+        const existingEbook = await db.Ebook.findOne({
+            where: { title: title.trim() }
+        });
+
+        if (existingEbook) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Ebook is exist!'
+            };
+        }
+
         const author = await db.User.findByPk(authorId);
         if (!author) {
             return {
@@ -68,7 +81,7 @@ const createEbook = async (ebookData) => {
 
         const ebook = await db.Ebook.create({
             authorId,
-            title,
+            title: title.trim(),
             description,
             status: status || 'draft'
         });
@@ -95,7 +108,7 @@ const uploadEbook = async (uploadData) => {
     let ebookDir = null;
 
     try {
-        const { authorId, title, description, status, pdfPath, originalName, coverImagePath } = uploadData;
+        const { authorId, title, description, status, pdfPath, originalName, coverImagePath, isVipEbook } = uploadData;
         console.log('Upload data received:', { authorId, title, originalName, pdfPath: pdfPath ? 'exists' : 'missing', coverImagePath: coverImagePath ? 'exists' : 'missing' });
 
         if (!authorId || !title || !pdfPath) {
@@ -133,6 +146,7 @@ const uploadEbook = async (uploadData) => {
             authorId,
             title,
             description,
+            isVipEbook: isVipEbook || false,
             file_path: pdfPath || '',
             viewCount: 0,
             status: status || 'draft'
@@ -295,7 +309,7 @@ const uploadEbook = async (uploadData) => {
 
 const getAllEbooks = async (queryParams) => {
     try {
-        const { page = 1, limit = 10, status, authorId, search } = queryParams;
+        const { page = 1, limit = 10, status, authorId, search, typeId } = queryParams;
         const offset = (page - 1) * limit;
 
         let whereClause = {};
@@ -315,22 +329,32 @@ const getAllEbooks = async (queryParams) => {
             ];
         }
 
+        // Build include options
+        const includeOptions = [
+            {
+                model: db.User,
+                as: 'author',
+                attributes: ['id', 'email', 'name']
+            },
+            {
+                model: db.Type,
+                as: 'types',
+                through: { attributes: [] },
+                attributes: ['typeId', 'name', 'description']
+            }
+        ];
+
+        // Add type filtering if typeId is provided
+        if (typeId) {
+            includeOptions[1].where = {
+                typeId: typeId
+            };
+            includeOptions[1].required = true; // This makes it an INNER JOIN
+        }
+
         const { count, rows } = await db.Ebook.findAndCountAll({
             where: whereClause,
-            include: [
-                {
-                    model: db.User,
-                    as: 'author',
-                    attributes: ['id', 'email', 'name']
-                },
-                {
-                    model: db.Type,
-                    as: 'types',
-                    through: { attributes: [] },
-                    attributes: ['typeId', 'name', 'description']
-                }
-            ],
-
+            include: includeOptions,
             offset,
             limit,
             distinct: true
@@ -424,7 +448,7 @@ const getEbookById = async (ebookId, includePages = false) => {
 
 const updateEbook = async (ebookId, updateData) => {
     try {
-        const { title, description, status } = updateData;
+        const { title, description, status, isVipEbook } = updateData;
 
         if (!ebookId) {
             return {
@@ -447,6 +471,7 @@ const updateEbook = async (ebookId, updateData) => {
         if (title !== undefined) updateFields.title = title;
         if (description !== undefined) updateFields.description = description;
         if (status !== undefined) updateFields.status = status;
+        if (isVipEbook !== undefined) updateFields.isVipEbook = isVipEbook;
 
         await ebook.update(updateFields);
 

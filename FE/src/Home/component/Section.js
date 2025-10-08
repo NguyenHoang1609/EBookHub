@@ -156,35 +156,16 @@ function Section(props) {
                     <div className="header-content">
                         <div className="section-title">{title}</div>
                     </div>
+                    {apiType === 'getAllEbooks' && (
+                        <div
+                            onClick={() => {
+                                navigate('/more-ebook');
+                            }}
+                            className='see-more-button'>Xem thêm</div>
+                    )}
                 </div>
 
-                <div className="section-tabs">
-                    <div className="tab-item active">
-                        <div className="tab-content">
-                            <div className="tab-text">Đọc nhiều</div>
-                        </div>
-                    </div>
-                    <div className="tab-item inactive">
-                        <div className="tab-content">
-                            <div className="tab-text">Nghe nhiều</div>
-                        </div>
-                    </div>
-                    <div className="tab-item inactive">
-                        <div className="tab-content">
-                            <div className="tab-text">Sách Hiệu Sồi</div>
-                        </div>
-                    </div>
-                    <div className="tab-item inactive">
-                        <div className="tab-content">
-                            <div className="tab-text">Podcast</div>
-                        </div>
-                    </div>
-                    <div className="tab-item inactive community">
-                        <div className="tab-content">
-                            <div className="tab-text">Cộng đồng viết</div>
-                        </div>
-                    </div>
-                </div>
+
 
                 <div className="books-grid-container">
                     {ebooks.length > 0 ? (

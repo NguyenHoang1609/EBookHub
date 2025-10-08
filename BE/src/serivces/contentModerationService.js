@@ -597,6 +597,88 @@ const validateAllEbooks = async () => {
     }
 };
 
+const validateCommentContent = async (content) => {
+    try {
+        if (!content || typeof content !== 'string') {
+            return {
+                DT: { isValid: true, violations: [], message: 'Content is valid' },
+                EC: 0,
+                EM: 'Content is valid!'
+            };
+        }
+
+        // Get all active moderation words
+        const moderationWords = await db.ContentModeration.findAll({
+            where: { isActive: true },
+            attributes: ['word', 'severity', 'category', 'language']
+        });
+
+        if (moderationWords.length === 0) {
+            return {
+                DT: { isValid: true, violations: [], message: 'Content is valid' },
+                EC: 0,
+                EM: 'Content is valid!'
+            };
+        }
+
+        const violations = [];
+        const contentLower = content.toLowerCase();
+
+        // Check for violations
+        moderationWords.forEach(moderationWord => {
+            const word = moderationWord.word.toLowerCase();
+            if (contentLower.includes(word)) {
+                violations.push({
+                    word: moderationWord.word,
+                    severity: moderationWord.severity,
+                    category: moderationWord.category,
+                    language: moderationWord.language,
+                    foundAt: contentLower.indexOf(word)
+                });
+            }
+        });
+
+        // Determine if content is valid based on severity
+        const hasCriticalViolations = violations.some(v => v.severity === 'critical');
+        const hasHighViolations = violations.some(v => v.severity === 'high');
+        const hasMediumViolations = violations.some(v => v.severity === 'medium');
+
+        const isValid = !hasCriticalViolations && !hasHighViolations;
+
+        let message = 'Content is valid';
+        if (!isValid) {
+            if (hasCriticalViolations) {
+                message = 'Comment bao gồm nội dung bị cấm nên sẽ không được đăng';
+            } else if (hasHighViolations) {
+                message = 'Comment bao gồm nội dung bị cấm nên sẽ không được đăng';
+            }
+        } else if (hasMediumViolations) {
+            message = 'Comment bao gồm nội dung bị cấm nên sẽ không được đăng';
+        }
+
+        return {
+            DT: {
+                isValid,
+                violations,
+                severity: hasCriticalViolations ? 'critical' :
+                    hasHighViolations ? 'high' :
+                        hasMediumViolations ? 'medium' : 'low',
+                message
+            },
+            EC: 0,
+            EM: isValid ? 'Content is valid!' : 'Content contains inappropriate material!'
+        };
+
+    } catch (error) {
+        console.log('Validate comment content error:', error);
+        return {
+            DT: { isValid: false, violations: [], message: 'Validation failed' },
+            EC: -1,
+            EM: 'Failed to validate comment content!'
+        };
+    }
+};
+
 export default {
     createModerationWord,
     getAllModerationWords,
@@ -607,5 +689,6 @@ export default {
     getModerationStats,
     validateContent,
     validateEbookContent,
-    validateAllEbooks
+    validateAllEbooks,
+    validateCommentContent
 };

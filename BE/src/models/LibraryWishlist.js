@@ -26,11 +26,7 @@ const LibraryWishlist = sequelize.define('LibraryWishlist', {
             key: 'ebook_id'
         }
     },
-    type: {
-        type: DataTypes.ENUM('library', 'wishlist'),
-        allowNull: false,
-        defaultValue: 'wishlist'
-    }
+
 }, {
     tableName: 'library_wishlists',
     timestamps: true,
@@ -38,19 +34,18 @@ const LibraryWishlist = sequelize.define('LibraryWishlist', {
     updatedAt: 'updated_at',
     indexes: [
         {
-            unique: true,
-            fields: ['user_id', 'ebook_id', 'type']
-        },
-        {
             fields: ['user_id']
         },
         {
             fields: ['ebook_id']
         },
         {
-            fields: ['type']
-        }
+            unique: true,
+            fields: ['user_id', 'ebook_id']
+        },
     ]
 });
+
+// LibraryWishlist.sync({ alter: true });
 
 module.exports = LibraryWishlist;
