@@ -503,7 +503,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                         Validation Status
                                     </Typography>
                                     <Chip
-                                        icon={contentValidationResult.isValid ? <CheckIcon /> : <CancelIcon />}
+                                        icon={contentValidationResult.isValid ? <CheckIcon /> :<div>x</div>}
                                         label={contentValidationResult.isValid ? 'PASSED' : 'FAILED'}
                                         color={contentValidationResult.isValid ? 'success' : 'error'}
                                         size="small"

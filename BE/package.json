@@ -1,5 +1,5 @@
 {
-  "name": "bao-duy",
+  "name": "hoang",
   "version": "1.0.0",
   "description": "e-commerce project",
   "main": "sever.js",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": ""
   },
-  "author": "BaoDuy",
+  "author": "Hoang",
   "license": "ISC",
   "bugs": {
     "url": ""

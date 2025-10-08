@@ -459,6 +459,7 @@ const removeUserFavouriteType = async (userId, typeId) => {
 };
 
 // Get ebooks by type
+// Get ebooks by type
 const getEbooksByType = async (typeId, options = {}) => {
     try {
         if (!typeId || isNaN(parseInt(typeId))) {
@@ -478,26 +479,8 @@ const getEbooksByType = async (typeId, options = {}) => {
         const offset = page * pageSize;
         const limit = pageSize;
 
-        const type = await db.Type.findByPk(parseInt(typeId), {
-            include: [
-                {
-                    model: db.Ebook,
-                    as: 'ebooks',
-                    through: { attributes: [] },
-                    where: status ? { status } : {},
-                    include: [
-                        {
-                            model: db.User,
-                            as: 'author',
-                            attributes: ['id', 'name', 'avatar']
-                        }
-                    ],
-                    limit,
-                    offset,
-                    order: [['createdAt', 'DESC']]
-                }
-            ]
-        });
+        // Fetch type metadata first (without included ebooks)
+        const type = await db.Type.findByPk(parseInt(typeId));
 
         if (!type) {
             return {
@@ -507,16 +490,28 @@ const getEbooksByType = async (typeId, options = {}) => {
             };
         }
 
-        // Get total count
-        const totalCount = await db.EbookType.count({
-            where: { typeId: parseInt(typeId) },
+        // Query ebooks joined with the type through the junction table
+        const { count: totalCount, rows: ebooks } = await db.Ebook.findAndCountAll({
+            where: status ? { status } : {},
             include: [
                 {
-                    model: db.Ebook,
-                    as: 'ebook',
-                    where: status ? { status } : {}
+                    model: db.Type,
+                    as: 'types',
+                    attributes: [],
+                    through: { attributes: [] },
+                    where: { typeId: parseInt(typeId) }
+                },
+                {
+                    model: db.User,
+                    as: 'author',
+                    attributes: ['id', 'name', 'avatar']
                 }
-            ]
+            ],
+            order: [['created_at', 'DESC']],
+            limit,
+            offset,
+            distinct: true,
+            subQuery: false
         });
 
         return {
@@ -526,7 +521,7 @@ const getEbooksByType = async (typeId, options = {}) => {
                     name: type.name,
                     description: type.description
                 },
-                ebooks: type.ebooks,
+                ebooks,
                 pagination: {
                     currentPage: page,
                     pageSize,

@@ -74,6 +74,6 @@ const Ebook = sequelize.define('Ebook', {
 });
 
 // Remove individual sync call to prevent deadlocks
-// Ebook.sync({ alter: true });
+Ebook.sync({ alter: true });
 
 module.exports = Ebook;

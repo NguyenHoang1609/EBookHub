@@ -68,6 +68,10 @@ const AuthorViolation = sequelize.define('AuthorViolation', {
     ]
 });
 
+
+
+// AuthorViolation.sync({alter:true})
+
 module.exports = AuthorViolation;
 
 
