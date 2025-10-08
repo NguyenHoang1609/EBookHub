@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ebookAPI, typeAPI } from '../../Util/Api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './MoreEbook.scss';
 import Navbar from './Navigation';
 import Footer from './Footer';
@@ -14,9 +14,28 @@ const MoreEbook = () => {
     const [pagination, setPagination] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         fetchTypes();
+    }, []);
+
+    useEffect(() => {
+        // when types are loaded or URL changes, check for typeName
+        if (types && types.length > 0) {
+            const params = new URLSearchParams(location.search);
+            const typeName = params.get('typeName');
+            if (typeName) {
+                const target = types.find(t => (t.name || '').toLowerCase() === typeName.toLowerCase());
+                if (target && `${target.typeId}` !== `${selectedType}`) {
+                    setSelectedType(target.typeId);
+                    setCurrentPage(1);
+                }
+            }
+        }
+    }, [types, location.search]);
+
+    useEffect(() => {
         fetchEbooks();
     }, [currentPage, selectedType, searchTerm]);
 

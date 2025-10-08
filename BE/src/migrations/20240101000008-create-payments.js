@@ -23,16 +23,7 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE'
             },
-            ebook_id: {
-                type: Sequelize.INTEGER,
-                allowNull: true,
-                references: {
-                    model: 'ebooks',
-                    key: 'ebook_id'
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE'
-            },
+
             amount: {
                 type: Sequelize.DECIMAL(10, 2),
                 allowNull: false
@@ -126,7 +117,6 @@ module.exports = {
         await queryInterface.removeIndex('payments', 'payments_reference_code_index');
         await queryInterface.removeIndex('payments', 'payments_created_at_index');
         await queryInterface.removeIndex('payments', 'payments_status_index');
-        await queryInterface.removeIndex('payments', 'payments_ebook_id_index');
         await queryInterface.removeIndex('payments', 'payments_user_id_index');
         await queryInterface.sequelize.query("DROP TYPE IF EXISTS \"enum_payments_transfer_type\";");
         await queryInterface.sequelize.query("DROP TYPE IF EXISTS \"enum_payments_status\";");
