@@ -315,6 +315,30 @@ const getEbookStats = async (req, res) => {
     }
 };
 
+const getDashboardStats = async (req, res) => {
+    try {
+        console.log('Get dashboard stats request received:', req.query);
+
+        const { authorId } = req.query;
+
+        const result = await ebookService.getDashboardStats(authorId);
+
+        if (result.EC === 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.log('Get dashboard stats controller error:', error);
+        return res.status(500).json({
+            DT: '',
+            EC: -1,
+            EM: 'Internal server error while fetching dashboard stats'
+        });
+    }
+};
+
 const getTopBooks = async (req, res) => {
     try {
         console.log('Get top books request received:', req.query);
@@ -380,6 +404,7 @@ export default {
     updateEbook,
     deleteEbook,
     getEbookStats,
+    getDashboardStats,
     getTopBooks,
     getFavouriteBooks,
     upload: upload.single('pdfFile'),

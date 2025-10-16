@@ -7,7 +7,7 @@ const SideBar = ({ onNavigation, activeSection }) => {
 
     // All navigation items with role restrictions
     const allNavItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: '/Iconly/Bold/Home.svg', roles: [1] }, // Admin only
+        { id: 'dashboard', label: 'Dashboard', icon: '/Iconly/Bold/Home.svg', roles: [1, 2] }, // Admin only
         { id: 'book', label: 'Book', icon: '/Iconly/Bold/Edit-Square.svg', roles: [1, 2] }, // Admin and Author
         { id: 'type', label: 'Types', icon: '/Iconly/Bold/Category.svg', roles: [1] }, // Admin only
         { id: 'moderation', label: 'Moderation', icon: '/Iconly/Bold/Image.svg', roles: [1] }, // Admin only

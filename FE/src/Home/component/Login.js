@@ -45,7 +45,6 @@ function Login({ onClose, onSwitchToRegister }) {
                 localStorage.setItem('token', result.data.token);
                 localStorage.setItem('isLoggedIn', 'true');
 
-                alert('Đăng nhập thành công!');
                 window.location.reload();
                 onClose();
             } else {

@@ -12,7 +12,7 @@ import Support from './components/Support';
 function UserProfile() {
     const [activeSection, setActiveSection] = useState('account');
     const [user, setUser] = useState(null);
-
+    console.log('user', user);
     useEffect(() => {
         const userData = localStorage.getItem('userData');
         if (userData) {
@@ -83,10 +83,20 @@ function UserProfile() {
                                 </div>
                                 <div className="user-stats">
 
+                                    {
+                                        user.isVip ? (
+                                            <div className="action-buttons">
+                                                <button className="membership-btn active">Hội viên</button>
+                                            </div>
+                                        ) : (
+                                            <div className="action-buttons">
+                                                <button
+                                                    onClick={() => window.location.href = '/payment'}
+                                                    className="membership-btn">Trở thành hội viên</button>
+                                            </div>
+                                        )
+                                    }
 
-                                    <div className="action-buttons">
-                                        <button className="membership-btn">Trở thành hội viên</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>

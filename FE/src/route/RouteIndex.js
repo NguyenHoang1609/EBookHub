@@ -7,6 +7,8 @@ import Reader from '../Home/ebook/Reader.js';
 import UserProfile from '../Home/profile/UserProfile.js';
 import MoreEbook from '../Home/component/MoreEbook.js';
 import Payment from '../Home/payment/Payment.js';
+import Policy from '../Home/policy/Policy.js';
+
 function RouteIndex(props) {
     return (
         <div>
@@ -19,6 +21,7 @@ function RouteIndex(props) {
                     <Route path="/payment" element={<Payment />}></Route>
                     <Route path="/profile" element={<UserProfile />}></Route>
                     <Route path="/more-ebook" element={<MoreEbook />}></Route>
+                    <Route path="/policy" element={<Policy />}></Route>
                 </Routes>
             </BrowserRouter>
         </div>

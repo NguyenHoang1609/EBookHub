@@ -5,9 +5,9 @@ import styles from './Payment.module.scss';
 import { paymentAPI } from '../../Util/Api';
 
 const TIERS = [
-    { id: '3m', label: '3 Tháng', price: 199000 },
-    { id: '6m', label: '6 Tháng', price: 399000 },
-    { id: '12m', label: '12 Tháng', price: 499000 }
+    // { id: '3m', label: '3 Tháng', price: 199000 },
+    // { id: '6m', label: '6 Tháng', price: 399000 },
+    { id: 'vĩnh viễn', label: 'Gói hội viên', price: 499000 }
 ];
 
 const FIXED_CHECK_AMOUNT = 2000; // matches backend VIP_PRICE_VND

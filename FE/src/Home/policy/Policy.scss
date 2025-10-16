@@ -1,0 +1,228 @@
+.policy-page {
+    min-height      : 100vh;
+    background-color: #1a1a1a;
+    display         : flex;
+    flex-direction  : column;
+}
+
+.policy-container {
+    max-width       : 1200px;
+    margin          : 0 auto;
+    padding         : 40px 20px;
+    flex            : 1;
+    background-color: #2d2d2d;
+    box-shadow      : 0 2px 10px rgba(0, 0, 0, 0.3);
+    border-radius   : 8px;
+    margin-top      : 100px;
+    margin-bottom   : 20px;
+
+}
+
+.policy-header {
+    text-align    : center;
+    margin-bottom : 50px;
+    padding-bottom: 30px;
+    border-bottom : 3px solid #404040;
+}
+
+.policy-title {
+    font-size    : 2.5rem;
+    font-weight  : 700;
+    color        : #ffffff;
+    margin-bottom: 15px;
+    line-height  : 1.3;
+
+    @media (max-width: 768px) {
+        font-size: 2rem;
+    }
+}
+
+.policy-update {
+    font-size : 1.1rem;
+    color     : #b0b0b0;
+    font-style: italic;
+    margin    : 0;
+}
+
+.policy-content {
+    line-height: 1.8;
+    color      : #e0e0e0;
+}
+
+.policy-section {
+    margin-bottom: 40px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.section-title {
+    font-size     : 1.5rem;
+    font-weight   : 600;
+    color         : #ffffff;
+    margin-bottom : 20px;
+    padding-bottom: 10px;
+    border-bottom : 2px solid #404040;
+    position      : relative;
+
+    &::after {
+        content         : '';
+        position        : absolute;
+        bottom          : -2px;
+        left            : 0;
+        width           : 50px;
+        height          : 2px;
+        background-color: #4a9eff;
+    }
+}
+
+.policy-intro {
+    font-size       : 1.1rem;
+    font-weight     : 500;
+    color           : #ffffff;
+    background-color: #3a3a3a;
+    padding         : 25px;
+    border-radius   : 8px;
+    border-left     : 4px solid #4a9eff;
+    margin-bottom   : 30px;
+    line-height     : 1.7;
+}
+
+.policy-section p {
+    font-size    : 1rem;
+    margin-bottom: 15px;
+    text-align   : justify;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.contact-link {
+    color          : #4a9eff;
+    text-decoration: none;
+    font-weight    : 500;
+    transition     : color 0.3s ease;
+
+    &:hover {
+        color          : #6bb6ff;
+        text-decoration: underline;
+    }
+}
+
+.policy-conclusion {
+    font-size       : 1.1rem;
+    font-weight     : 500;
+    color           : #ffffff;
+    background-color: #2a4a2a;
+    padding         : 25px;
+    border-radius   : 8px;
+    border-left     : 4px solid #4caf50;
+    margin-top      : 20px;
+    line-height     : 1.7;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .policy-container {
+        margin       : 10px;
+        padding      : 20px 15px;
+        border-radius: 0;
+    }
+
+    .policy-header {
+        margin-bottom : 30px;
+        padding-bottom: 20px;
+    }
+
+    .policy-title {
+        font-size: 1.8rem;
+    }
+
+    .policy-update {
+        font-size: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+
+    .policy-intro,
+    .policy-conclusion {
+        padding  : 20px;
+        font-size: 1rem;
+    }
+
+    .policy-section {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .policy-container {
+        margin : 5px;
+        padding: 15px 10px;
+    }
+
+    .policy-title {
+        font-size: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+    }
+
+    .policy-intro,
+    .policy-conclusion {
+        padding: 15px;
+    }
+}
+
+// Print styles
+@media print {
+    .policy-page {
+        background-color: white;
+    }
+
+    .policy-container {
+        box-shadow      : none;
+        border-radius   : 0;
+        margin          : 0;
+        padding         : 0;
+        background-color: white;
+    }
+
+    .policy-title {
+        color: black;
+    }
+
+    .policy-update {
+        color: #666;
+    }
+
+    .policy-content {
+        color: black;
+    }
+
+    .section-title {
+        color              : black;
+        border-bottom-color: black;
+
+        &::after {
+            background-color: black;
+        }
+    }
+
+    .policy-intro,
+    .policy-conclusion {
+        background-color : #f5f5f5;
+        border-left-color: #333;
+        color            : black;
+    }
+
+    .contact-link {
+        color          : black;
+        text-decoration: underline;
+    }
+}

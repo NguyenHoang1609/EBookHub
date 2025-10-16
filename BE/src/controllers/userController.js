@@ -292,6 +292,29 @@ const getUserStats = async (req, res) => {
     }
 };
 
+// Get dashboard statistics for admin
+const getDashboardStats = async (req, res) => {
+    try {
+        console.log('Get dashboard statistics request received');
+
+        const result = await userService.getDashboardStats();
+
+        if (result.EC === 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.log('Get dashboard statistics controller error:', error);
+        return res.status(500).json({
+            DT: '',
+            EC: -1,
+            EM: 'Internal server error while fetching dashboard statistics'
+        });
+    }
+};
+
 export default {
     getAllUsers,
     getUserById,
@@ -300,5 +323,6 @@ export default {
     deleteUser,
     bulkDeleteUsers,
     changePassword,
-    getUserStats
+    getUserStats,
+    getDashboardStats
 };

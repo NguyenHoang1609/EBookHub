@@ -22,7 +22,10 @@ const EbookDetail = () => {
     const [isFavourite, setIsFavourite] = useState(false);
     const [favLoading, setFavLoading] = useState(false);
 
+    console.log('user', user);
+
     useEffect(() => {
+        window.scrollTo(0, 0)
         const userData = localStorage.getItem('userData');
         if (userData) {
             setUser(JSON.parse(userData));

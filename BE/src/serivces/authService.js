@@ -198,7 +198,8 @@ const loginUser = async (email, password) => {
             address: user.address,
             avatar: user.avatar,
             groupId: user.groupId || 3,
-            group: user.group
+            group: user.group,
+            isVip: user.isVip,
         };
 
         const tokenData = {
@@ -243,7 +244,7 @@ const getUserProfile = async (email) => {
 
         const user = await db.User.findOne({
             where: { email: email.toLowerCase().trim() },
-            attributes: ['id', 'name', 'email', 'phone', 'address', 'avatar', 'groupId', 'created_at', 'updated_at'],
+            attributes: ['id', 'name', 'email', 'phone', 'address', 'avatar', 'groupId', 'isVip', 'created_at', 'updated_at'],
             include: [
                 {
                     model: db.Group,
@@ -271,6 +272,7 @@ const getUserProfile = async (email) => {
                 address: user.address,
                 avatar: user.avatar,
                 groupId: user.groupId,
+                isVip: user.isVip,
                 group: user.group,
                 createdAt: user.created_at,
                 updatedAt: user.updated_at
@@ -345,7 +347,8 @@ const updateUserProfile = async (email, updateData) => {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
-                address: user.address
+                address: user.address,
+                isVip: user.isVip
             },
             EC: 0,
             EM: 'Profile updated successfully!'

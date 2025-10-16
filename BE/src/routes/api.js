@@ -29,6 +29,7 @@ router.get('/auth/account', authController.checkAccount);
 // User management routes
 router.get('/users', userController.getAllUsers);
 router.get('/users/stats', userController.getUserStats);
+router.get('/users/dashboard-stats', userController.getDashboardStats);
 router.get('/users/:id', userController.getUserById);
 router.post('/users', userController.createUser);
 router.put('/users/:id', uploadAvatar, handleUploadError, userController.updateUser);
@@ -46,6 +47,7 @@ router.get('/ebooks', ebookController.getAllEbooks);
 router.get('/ebooks/top', ebookController.getTopBooks);
 router.get('/ebooks/favourite/:userId', ebookController.getFavouriteBooks);
 router.get('/ebooks/stats', ebookController.getEbookStats);
+router.get('/ebooks/dashboard-stats', ebookController.getDashboardStats);
 router.get('/ebooks/:ebookId', ebookController.getEbookById);
 router.put('/ebooks/:ebookId', ebookController.updateEbook);
 router.delete('/ebooks/:ebookId', ebookController.deleteEbook);

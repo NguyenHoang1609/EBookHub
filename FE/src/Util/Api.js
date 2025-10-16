@@ -290,6 +290,24 @@ const userAPI = {
                 error: error.response?.data || error.message
             };
         }
+    },
+
+    getDashboardStats: async () => {
+        try {
+            const response = await API.get('/users/dashboard-stats');
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch dashboard statistics',
+                error: error.response?.data || error.message
+            };
+        }
     }
 };
 
@@ -430,6 +448,25 @@ const ebookAPI = {
                 success: false,
                 data: null,
                 message: error.response?.data?.EM || 'Failed to fetch ebook statistics',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getDashboardStats: async (authorId = null) => {
+        try {
+            const url = `/ebooks/dashboard-stats${authorId ? `?authorId=${authorId}` : ''}`;
+            const response = await API.get(url);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch dashboard statistics',
                 error: error.response?.data || error.message
             };
         }

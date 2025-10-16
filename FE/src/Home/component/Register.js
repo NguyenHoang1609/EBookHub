@@ -264,6 +264,10 @@ function Register({ onClose, onSwitchToLogin }) {
                         >
                             {loading ? 'Đang đăng ký...' : 'Đăng ký'}
                         </button>
+
+                        <div className="policy-link">
+                            <a href="/policy">Điều khoản và điều kiện</a>
+                        </div>
                     </div>
 
                     {/* <div className="divider">

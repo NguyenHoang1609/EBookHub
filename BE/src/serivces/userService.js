@@ -697,6 +697,114 @@ const getUserStats = async () => {
     }
 };
 
+// Enhanced dashboard statistics for admin
+const getDashboardStats = async () => {
+    try {
+        const [
+            totalUsers,
+            activeUsers,
+            usersByGroup,
+            recentUsers,
+            monthlyRegistrations,
+            vipUsers,
+            authors,
+            totalEbooks,
+            totalComments,
+            totalPayments
+        ] = await Promise.all([
+            // Total users
+            db.User.count(),
+
+            // Active users
+            db.User.count({ where: { isActive: true } }),
+
+            // Users by group
+            db.User.findAll({
+                attributes: [
+                    [db.sequelize.col('User.group_id'), 'groupId'],
+                    [db.sequelize.fn('COUNT', db.sequelize.col('User.id')), 'count']
+                ],
+                include: [
+                    {
+                        model: db.Group,
+                        as: 'group',
+                        attributes: ['name'],
+                        required: false
+                    }
+                ],
+                group: ['User.group_id', 'group.id', 'group.name'],
+                raw: true
+            }),
+
+            // Recent users (last 7 days)
+            db.User.count({
+                where: {
+                    created_at: {
+                        [Op.gte]: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                    }
+                }
+            }),
+
+            // Monthly registrations (last 6 months)
+            db.User.findAll({
+                attributes: [
+                    [db.sequelize.fn('DATE_FORMAT', db.sequelize.col('created_at'), '%Y-%m'), 'month'],
+                    [db.sequelize.fn('COUNT', db.sequelize.col('User.id')), 'count']
+                ],
+                where: {
+                    created_at: {
+                        [Op.gte]: new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000)
+                    }
+                },
+                group: [db.sequelize.fn('DATE_FORMAT', db.sequelize.col('created_at'), '%Y-%m')],
+                order: [[db.sequelize.fn('DATE_FORMAT', db.sequelize.col('created_at'), '%Y-%m'), 'ASC']],
+                raw: true
+            }),
+
+            // VIP users
+            db.User.count({ where: { isVip: true } }),
+
+            // Authors (group 2)
+            db.User.count({ where: { groupId: 2 } }),
+
+            // Total ebooks
+            db.Ebook.count(),
+
+            // Total comments
+            db.Comment.count(),
+
+            // Total payments
+            db.Payment.count()
+        ]);
+
+        return {
+            DT: {
+                totalUsers,
+                activeUsers,
+                inactiveUsers: totalUsers - activeUsers,
+                usersByGroup,
+                recentUsers,
+                monthlyRegistrations,
+                vipUsers,
+                authors,
+                totalEbooks,
+                totalComments,
+                totalPayments
+            },
+            EC: 0,
+            EM: 'Dashboard statistics retrieved successfully!'
+        };
+
+    } catch (error) {
+        console.log('Get dashboard statistics service error:', error);
+        return {
+            DT: '',
+            EC: -1,
+            EM: 'Internal server error while fetching dashboard statistics'
+        };
+    }
+};
+
 export default {
     getAllUsers,
     getUserById,
@@ -706,6 +814,7 @@ export default {
     bulkDeleteUsers,
     changePassword,
     getUserStats,
+    getDashboardStats,
     hashPassword,
     comparePassword,
     checkEmailExists,

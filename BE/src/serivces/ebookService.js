@@ -628,6 +628,161 @@ const getEbookStats = async (authorId = null) => {
     }
 };
 
+// Enhanced dashboard statistics for admin/author
+const getDashboardStats = async (authorId = null) => {
+    try {
+        let whereClause = {};
+        if (authorId) {
+            whereClause.authorId = authorId;
+        }
+
+        const [
+            totalEbooks,
+            publishedEbooks,
+            draftEbooks,
+            archivedEbooks,
+            pendingReviewEbooks,
+            blockedEbooks,
+            vipEbooks,
+            totalViews,
+            averageViews,
+            recentEbooks,
+            monthlyEbooks,
+            topEbooks,
+            ebooksByType,
+            totalPages
+        ] = await Promise.all([
+            // Total ebooks
+            db.Ebook.count({ where: whereClause }),
+
+            // Published ebooks
+            db.Ebook.count({ where: { ...whereClause, status: 'published' } }),
+
+            // Draft ebooks
+            db.Ebook.count({ where: { ...whereClause, status: 'draft' } }),
+
+            // Archived ebooks
+            db.Ebook.count({ where: { ...whereClause, status: 'archived' } }),
+
+            // Pending review ebooks
+            db.Ebook.count({ where: { ...whereClause, status: 'pending_review' } }),
+
+            // Blocked ebooks
+            db.Ebook.count({ where: { ...whereClause, status: 'blocked' } }),
+
+            // VIP ebooks
+            db.Ebook.count({ where: { ...whereClause, isVipEbook: true } }),
+
+            // Total views
+            db.Ebook.sum('viewCount', { where: whereClause }),
+
+            // Average views
+            db.Ebook.findOne({
+                attributes: [
+                    [db.sequelize.fn('AVG', db.sequelize.col('view_count')), 'avgViews']
+                ],
+                where: whereClause,
+                raw: true
+            }),
+
+            // Recent ebooks (last 7 days)
+            db.Ebook.count({
+                where: {
+                    ...whereClause,
+                    created_at: {
+                        [Op.gte]: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                    }
+                }
+            }),
+
+            // Monthly ebooks (last 6 months)
+            db.Ebook.findAll({
+                attributes: [
+                    [db.sequelize.fn('DATE_FORMAT', db.sequelize.col('created_at'), '%Y-%m'), 'month'],
+                    [db.sequelize.fn('COUNT', db.sequelize.col('Ebook.ebook_id')), 'count']
+                ],
+                where: {
+                    ...whereClause,
+                    created_at: {
+                        [Op.gte]: new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000)
+                    }
+                },
+                group: [db.sequelize.fn('DATE_FORMAT', db.sequelize.col('created_at'), '%Y-%m')],
+                order: [[db.sequelize.fn('DATE_FORMAT', db.sequelize.col('created_at'), '%Y-%m'), 'ASC']],
+                raw: true
+            }),
+
+            // Top ebooks by views (limit 5)
+            db.Ebook.findAll({
+                where: whereClause,
+                attributes: ['ebookId', 'title', 'viewCount', 'status'],
+                order: [['viewCount', 'DESC']],
+                limit: 5,
+                raw: true
+            }),
+
+            // Ebooks by type
+            db.Ebook.findAll({
+                attributes: [
+                    [db.sequelize.fn('COUNT', db.sequelize.col('Ebook.ebook_id')), 'count']
+                ],
+                include: [
+                    {
+                        model: db.Type,
+                        as: 'types',
+                        through: { attributes: [] },
+                        attributes: ['type_id', 'name'],
+                        required: false
+                    }
+                ],
+                where: whereClause,
+                group: ['types.type_id', 'types.name'],
+                raw: true
+            }),
+
+            // Total pages
+            db.Page.count({
+                include: [{
+                    model: db.Ebook,
+                    as: 'ebook',
+                    where: whereClause,
+                    attributes: []
+                }]
+            })
+        ]);
+
+        return {
+            DT: {
+                totalEbooks,
+                publishedEbooks,
+                draftEbooks,
+                archivedEbooks,
+                pendingReviewEbooks,
+                blockedEbooks,
+                vipEbooks,
+                totalViews: totalViews || 0,
+                averageViews: averageViews?.avgViews ? Math.round(averageViews.avgViews) : 0,
+                recentEbooks,
+                monthlyEbooks,
+                topEbooks,
+                ebooksByType,
+                totalPages,
+                averagePagesPerBook: totalEbooks > 0 ? Math.round(totalPages / totalEbooks) : 0
+            },
+            EC: 0,
+            EM: 'Dashboard statistics retrieved successfully!'
+        };
+
+    } catch (error) {
+        console.log('Get dashboard statistics error:', error);
+        return {
+            DT: '',
+            EC: -1,
+            EM: 'Failed to retrieve dashboard statistics!'
+        };
+    }
+};
+
 const getTopBooks = async (limit = 10) => {
     try {
         const ebooks = await db.Ebook.findAll({
@@ -766,6 +921,7 @@ export default {
     updateEbook,
     deleteEbook,
     getEbookStats,
+    getDashboardStats,
     getTopBooks,
     getFavouriteBooks
 };

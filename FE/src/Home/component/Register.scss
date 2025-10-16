@@ -278,4 +278,25 @@
             transform: scale(1);
         }
     }
+
+    .policy-link {
+        text-align   : center;
+        color        : #8b949e;
+        font-size    : 16px;
+        margin-bottom: 20px;
+    }
+
+    .policy-link a {
+        color          : #52c41a;
+        text-decoration: none;
+        font-weight    : 500;
+        margin-left    : 8px;
+        transition     : color 0.3s ease;
+    }
+
+    .policy-link a:hover {
+        color          : #73d13d;
+        text-decoration: underline;
+    }
+
 }
