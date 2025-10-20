@@ -310,7 +310,7 @@ const EbookDetail = () => {
 
                         {/* Book Description */}
                         <div className="book-description">
-                            <p>{ebook.description}</p>
+                          
                             {showFullDescription ? (
                                 <>
                                     <p>{ebook.description}</p>
