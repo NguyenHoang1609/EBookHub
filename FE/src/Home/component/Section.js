@@ -4,7 +4,7 @@ import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { ebookAPI } from '../../Util/Api';
+import { ebookAPI, ratingAPI } from '../../Util/Api';
 import './Section.scss';
 import { useNavigate } from 'react-router-dom';
 function Section(props) {
@@ -14,7 +14,8 @@ function Section(props) {
         apiParams = {},
         showRanking = true,
         showMemberBadge = true,
-        userId = null // Add userId prop for favourite books
+        userId = null, // Add userId prop for favourite books
+        typeId = null // Optional explicit typeId for type-based fetching
     } = props;
 
     const [ebooks, setEbooks] = useState([]);
@@ -23,7 +24,7 @@ function Section(props) {
     const navigate = useNavigate();
     useEffect(() => {
         fetchEbooks();
-    }, [apiType, apiParams, userId]);
+    }, [apiType, apiParams, userId, typeId]);
 
     console.log(ebooks);
 
@@ -49,6 +50,35 @@ function Section(props) {
                         return;
                     }
                     result = await ebookAPI.getFavouriteBooks(userId, apiParams.limit || 10);
+                    break;
+                case 'getByType': {
+                    const effectiveTypeId = typeId || apiParams.typeId;
+                    if (!effectiveTypeId) {
+                        setError('typeId is required for type-based fetching');
+                        setEbooks([]);
+                        return;
+                    }
+                    const params = {
+                        page: 1,
+                        limit: apiParams.limit || 10,
+                        status: 'published',
+                        ...apiParams,
+                        typeId: effectiveTypeId
+                    };
+                    result = await ebookAPI.getAllEbooks(params);
+                    break;
+                }
+                case 'getTopRatedEbooks':
+                    result = await ratingAPI.getTopRated(apiParams.limit || 10);
+                    if (result.success) {
+                        // Transform the data to match expected format
+                        const transformedData = result.data.map(item => ({
+                            ...item.ebook,
+                            averageRating: parseFloat(item.averageRating),
+                            ratingCount: parseInt(item.ratingCount)
+                        }));
+                        result = { success: true, data: { DT: transformedData } };
+                    }
                     break;
                 default:
                     result = await ebookAPI.getTopBooks(10);
@@ -85,7 +115,7 @@ function Section(props) {
             <SwiperSlide key={ebook.ebookId || index}>
                 <div
                     onClick={() => {
-                        navigate(`/book/${ebook.ebookId}`);
+                        navigate(`/book/${ebook?.ebookId || ebook?.ebook_id}`);
                     }}
                     className="book-item">
                     <div className="book-content">
@@ -94,7 +124,7 @@ function Section(props) {
                                 <img className="book-image" src={`http://localhost:8080/public${coverImage}`} alt={bookTitle} />
                             </div>
                             <div className="book-overlay" />
-                            {showMemberBadge && (
+                            {showMemberBadge && ebook.isVipEbook && (
                                 <div className="member-badge">
                                     <div className="badge-content">
                                         <div className="badge-text">Hội viên</div>

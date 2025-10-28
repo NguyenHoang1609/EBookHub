@@ -18,6 +18,14 @@ const Ebook = sequelize.define('Ebook', {
             key: 'id'
         }
     },
+    customAuthor: {
+        type: DataTypes.STRING(500),
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+            len: [3, 500]
+        }
+    },
     title: {
         type: DataTypes.STRING(500),
         allowNull: false,

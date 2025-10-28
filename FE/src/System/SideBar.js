@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './SideBar.scss';
+import { toast } from 'react-toastify';
 
 const SideBar = ({ onNavigation, activeSection }) => {
     const [isLightMode, setIsLightMode] = useState(true);
@@ -35,7 +36,7 @@ const SideBar = ({ onNavigation, activeSection }) => {
 
                 // If user role is 3 (regular user), redirect to home page
                 if (role === 3) {
-                    alert('Access denied. Regular users are not allowed to access the system dashboard.');
+                    toast('Access denied. Regular users are not allowed to access the system dashboard.');
                     window.location.href = '/';
                     return;
                 }

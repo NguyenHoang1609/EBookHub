@@ -1,0 +1,228 @@
+.rating-modal-overlay {
+    position       : fixed;
+    top            : 0;
+    left           : 0;
+    right          : 0;
+    bottom         : 0;
+    background     : rgba(0, 0, 0, 0.8);
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+    z-index        : 1000;
+    padding        : 20px;
+}
+
+.rating-modal {
+    background   : #1a1a1a;
+    border-radius: 16px;
+    width        : 100%;
+    max-width    : 500px;
+    max-height   : 90vh;
+    overflow-y   : auto;
+    box-shadow   : 0 20px 40px rgba(0, 0, 0, 0.5);
+
+    .modal-header {
+        display        : flex;
+        justify-content: space-between;
+        align-items    : center;
+        padding        : 24px 24px 0 24px;
+        border-bottom  : 1px solid #333;
+        margin-bottom  : 24px;
+
+        h3 {
+            color      : white;
+            font-size  : 20px;
+            font-weight: 600;
+            margin     : 0;
+        }
+
+        .close-btn {
+            background   : none;
+            border       : none;
+            color        : #999;
+            cursor       : pointer;
+            padding      : 8px;
+            border-radius: 8px;
+            transition   : all 0.2s ease;
+
+            &:hover {
+                background: #333;
+                color     : white;
+            }
+
+            svg {
+                width : 20px;
+                height: 20px;
+            }
+        }
+    }
+
+    .rating-form {
+        padding: 0 24px 24px 24px;
+
+        .rating-section {
+            margin-bottom: 24px;
+
+            .rating-label {
+                display      : block;
+                color        : white;
+                font-size    : 16px;
+                font-weight  : 600;
+                margin-bottom: 12px;
+            }
+
+            .stars-container {
+                display        : flex;
+                gap            : 8px;
+                display        : flex;
+                flex-direction : row;
+                align-items    : center;
+                justify-content: center;
+
+                .star {
+                    font-size  : 32px;
+                    cursor     : pointer;
+                    transition : all 0.2s ease;
+                    user-select: none;
+
+                    &.filled {
+                        color: #FFD700;
+                    }
+
+                    &.empty {
+                        color: #666;
+                    }
+
+                    &:hover {
+                        transform: scale(1.1);
+                    }
+                }
+            }
+        }
+
+        .review-section {
+            margin-bottom: 24px;
+
+            .review-label {
+                display      : block;
+                color        : white;
+                font-size    : 16px;
+                font-weight  : 600;
+                margin-bottom: 12px;
+            }
+
+            .review-textarea {
+                width        : 100%;
+                background   : #2a2a2a;
+                border       : 1px solid #444;
+                border-radius: 8px;
+                padding      : 16px;
+                color        : white;
+                font-size    : 14px;
+                line-height  : 1.5;
+                resize       : vertical;
+                min-height   : 100px;
+                font-family  : inherit;
+
+                &::placeholder {
+                    color: #999;
+                }
+
+                &:focus {
+                    outline     : none;
+                    border-color: #00C851;
+                    box-shadow  : 0 0 0 2px rgba(0, 200, 81, 0.2);
+                }
+            }
+
+            .char-count {
+                text-align: right;
+                color     : #999;
+                font-size : 12px;
+                margin-top: 4px;
+            }
+        }
+
+        .modal-actions {
+            display        : flex;
+            gap            : 12px;
+            justify-content: flex-end;
+
+            .cancel-btn {
+                background   : #333;
+                color        : white;
+                border       : none;
+                border-radius: 8px;
+                padding      : 12px 24px;
+                font-size    : 14px;
+                font-weight  : 600;
+                cursor       : pointer;
+                transition   : background-color 0.2s ease;
+
+                &:hover {
+                    background: #555;
+                }
+            }
+
+            .submit-btn {
+                background   : #00C851;
+                color        : white;
+                border       : none;
+                border-radius: 8px;
+                padding      : 12px 24px;
+                font-size    : 14px;
+                font-weight  : 600;
+                cursor       : pointer;
+                transition   : background-color 0.2s ease;
+
+                &:hover:not(:disabled) {
+                    background: #00A041;
+                }
+
+                &:disabled {
+                    background: #666;
+                    cursor    : not-allowed;
+                }
+            }
+        }
+    }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .rating-modal-overlay {
+        padding: 10px;
+    }
+
+    .rating-modal {
+        .modal-header {
+            padding      : 20px 20px 0 20px;
+            margin-bottom: 20px;
+
+            h3 {
+                font-size: 18px;
+            }
+        }
+
+        .rating-form {
+            padding: 0 20px 20px 20px;
+
+            .rating-section {
+                .stars-container {
+                    .star {
+                        font-size: 28px;
+                    }
+                }
+            }
+
+            .modal-actions {
+                flex-direction: column;
+
+                .cancel-btn,
+                .submit-btn {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

@@ -19,6 +19,10 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE'
             },
+            customAuthor: {
+                type: Sequelize.STRING(500),
+                allowNull: false
+            },
             title: {
                 type: Sequelize.STRING(500),
                 allowNull: false

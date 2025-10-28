@@ -87,7 +87,6 @@ const ManageEbook = () => {
         }
 
         fetchEbooks();
-        fetchStats();
         fetchAuthors();
     }, []);
 
@@ -97,6 +96,13 @@ const ManageEbook = () => {
         }, 500);
         return () => clearTimeout(timer);
     }, [searchTerm, statusFilter, authorFilter, page, rowsPerPage, userRole, currentUser]);
+
+    useEffect(() => {
+        // Fetch statistics only after we know the current user's role/id
+        // Ensures authors (role 2) only load their own stats
+        if (userRole === 2 && !currentUser?.id) return;
+        fetchStats();
+    }, [userRole, currentUser]);
 
     const fetchEbooks = async () => {
         setLoading(true);

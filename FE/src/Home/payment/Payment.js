@@ -65,7 +65,6 @@ const Payment = () => {
     const featureList = (months) => ([
         'Đọc không giới hạn ebook VIP',
         'Bỏ quảng cáo',
-        `${months} tháng hỗ trợ ưu tiên`,
         'Ưu đãi thành viên độc quyền'
     ]);
 

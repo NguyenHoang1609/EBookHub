@@ -306,9 +306,9 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     };
 
     const handleSubmit = async () => {
-        if (!validateForm()) {
-            return;
-        }
+        // if (!validateForm()) {
+        //     return;
+        // }
 
         if (uploadMode && !ebook) {
             // PDF Upload mode
@@ -458,6 +458,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                 setSuccess(result.message || (ebook ? 'Ebook updated successfully' : 'Ebook created successfully'));
                 setTimeout(() => {
                     onClose(true); // Refresh the ebook list
+                    handleClose();
                 }, 1500);
             } else {
                 setError(result.message || 'Operation failed');

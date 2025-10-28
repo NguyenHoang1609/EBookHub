@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ebookAPI } from '../../Util/Api';
 import { wishlistAPI } from '../../Util/Api';
 import Navigation from '../component/Navigation';
 import Footer from '../component/Footer';
 import Review from './components/Review';
+import Rating from './components/Rating';
+import RatingModal from './components/RatingModal';
 import ReportModal from './components/ReportModal';
 import './EbookDetail.scss';
 import Section from '../component/Section';
@@ -18,6 +21,8 @@ const EbookDetail = () => {
     const [contentType, setContentType] = useState('Đầy đủ');
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
+    const [showRatingModal, setShowRatingModal] = useState(false);
+    const [activeTab, setActiveTab] = useState('comments'); // 'comments' or 'ratings'
     const [user, setUser] = useState(null);
     const [isFavourite, setIsFavourite] = useState(false);
     const [favLoading, setFavLoading] = useState(false);
@@ -62,7 +67,7 @@ const EbookDetail = () => {
 
     const handleToggleFavourite = async () => {
         if (!user) {
-            alert('Bạn cần đăng nhập để sử dụng chức năng này.');
+            toast('Bạn cần đăng nhập để sử dụng chức năng này.');
             return;
         }
         setFavLoading(true);
@@ -129,7 +134,7 @@ const EbookDetail = () => {
 
     const handleReadBook = () => {
         if (ebook?.isVipEbook && !user?.isVip) {
-            alert('Cuốn sách này chỉ dành cho tài khoản VIP. Vui lòng nâng cấp để đọc.');
+            toast('Cuốn sách này chỉ dành cho tài khoản VIP. Vui lòng nâng cấp để đọc.');
             navigate('/payment');
             return;
         }
@@ -138,6 +143,41 @@ const EbookDetail = () => {
 
     const handleReportViolation = () => {
         setShowReportModal(true);
+    };
+
+    const handleWriteReview = () => {
+        if (!user) {
+            toast('Bạn cần đăng nhập để đánh giá');
+            return;
+        }
+        setShowRatingModal(true);
+    };
+
+    const handleRatingSubmitted = () => {
+        // Refresh ratings when a new rating is submitted
+        // This will be handled by the Rating component
+    };
+
+    const handleShare = async () => {
+        const currentUrl = window.location.href;
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(currentUrl);
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = currentUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+            toast.success('Đã sao chép liên kết');
+        } catch (err) {
+            toast.error('Không thể sao chép liên kết');
+        }
     };
 
     if (loading) {
@@ -221,13 +261,13 @@ const EbookDetail = () => {
                         <div className="book-header">
                             <h1 className="book-title">{ebook.title}</h1>
                             <div className="rating-section">
-                                <div className="rating">
+                                {/* <div className="rating">
                                     <span className="rating-value">3.8</span>
                                     <div className="stars">
                                         {renderStars(3.8)}
                                     </div>
                                     <span className="rating-count">13 đánh giá</span>
-                                </div>
+                                </div> */}
                             </div>
                             {/* <div className="trending-badge">
                                 <span className="trending-number">#1</span>
@@ -243,7 +283,13 @@ const EbookDetail = () => {
                             </div>
                             <div className="info-item">
                                 <span className="info-label">Thể loại</span>
-                                {ebook?.types[0]?.name}
+                                <div className='type-list'>
+                                    {ebook?.types.map(type => {
+                                        return <span>{type.name}, </span>
+
+                                    })}
+                                </div>
+
                             </div>
                             <div className="info-item">
                                 <span className="info-label">Nhà xuất bản</span>
@@ -316,11 +362,11 @@ const EbookDetail = () => {
                                     <p>{ebook.description}</p>
                                 </>
                             ) : (
-                                <p>{ebook.description.substring(0, 100)}... <span className="read-more" onClick={() => setShowFullDescription(true)}>...</span></p>
+                                <p>{ebook.description.substring(0, 100)}<span className="read-more" onClick={() => setShowFullDescription(true)}>...</span></p>
                             )}
                             {showFullDescription && (
                                 <button className="read-more-btn" onClick={() => setShowFullDescription(false)}>
-                                    Xem thêm
+                                    Thu gọn
                                 </button>
                             )}
                         </div>
@@ -335,7 +381,7 @@ const EbookDetail = () => {
                                     <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z" fill={isFavourite ? '#ff4d4f' : 'white'} />
                                 </svg>
                             </button>
-                            <button className="action-btn share-btn">
+                            <button className="action-btn share-btn" onClick={handleShare} title="Sao chép liên kết">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                     <path d="M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12C9 11.76 8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5C21 3.34 19.66 2 18 2C16.34 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12C3 13.66 4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.92 18 21.92C19.61 21.92 20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08Z" fill="white" />
                                 </svg>
@@ -389,7 +435,33 @@ const EbookDetail = () => {
                 </div>
 
                 {/* Reviews Section */}
-                <Review ebook={ebook} />
+                <div className="reviews-section-detail">
+                    <div className="reviews-header">
+                        <h2>Độc giả nói gì về "{ebook?.title}"</h2>
+                        <div className="reviews-tabs">
+                            <button
+                                className={`tab-btn ${activeTab === 'comments' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('comments')}
+                            >
+                                Bình luận
+                            </button>
+                            <button
+                                className={`tab-btn ${activeTab === 'ratings' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('ratings')}
+                            >
+                                Đánh giá & nhận xét
+                            </button>
+                        </div>
+                    </div>
+
+                    {activeTab === 'comments' && <Review ebook={ebook} />}
+                    {activeTab === 'ratings' && (
+                        <Rating
+                            ebook={ebook}
+                            onWriteReview={handleWriteReview}
+                        />
+                    )}
+                </div>
 
 
                 {/* Related Books Sections */}
@@ -405,7 +477,7 @@ const EbookDetail = () => {
                             status: 'published'
                         }}
                         showRanking={false}
-                        showMemberBadge={false} />
+                        showMemberBadge={true} />
                 </div>
 
                 {/* Partner Section */}
@@ -426,6 +498,15 @@ const EbookDetail = () => {
                 ebook={ebook}
                 user={user}
                 author={ebook?.author}
+            />
+
+            {/* Rating Modal */}
+            <RatingModal
+                isOpen={showRatingModal}
+                onClose={() => setShowRatingModal(false)}
+                ebook={ebook}
+                user={user}
+                onSubmit={handleRatingSubmitted}
             />
         </div>
     );

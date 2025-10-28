@@ -1,6 +1,5 @@
 .marked-pages-container {
     padding      : 20px;
-    background   : #fff;
     border-radius: 8px;
     box-shadow   : 0 2px 8px rgba(0, 0, 0, 0.1);
 
@@ -50,13 +49,13 @@
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 
         .marked-page-item {
-            display      : flex;
-            padding      : 16px;
-            border       : 1px solid #e0e0e0;
+            display: flex;
+            padding: 16px;
+
             border-radius: 8px;
             cursor       : pointer;
             transition   : all 0.3s ease;
-            background   : #fff;
+            background   : #23272f;
 
             &:hover {
                 border-color: #007bff;
@@ -102,9 +101,10 @@
                 justify-content: space-between;
 
                 h4 {
-                    color             : #333;
+                    color             : white;
                     margin            : 0 0 8px 0;
                     font-size         : 16px;
+                    text-align        : left;
                     font-weight       : 600;
                     line-height       : 1.3;
                     display           : -webkit-box;
@@ -118,6 +118,7 @@
                     flex-direction: column;
                     gap           : 4px;
                     margin-bottom : 8px;
+                    text-align    : left;
 
                     .page-number {
                         color      : #007bff;

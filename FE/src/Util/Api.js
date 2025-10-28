@@ -1525,5 +1525,49 @@ paymentAPI.getByUser = async (userId) => {
     }
 };
 
+// Rating API
+const ratingAPI = {
+    createOrUpdate: async (ratingData) => {
+        try {
+            const response = await API.post('/ratings', ratingData);
+            return { success: response.data.success, data: response.data.data, message: response.data.message };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.message || 'Failed to create/update rating', error: error.response?.data || error.message };
+        }
+    },
+    getByEbook: async (ebookId, page = 1, limit = 10) => {
+        try {
+            const response = await API.get(`/ratings/ebook/${ebookId}?page=${page}&limit=${limit}`);
+            return { success: response.data.success, data: response.data.data, message: response.data.message };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.message || 'Failed to fetch ratings', error: error.response?.data || error.message };
+        }
+    },
+    getUserRating: async (userId, ebookId) => {
+        try {
+            const response = await API.get(`/ratings/user?userId=${userId}&ebookId=${ebookId}`);
+            return { success: response.data.success, data: response.data.data, message: response.data.message };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.message || 'Failed to fetch user rating', error: error.response?.data || error.message };
+        }
+    },
+    delete: async (userId, ebookId) => {
+        try {
+            const response = await API.delete('/ratings', { data: { userId, ebookId } });
+            return { success: response.data.success, message: response.data.message };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.message || 'Failed to delete rating', error: error.response?.data || error.message };
+        }
+    },
+    getTopRated: async (limit = 10) => {
+        try {
+            const response = await API.get(`/ratings/top-rated?limit=${limit}`);
+            return { success: response.data.success, data: response.data.data, message: response.data.message };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.message || 'Failed to fetch top rated ebooks', error: error.response?.data || error.message };
+        }
+    }
+};
+
 export default API;
-export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, violationAPI, contentModerationAPI, apiUtils, paymentAPI, audioAPI, wishlistAPI, savedPageAPI };
+export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, violationAPI, contentModerationAPI, apiUtils, paymentAPI, audioAPI, wishlistAPI, savedPageAPI, ratingAPI };

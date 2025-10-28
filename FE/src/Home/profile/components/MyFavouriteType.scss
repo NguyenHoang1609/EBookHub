@@ -1,0 +1,113 @@
+.fav-type-container {
+    padding      : 20px;
+    border-radius: 8px;
+    box-shadow   : 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .section-header {
+        margin-bottom: 24px;
+        text-align   : center;
+
+        h2 {
+            color      : #333;
+            margin     : 0 0 8px 0;
+            font-size  : 24px;
+            font-weight: 600;
+        }
+
+        p {
+            color    : #666;
+            margin   : 0;
+            font-size: 14px;
+        }
+    }
+
+    .toolbar {
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        margin-bottom  : 16px;
+
+        .summary {
+            color      : #007bff;
+            font-weight: 600;
+        }
+
+        .message {
+            color    : #e53935;
+            font-size: 13px;
+        }
+    }
+
+    .placeholder-content {
+        text-align: center;
+        padding   : 60px 20px;
+        color     : #666;
+
+        .placeholder-icon {
+            font-size    : 48px;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            color    : #333;
+            margin   : 0 0 8px 0;
+            font-size: 18px;
+        }
+    }
+
+    .type-grid {
+        display              : grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap                  : 12px;
+    }
+
+    .type-chip {
+        display        : inline-flex;
+        align-items    : center;
+        justify-content: center;
+        gap            : 8px;
+        padding        : 10px 12px;
+        border-radius  : 999px;
+        border         : 1px solid #e0e0e0;
+        background     : #23272f;
+        color          : white;
+        cursor         : pointer;
+        transition     : all 0.2s ease;
+
+        &:hover:not(:disabled) {
+            border-color: #007bff;
+            box-shadow  : 0 4px 12px rgba(0, 123, 255, 0.15);
+            transform   : translateY(-1px);
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor : not-allowed;
+        }
+
+        &.selected {
+            border-color: #28a745;
+            background  : #2e7d32;
+        }
+
+        .chip-label {
+            font-weight: 600;
+            font-size  : 14px;
+        }
+
+        .check {
+            font-size  : 14px;
+            font-weight: 700;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .fav-type-container {
+        padding: 16px;
+
+        .type-grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+    }
+}

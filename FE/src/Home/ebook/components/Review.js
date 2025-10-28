@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { commentAPI, authAPI, contentModerationAPI } from '../../../Util/Api';
 import './Review.scss';
+import { toast } from 'react-toastify';
 
 const Review = ({ ebook }) => {
     const [comments, setComments] = useState([]);
@@ -89,12 +90,12 @@ const Review = ({ ebook }) => {
             const validationResult = await contentModerationAPI.validateCommentContent(newComment.trim());
 
             if (!validationResult.success) {
-                alert('Failed to validate comment: ' + validationResult.message);
+                toast('Failed to validate comment: ' + validationResult.message);
                 return;
             }
 
             if (!validationResult.data.DT.isValid) {
-                alert(validationResult.data.DT.message);
+                toast(validationResult.data.DT.message);
                 return;
             }
 
@@ -109,10 +110,10 @@ const Review = ({ ebook }) => {
                 fetchComments();
                 fetchCommentStats();
             } else {
-                alert(result.message);
+                toast(result.message);
             }
         } catch (error) {
-            alert('Failed to post comment');
+            toast('Failed to post comment');
         } finally {
             setSubmitting(false);
         }
@@ -127,12 +128,12 @@ const Review = ({ ebook }) => {
             const validationResult = await contentModerationAPI.validateCommentContent(replyContent.trim());
 
             if (!validationResult.success) {
-                alert('Failed to validate reply: ' + validationResult.message);
+                toast('Failed to validate reply: ' + validationResult.message);
                 return;
             }
 
             if (!validationResult.data.DT.isValid) {
-                alert(validationResult.data.DT.message);
+                toast(validationResult.data.DT.message);
                 return;
             }
 
@@ -149,10 +150,10 @@ const Review = ({ ebook }) => {
                 fetchComments();
                 fetchCommentStats();
             } else {
-                alert(result.message);
+                toast(result.message);
             }
         } catch (error) {
-            alert('Failed to post reply');
+            toast('Failed to post reply');
         } finally {
             setSubmitting(false);
         }
@@ -170,10 +171,10 @@ const Review = ({ ebook }) => {
                 setEditContent('');
                 fetchComments();
             } else {
-                alert(result.message);
+                toast(result.message);
             }
         } catch (error) {
-            alert('Failed to update comment');
+            toast('Failed to update comment');
         } finally {
             setSubmitting(false);
         }
@@ -189,10 +190,10 @@ const Review = ({ ebook }) => {
                 fetchComments();
                 fetchCommentStats();
             } else {
-                alert(result.message);
+                toast(result.message);
             }
         } catch (error) {
-            alert('Failed to delete comment');
+            toast('Failed to delete comment');
         }
     };
 
@@ -240,15 +241,6 @@ const Review = ({ ebook }) => {
 
     return (
         <div className="reviews-section">
-            <h2>Độc giả nói gì về "{ebook?.title}"</h2>
-            <div className="reviews-header">
-                <span className="comments-count">
-                    Bình luận ({commentStats.totalComments})
-                </span>
-                <span className="reviews-count">
-                    Thảo luận ({commentStats.topLevelComments})
-                </span>
-            </div>
 
             {/* Comment Form */}
             {currentUser ? (

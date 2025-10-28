@@ -13,6 +13,7 @@ import audioController from '../controllers/audioController'
 import { uploadAvatar, handleUploadError } from '../middleware/upload'
 import libraryWishlistController from '../controllers/libraryWishlistController'
 import savedPageController from '../controllers/savedPageController'
+import ratingController from '../controllers/ratingController'
 
 const router = express.Router();
 
@@ -140,6 +141,14 @@ router.post('/saved-page', savedPageController.saveOrUpdate);
 router.delete('/saved-page', savedPageController.remove);
 router.get('/saved-page', savedPageController.list);
 router.get('/saved-page/get', savedPageController.get);
+
+// Rating routes
+router.post('/ratings', ratingController.createOrUpdateRating);
+router.get('/ratings/ebook/:ebookId', ratingController.getRatingsByEbook);
+router.get('/ratings/user', ratingController.getUserRating);
+router.delete('/ratings', ratingController.deleteRating);
+router.get('/ratings/top-rated', ratingController.getTopRatedEbooks);
+router.get('/ratings/statistics', ratingController.getRatingStatistics);
 
 
 const initApiRoutes = (app) => {

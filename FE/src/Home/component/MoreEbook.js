@@ -120,6 +120,13 @@ const MoreEbook = () => {
                             <img className="book-image" src={`http://localhost:8080/public${coverImage}`} alt={bookTitle} />
                         </div>
                         <div className="book-overlay" />
+                        {ebook.isVipEbook && (
+                            <div className="member-badge">
+                                <div className="badge-content">
+                                    <div className="badge-text">Hội viên</div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <div className="book-title">
                         <div className="title-text title-15-50">{bookTitle}</div>

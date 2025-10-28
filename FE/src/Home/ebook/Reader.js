@@ -7,6 +7,7 @@ import { savedPageAPI } from '../../Util/Api';
 import Navigation from '../component/Navigation';
 import Footer from '../component/Footer';
 import './Reader.scss';
+import { toast } from 'react-toastify';
 
 const Reader = () => {
     const { id } = useParams();
@@ -239,7 +240,7 @@ const Reader = () => {
 
     const handleSavePage = async () => {
         if (!user) {
-            alert('Bạn cần đăng nhập để lưu trang.');
+            toast('Bạn cần đăng nhập để lưu trang.');
             return;
         }
         setSaveLoading(true);
@@ -247,7 +248,7 @@ const Reader = () => {
         const pageNumber = currentPage + 1 - (ebook?.coverImage ? 1 : 0);
         if (!bookId || pageNumber < 1) {
             setSaveLoading(false);
-            alert('Không thể lưu trang này.');
+            toast('Không thể lưu trang này.');
             return;
         }
         const res = await savedPageAPI.saveOrUpdate(user.id, bookId, pageNumber);

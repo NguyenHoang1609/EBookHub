@@ -9,6 +9,7 @@ import MyOrder from './components/MyOrder';
 import Achivements from './components/Achivements';
 import PaymentHistory from './components/PaymentHistory';
 import Support from './components/Support';
+import MyFavouriteType from './components/MyFavouriteType';
 
 function UserProfile() {
     const [activeSection, setActiveSection] = useState('account');
@@ -28,8 +29,11 @@ function UserProfile() {
     const navigationItems = [
         { id: 'account', label: 'Quản lý tài khoản', icon: '👤', active: true },
         { id: 'library', label: 'Sách yêu thích', icon: '📚', active: false },
+        { id: 'favouriteTypes', label: 'Thể loại yêu thích', icon: '💙', active: false },
         { id: 'marked', label: 'Trang đã đánh dấu', icon: '🔖', active: false },
         { id: 'history', label: 'Lịch sử giao dịch', icon: '💳', active: false },
+        { id: 'support', label: 'Hỗ trợ', icon: '🆘', active: false },
+
     ];
 
     const renderMainContent = () => {
@@ -38,6 +42,8 @@ function UserProfile() {
                 return <UserAccount user={user} setUser={setUser} />;
             case 'library':
                 return <SelfBook />;
+            case 'favouriteTypes':
+                return <MyFavouriteType />;
             case 'marked':
                 return <MarkedPages />;
             case 'orders':

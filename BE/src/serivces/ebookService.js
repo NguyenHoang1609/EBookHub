@@ -6,6 +6,12 @@ import pageService from './pageService';
 import { promises as fsPromises } from 'fs';
 import convertPdfToText from './pdfConverter';
 
+// Helper function to check if authorId is a numeric string or actual text string
+const isNumericString = (value) => {
+    if (typeof value !== 'string') return false;
+    return !isNaN(value) && !isNaN(parseFloat(value)) && isFinite(value);
+};
+
 const validatePdfFile = (pdfPath) => {
     try {
         if (!fs.existsSync(pdfPath)) {
@@ -69,22 +75,66 @@ const createEbook = async (ebookData) => {
                 EM: 'Ebook is exist!'
             };
         }
+        let ebook = '';
+        console.log("type", typeof authorId, "isNumericString:", isNumericString(authorId))
 
-        const author = await db.User.findByPk(authorId);
-        if (!author) {
+        // Check if authorId is a numeric string (like '12') - treat as integer
+        if (isNumericString(authorId)) {
+            const numericAuthorId = parseInt(authorId);
+            const author = await db.User.findByPk(numericAuthorId);
+            if (!author) {
+                return {
+                    DT: '',
+                    EC: -1,
+                    EM: 'Author not found!'
+                };
+            }
+
+            ebook = await db.Ebook.create({
+                authorId: numericAuthorId,
+                customAuthor: author.name || 'Unknown',
+                title: title.trim(),
+                description,
+                status: status || 'draft'
+            });
+        }
+        // Check if authorId is a text string (like 'Pham Quang Hung') - treat as custom author
+        else if (typeof authorId === 'string') {
+            ebook = await db.Ebook.create({
+                authorId: 9,
+                customAuthor: authorId,
+                title: title.trim(),
+                description,
+                status: status || 'draft'
+            });
+        }
+        // Check if authorId is already a number
+        else if (typeof authorId === 'number') {
+            const author = await db.User.findByPk(authorId);
+            if (!author) {
+                return {
+                    DT: '',
+                    EC: -1,
+                    EM: 'Author not found!'
+                };
+            }
+
+            ebook = await db.Ebook.create({
+                authorId,
+                customAuthor: author.name || 'Unknown',
+                title: title.trim(),
+                description,
+                status: status || 'draft'
+            });
+        }
+        else {
             return {
                 DT: '',
                 EC: -1,
-                EM: 'Author not found!'
+                EM: 'Invalid authorId format!'
             };
         }
 
-        const ebook = await db.Ebook.create({
-            authorId,
-            title: title.trim(),
-            description,
-            status: status || 'draft'
-        });
 
         return {
             DT: ebook,
@@ -120,37 +170,91 @@ const uploadEbook = async (uploadData) => {
             };
         }
 
-        const validation = validatePdfFile(pdfPath);
-        if (!validation.isValid) {
+        // const validation = validatePdfFile(pdfPath);
+        // if (!validation.isValid) {
+        //     await transaction.rollback();
+        //     return {
+        //         DT: '',
+        //         EC: -1,
+        //         EM: validation.error
+        //     };
+        // }
+        console.log("type", typeof authorId, authorId, "isNumericString:", isNumericString(authorId))
+
+        // Check if authorId is a numeric string (like '12') - treat as integer
+        if (isNumericString(authorId)) {
+            const numericAuthorId = parseInt(authorId);
+            const author = await db.User.findByPk(numericAuthorId);
+            if (!author) {
+                await transaction.rollback();
+                return {
+                    DT: '',
+                    EC: -1,
+                    EM: 'Author not found!'
+                };
+            }
+
+            ebook = await db.Ebook.create({
+                authorId: numericAuthorId,
+                customAuthor: author.name || 'Unknown',
+                title,
+                description,
+                isVipEbook: isVipEbook || false,
+                file_path: pdfPath || '',
+                viewCount: 0,
+                status: status || 'draft'
+            }, { transaction });
+        }
+        // Check if authorId is a text string (like 'Pham Quang Hung') - treat as custom author
+        else if (typeof authorId === 'string') {
+            console.log("custom author string", authorId)
+            ebook = await db.Ebook.create({
+                authorId: 9, // Default author ID for custom authors
+                customAuthor: authorId,
+                title,
+                description,
+                isVipEbook: isVipEbook || false,
+                file_path: pdfPath || '',
+                viewCount: 0,
+                status: status || 'draft'
+            }, { transaction });
+        }
+        // Check if authorId is already a number
+        else if (typeof authorId === 'number') {
+            const author = await db.User.findByPk(authorId);
+            if (!author) {
+                await transaction.rollback();
+                return {
+                    DT: '',
+                    EC: -1,
+                    EM: 'Author not found!'
+                };
+            }
+
+            ebook = await db.Ebook.create({
+                authorId,
+                customAuthor: author.name || 'Unknown',
+                title,
+                description,
+                isVipEbook: isVipEbook || false,
+                file_path: pdfPath || '',
+                viewCount: 0,
+                status: status || 'draft'
+            }, { transaction });
+        }
+        else {
             await transaction.rollback();
             return {
                 DT: '',
                 EC: -1,
-                EM: validation.error
+                EM: 'Invalid authorId format!'
             };
         }
 
-        const author = await db.User.findByPk(authorId);
-        if (!author) {
-            await transaction.rollback();
-            return {
-                DT: '',
-                EC: -1,
-                EM: 'Author not found!'
-            };
-        }
+
 
         console.log("Creating ebook record...");
 
-        ebook = await db.Ebook.create({
-            authorId,
-            title,
-            description,
-            isVipEbook: isVipEbook || false,
-            file_path: pdfPath || '',
-            viewCount: 0,
-            status: status || 'draft'
-        }, { transaction });
 
         console.log("Ebook record created with ID:", ebook.ebookId);
 
@@ -367,7 +471,8 @@ const getAllEbooks = async (queryParams) => {
             include: includeOptions,
             offset,
             limit,
-            distinct: true
+            distinct: true,
+            order: [['created_at', 'DESC']],
         });
 
         return {
@@ -437,6 +542,13 @@ const getEbookById = async (ebookId, includePages = false) => {
                 EM: 'Ebook not found!'
             };
         }
+
+        console.log('Ebook found:', {
+            ebookId: ebook.ebookId,
+            title: ebook.title,
+            types: ebook.types ? ebook.types.length : 'No types loaded',
+            typesData: ebook.types
+        });
 
         await ebook.increment('viewCount');
 
@@ -523,7 +635,7 @@ const deleteEbook = async (ebookId) => {
                 EM: 'Ebook ID is required!'
             };
         }
-
+        console.log(ebookId)
         const ebook = await db.Ebook.findByPk(ebookId, {
             include: [
                 {

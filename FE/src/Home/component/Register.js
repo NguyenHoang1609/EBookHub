@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { authAPI } from '../../Util/Api';
 import FavouriteTypeForm from './FavouriteTypeForm';
 import './Register.scss';
+import { toast } from 'react-toastify';
 
 function Register({ onClose, onSwitchToLogin }) {
     const [formData, setFormData] = useState({
@@ -105,13 +106,13 @@ function Register({ onClose, onSwitchToLogin }) {
 
     const handleFavouriteTypesComplete = () => {
         // After user completes favourite types selection, redirect to login
-        alert('Đăng ký thành công! Vui lòng đăng nhập.');
+        toast('Đăng ký thành công! Vui lòng đăng nhập.');
         onSwitchToLogin();
     };
 
     const handleFavouriteTypesSkip = () => {
         // User skipped favourite types selection, redirect to login
-        alert('Đăng ký thành công! Vui lòng đăng nhập.');
+        toast('Đăng ký thành công! Vui lòng đăng nhập.');
         onSwitchToLogin();
     };
 
