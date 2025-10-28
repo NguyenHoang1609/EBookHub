@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { PageFlip } from 'page-flip';
 import { ebookAPI } from '../../Util/Api';
 import { audioAPI } from '../../Util/Api';
@@ -11,6 +11,7 @@ import './Reader.scss';
 const Reader = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const [ebook, setEbook] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -60,6 +61,13 @@ const Reader = () => {
             initializePageFlip();
         }
     }, [ebook]);
+
+    // Get page parameter from URL
+    const getPageFromURL = () => {
+        const urlParams = new URLSearchParams(location.search);
+        const pageParam = urlParams.get('page');
+        return pageParam ? parseInt(pageParam, 10) : null;
+    };
 
     useEffect(() => {
         return () => {
@@ -177,6 +185,24 @@ const Reader = () => {
 
         pageFlip.loadFromHTML(pages);
 
+        // Handle initial page from URL parameter
+        const targetPage = getPageFromURL();
+        if (targetPage && targetPage > 0) {
+            // Convert content page number to PageFlip page index
+            let pageFlipIndex = targetPage - 1; // Convert to 0-based index
+            if (ebook.coverImage) {
+                pageFlipIndex += 1; // Add 1 if cover exists (cover is page 0)
+            }
+
+            // Ensure the page index is within bounds
+            const maxPages = totalPages + (ebook.coverImage ? 1 : 0);
+            if (pageFlipIndex < maxPages) {
+                setTimeout(() => {
+                    pageFlip.turnToPage(pageFlipIndex);
+                    setCurrentPage(pageFlipIndex);
+                }, 100); // Small delay to ensure PageFlip is fully initialized
+            }
+        }
 
         pageFlip.on('flip', (e) => {
             setCurrentPage(e.data);

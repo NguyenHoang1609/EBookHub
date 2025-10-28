@@ -9,15 +9,15 @@ const Footer = () => {
                 <div className="footer-section company-info">
                     <div className="logo-section">
                         <div className="waka-logo"></div>
-                        <p className="company-name">Công ty cổ phần sách điện tử MH</p>
+                        <p className="company-name">Công ty cổ phần sách điện tử Waka</p>
                         <div className="contact-info">
                             <div className="contact-item">
                                 <div className="icon-phone"></div>
-                                <span>0968246811</span>
+                                <span>0877736289</span>
                             </div>
                             <div className="contact-item">
                                 <div className="icon-email"></div>
-                                <span>Support@mh.vn</span>
+                                <span>Support@waka.vn</span>
                             </div>
                         </div>
                     </div>

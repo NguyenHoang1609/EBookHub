@@ -4,6 +4,7 @@ import Navigation from '../component/Navigation';
 import Footer from '../component/Footer';
 import UserAccount from './components/UserAccount';
 import SelfBook from './components/SelfBook';
+import MarkedPages from './components/MarkedPages';
 import MyOrder from './components/MyOrder';
 import Achivements from './components/Achivements';
 import PaymentHistory from './components/PaymentHistory';
@@ -26,9 +27,9 @@ function UserProfile() {
 
     const navigationItems = [
         { id: 'account', label: 'Quản lý tài khoản', icon: '👤', active: true },
-        { id: 'library', label: 'Tủ sách cá nhân', icon: '📚', active: false },
+        { id: 'library', label: 'Sách yêu thích', icon: '📚', active: false },
+        { id: 'marked', label: 'Trang đã đánh dấu', icon: '🔖', active: false },
         { id: 'history', label: 'Lịch sử giao dịch', icon: '💳', active: false },
-
     ];
 
     const renderMainContent = () => {
@@ -37,6 +38,8 @@ function UserProfile() {
                 return <UserAccount user={user} setUser={setUser} />;
             case 'library':
                 return <SelfBook />;
+            case 'marked':
+                return <MarkedPages />;
             case 'orders':
                 return <MyOrder />;
             case 'achievements':

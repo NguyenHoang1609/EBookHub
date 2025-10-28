@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './SelfBook.scss';
-import { wishlistAPI, savedPageAPI } from '../../../Util/Api';
+import { wishlistAPI } from '../../../Util/Api';
 
 function SelfBook() {
     const [user, setUser] = useState(null);
     const [wishlist, setWishlist] = useState([]);
-    const [progress, setProgress] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const userData = localStorage.getItem('userData');
@@ -19,18 +20,14 @@ function SelfBook() {
 
     const fetchData = async (userId) => {
         setLoading(true);
-        const [wishRes, progRes] = await Promise.all([
-            wishlistAPI.list(userId),
-            savedPageAPI.list(userId)
-        ]);
+        const wishRes = await wishlistAPI.list(userId);
         setWishlist(wishRes.success && Array.isArray(wishRes.data) ? wishRes.data : []);
-        setProgress(progRes.success && Array.isArray(progRes.data) ? progRes.data : []);
         setLoading(false);
     };
 
-    const getProgressForBook = (ebookId) => {
-        const item = progress.find(p => p.bookId === ebookId);
-        return item ? item.pageNumber : null;
+    const handleBookClick = (bookId) => {
+        // Navigate to book detail page
+        navigate(`/book/${bookId}`);
     };
 
     if (!user) {
@@ -66,34 +63,42 @@ function SelfBook() {
     return (
         <div className="self-book-container">
             <div className="section-header">
-                <h2>Tủ sách cá nhân</h2>
-                <p>Quản lý các cuốn sách bạn đã đánh dấu yêu thích và tiến độ đọc</p>
+                <h2>Sách yêu thích</h2>
+                <p>Quản lý các cuốn sách bạn đã đánh dấu yêu thích</p>
             </div>
             {wishlist.length === 0 ? (
                 <div className="placeholder-content">
                     <div className="placeholder-icon">📚</div>
                     <h3>Chưa có sách yêu thích nào</h3>
-                    <p>Hãy thêm sách vào tủ yêu thích để quản lý và theo dõi tiến độ đọc!</p>
+                    <p>Hãy thêm sách vào tủ yêu thích để quản lý!</p>
                 </div>
             ) : (
                 <div className="book-list">
                     {wishlist.map(item => (
-                        <div className="book-item" key={item.ebookId || item.ebook?.ebookId}>
+                        <div
+                            className="book-item"
+                            key={item.ebookId || item.ebook?.ebookId}
+                            onClick={() => handleBookClick(item.ebookId || item.ebook?.ebookId)}
+                        >
                             <div className="book-cover">
                                 {item.ebook?.coverImage ? (
-                                    <img src={`http://localhost:8080/public${item.ebook.coverImage}`} alt={item.ebook.title} />
-                                ) : (
-                                    <div className="placeholder-cover">No Cover</div>
-                                )}
+                                    <img
+                                        src={`http://localhost:8080/public${item.ebook.coverImage}`}
+                                        alt={item.ebook.title}
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                    />
+                                ) : null}
+                                <div className="placeholder-cover" style={{ display: item.ebook?.coverImage ? 'none' : 'flex' }}>
+                                    No Cover
+                                </div>
                             </div>
                             <div className="book-info">
                                 <h4>{item.ebook?.title}</h4>
-                                <div className="progress-info">
-                                    {getProgressForBook(item.ebookId || item.ebook?.ebookId) ? (
-                                        <span>Tiến độ: Trang {getProgressForBook(item.ebookId || item.ebook?.ebookId)}</span>
-                                    ) : (
-                                        <span>Chưa lưu tiến độ</span>
-                                    )}
+                                <div className="click-hint">
+                                    👆 Nhấp để xem chi tiết sách
                                 </div>
                             </div>
                         </div>
