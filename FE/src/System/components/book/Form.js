@@ -25,7 +25,8 @@ import {
     ListItemAvatar,
     Avatar,
     Switch,
-    FormControlLabel
+    FormControlLabel,
+    Autocomplete
 } from '@mui/material';
 import {
     CloudUpload as UploadIcon,
@@ -61,6 +62,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     const [userRole, setUserRole] = useState(null);
     const [validatingContent, setValidatingContent] = useState(false);
     const [contentValidationResult, setContentValidationResult] = useState(null);
+    const [customAuthorName, setCustomAuthorName] = useState('');
+    const [selectedAuthor, setSelectedAuthor] = useState(null);
 
     useEffect(() => {
         if (open) {
@@ -88,6 +91,10 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     typeIds: ebook.types ? ebook.types.map(type => type.typeId) : [],
                     isVipEbook: !!ebook.isVipEbook
                 });
+                // Set selected author for autocomplete
+                const author = authors.find(a => a.id === ebook.authorId);
+                setSelectedAuthor(author || null);
+                setCustomAuthorName('');
                 setUploadMode(false);
             } else if (ebook && isViewMode) {
                 // View mode - populate form with ebook data (read-only)
@@ -99,6 +106,10 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     typeIds: ebook.types ? ebook.types.map(type => type.typeId) : [],
                     isVipEbook: !!ebook.isVipEbook
                 });
+                // Set selected author for autocomplete
+                const author = authors.find(a => a.id === ebook.authorId);
+                setSelectedAuthor(author || null);
+                setCustomAuthorName('');
                 setUploadMode(false);
             } else {
                 // Create mode - reset form
@@ -110,6 +121,8 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     typeIds: [],
                     isVipEbook: false
                 });
+                setSelectedAuthor(null);
+                setCustomAuthorName('');
                 setUploadMode(false);
             }
             setErrors({});
@@ -193,6 +206,42 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
         }
     };
 
+    const handleAuthorChange = (event, newValue, reason) => {
+        if (reason === 'selectOption' && newValue && typeof newValue === 'object') {
+            // Selected from existing authors
+            setSelectedAuthor(newValue);
+            setFormData(prev => ({
+                ...prev,
+                authorId: newValue.id
+            }));
+            setCustomAuthorName('');
+        } else if (reason === 'clear') {
+            // Cleared selection
+            setSelectedAuthor(null);
+            setFormData(prev => ({
+                ...prev,
+                authorId: ''
+            }));
+            setCustomAuthorName('');
+        } else if (reason === 'input' && typeof newValue === 'string') {
+            // Custom input
+            setCustomAuthorName(newValue);
+            setSelectedAuthor(null);
+            setFormData(prev => ({
+                ...prev,
+                authorId: newValue.trim() // Use custom name as authorId for now
+            }));
+        }
+
+        // Clear error for author
+        if (errors.authorId) {
+            setErrors(prev => ({
+                ...prev,
+                authorId: ''
+            }));
+        }
+    };
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -229,7 +278,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
         const newErrors = {};
 
         // Author validation (skip for role 2 users as they can't change author)
-        if (userRole !== 2 && !formData.authorId) {
+        if (userRole !== 2 && !formData.authorId && !customAuthorName.trim()) {
             newErrors.authorId = 'Author is required';
         }
 
@@ -298,7 +347,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             setValidatingContent(false);
         }
     };
-
+    console.log('typeid', formData.typeIds)
     const handleUpload = async () => {
         if (!selectedFile) return;
 
@@ -321,8 +370,16 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             const result = await ebookAPI.uploadEbook(formDataToSend);
 
             if (result.success) {
+                console.log(result);
                 setSuccess(result.message || 'Ebook uploaded and processed successfully!');
                 setUploadProgress(100);
+
+                if (formData.typeIds.length > 0) {
+                    const typeResult = await typeAPI.addTypesToEbook(result.data.DT.ebook.ebookId, formData.typeIds);
+                    if (!typeResult.success) {
+                        console.warn('Failed to update types:', typeResult.message);
+                    }
+                }
 
                 // Get the ebook ID from the result
                 const uploadedEbookId = result.data?.DT?.ebook?.ebookId;
@@ -382,7 +439,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                 }
             } else if (!ebook) {
                 // Create new ebook
-                result = await ebookAPI.createEebook ? await ebookAPI.createEebook({ ...submitData, isVipEbook: !!formData.isVipEbook }) : await ebookAPI.createEbook({ ...submitData, isVipEbook: !!formData.isVipEebook });
+                result = await ebookAPI.createEbook({ ...submitData, isVipEbook: !!formData.isVipEbook });
 
                 // Add types to newly created ebook
                 if (result.success && result.data?.DT?.ebookId && formData.typeIds.length > 0) {
@@ -419,6 +476,10 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     };
 
     const getAuthorName = (authorId) => {
+        // Check if it's a custom author name (string) or existing author ID (number)
+        if (typeof authorId === 'string' && isNaN(parseInt(authorId))) {
+            return authorId; // Return custom author name
+        }
         const author = authors.find(a => a.id === authorId);
         return author ? author.name : 'Unknown';
     };
@@ -689,26 +750,52 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                         {/* Only show author selection for non-Author users (role !== 2) */}
                         {userRole !== 2 && (
                             <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth error={!!errors.authorId}>
-                                    <InputLabel>Author</InputLabel>
-                                    <Select
-                                        value={formData.authorId}
-                                        onChange={handleInputChange('authorId')}
-                                        disabled={isViewMode || loadingAuthors}
-                                        label="Author"
-                                    >
-                                        {authors.map((author) => (
-                                            <MenuItem key={author.id} value={author.id}>
-                                                {author.name} ({author.email})
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                    {errors.authorId && (
-                                        <Typography color="error" variant="caption">
-                                            {errors.authorId}
-                                        </Typography>
+                                <Autocomplete
+                                    fullWidth
+                                    options={authors}
+                                    value={selectedAuthor}
+                                    inputValue={customAuthorName}
+                                    onInputChange={(event, newInputValue) => {
+                                        if (event && event.type === 'change') {
+                                            setCustomAuthorName(newInputValue);
+                                            if (newInputValue.trim()) {
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    authorId: newInputValue.trim()
+                                                }));
+                                            }
+                                        }
+                                    }}
+                                    onChange={handleAuthorChange}
+                                    getOptionLabel={(option) => {
+                                        if (typeof option === 'string') return option;
+                                        return `${option.name} (${option.email})`;
+                                    }}
+                                    isOptionEqualToValue={(option, value) => {
+                                        if (typeof option === 'string' || typeof value === 'string') {
+                                            return option === value;
+                                        }
+                                        return option.id === value.id;
+                                    }}
+                                    freeSolo
+                                    disabled={isViewMode || loadingAuthors}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Author"
+                                            error={!!errors.authorId}
+                                            helperText={errors.authorId}
+                                            placeholder="Select existing author or type custom name"
+                                        />
                                     )}
-                                </FormControl>
+                                    renderOption={(props, option) => (
+                                        <Box component="li" {...props}>
+                                            <Typography variant="body2">
+                                                {option.name} ({option.email})
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                />
                             </Grid>
                         )}
                         <Grid item xs={12} sm={userRole === 2 ? 12 : 6}>

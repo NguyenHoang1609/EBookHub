@@ -71,13 +71,13 @@ const EbookDetail = () => {
             if (res.success) {
                 setIsFavourite(false);
             }
-            alert(res.message);
+
         } else {
             const res = await wishlistAPI.add(user.id, id);
             if (res.success) {
                 setIsFavourite(true);
             }
-            alert(res.message);
+
         }
         setFavLoading(false);
     };
@@ -239,7 +239,7 @@ const EbookDetail = () => {
                         <div className="book-info-grid">
                             <div className="info-item">
                                 <span className="info-label">Tác giả</span>
-                                <span className="info-value">{ebook.author?.name || 'Unknown'}</span>
+                                <span className="info-value">{ebook.customAuthor || ebook.author?.name || 'Unknown'}</span>
                             </div>
                             <div className="info-item">
                                 <span className="info-label">Thể loại</span>

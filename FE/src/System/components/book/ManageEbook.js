@@ -254,6 +254,48 @@ const ManageEbook = () => {
         }
     };
 
+    const handleBulkDelete = async () => {
+        if (selectedEbooks.length === 0) return;
+
+        setLoading(true);
+        try {
+            // Delete each ebook individually
+            const deletePromises = selectedEbooks.map(ebookId =>
+                ebookAPI.deleteEbook(ebookId)
+            );
+
+            const results = await Promise.allSettled(deletePromises);
+
+            // Check results
+            const successful = results.filter(result =>
+                result.status === 'fulfilled' && result.value.success
+            ).length;
+
+            const failed = results.length - successful;
+
+            if (successful > 0) {
+                setSuccess(`${successful} ebook(s) deleted successfully${failed > 0 ? `, ${failed} failed` : ''}`);
+                setSelectedEbooks([]);
+                fetchEbooks();
+                fetchStats();
+            } else {
+                setError('Failed to delete any ebooks');
+            }
+
+            // Log any failures for debugging
+            results.forEach((result, index) => {
+                if (result.status === 'rejected' || (result.status === 'fulfilled' && !result.value.success)) {
+                    console.error(`Failed to delete ebook ${selectedEbooks[index]}:`, result);
+                }
+            });
+
+        } catch (err) {
+            setError('Failed to delete ebooks');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleFormClose = (refresh = false) => {
         setFormOpen(false);
         setEditingEbook(null);
@@ -437,6 +479,24 @@ const ManageEbook = () => {
                         </Grid>
                     </Grid>
                 </Box>
+
+                {/* Bulk Actions */}
+                {selectedEbooks.length > 0 && (
+                    <Box className="bulk-actions">
+                        <Typography variant="body2" sx={{ mr: 2 }}>
+                            {selectedEbooks.length} ebook(s) selected
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            startIcon={<DeleteIcon />}
+                            onClick={handleBulkDelete}
+                            disabled={loading}
+                        >
+                            Delete Selected
+                        </Button>
+                    </Box>
+                )}
 
                 {/* Alerts */}
                 {error && (

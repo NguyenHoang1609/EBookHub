@@ -253,7 +253,7 @@ const Reader = () => {
         const res = await savedPageAPI.saveOrUpdate(user.id, bookId, pageNumber);
         setSaveStatus(res.success ? 'saved' : 'error');
         setSaveLoading(false);
-        alert(res.message);
+
     };
 
     // Helper to get text of two visible pages
