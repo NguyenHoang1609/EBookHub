@@ -60,19 +60,19 @@ function MyFavouriteType() {
                         return next;
                     });
                 } else {
-                    setMessage(res.message || 'Không thể bỏ chọn thể loại.');
+                    setMessage(res.message || 'Unable to remove category selection.');
                 }
             } else {
                 const res = await typeAPI.addUserFavouriteType(user.id, typeId);
                 if (res.success) {
                     setFavouriteTypeIds((prev) => new Set(prev).add(typeId));
                 } else {
-                    setMessage(res.message || 'Không thể thêm thể loại yêu thích.');
+                    setMessage(res.message || 'Unable to add favorite category.');
                 }
             }
         } catch (error) {
             console.error('Update favourite type error:', error);
-            setMessage('Đã xảy ra lỗi. Vui lòng thử lại.');
+            setMessage('An error occurred. Please try again.');
         }
         setSaving(false);
     };
@@ -83,12 +83,12 @@ function MyFavouriteType() {
         return (
             <div className="fav-type-container">
                 <div className="section-header">
-                    <h2>Thể loại yêu thích</h2>
-                    <p>Chọn các thể loại bạn quan tâm để đề xuất phù hợp</p>
+                        <h2>Favorite Categories</h2>
+                            <p>Select categories you are interested in to get tailored suggestions</p>
                 </div>
                 <div className="placeholder-content">
                     <div className="placeholder-icon">💙</div>
-                    <h3>Vui lòng đăng nhập để quản lý thể loại yêu thích</h3>
+                    <h3>Please sign in to manage favorite categories</h3>
                 </div>
             </div>
         );
@@ -97,13 +97,13 @@ function MyFavouriteType() {
     if (loading) {
         return (
             <div className="fav-type-container">
-                <div className="section-header">
-                    <h2>Thể loại yêu thích</h2>
-                    <p>Chọn các thể loại bạn quan tâm để đề xuất phù hợp</p>
+                    <div className="section-header">
+                        <h2>Favorite Categories</h2>
+                        <p>Select the genres you're interested in to get tailored recommendations</p>
                 </div>
                 <div className="placeholder-content">
                     <div className="placeholder-icon">💙</div>
-                    <h3>Đang tải dữ liệu...</h3>
+                    <h3>Loading data...</h3>
                 </div>
             </div>
         );
@@ -112,19 +112,19 @@ function MyFavouriteType() {
     return (
         <div className="fav-type-container">
             <div className="section-header">
-                <h2>Thể loại yêu thích</h2>
-                <p>Chọn các thể loại bạn quan tâm để nhận đề xuất sách phù hợp</p>
+                <h2>Favorite Categories</h2>
+                <p>Select categories you are interested in to receive recommended books</p>
             </div>
 
             <div className="toolbar">
-                <div className="summary">Đã chọn: {selectedCount}</div>
+                <div className="summary">Selected: {selectedCount}</div>
                 {message && <div className="message">{message}</div>}
             </div>
 
             {allTypes.length === 0 ? (
                 <div className="placeholder-content">
                     <div className="placeholder-icon">💙</div>
-                    <h3>Chưa có thể loại nào</h3>
+                    <h3>No categories available</h3>
                 </div>
             ) : (
                 <div className="type-grid">

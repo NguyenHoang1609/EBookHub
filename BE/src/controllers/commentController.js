@@ -77,9 +77,10 @@ const commentController = {
     // Update a comment
     updateComment: async (req, res) => {
         try {
-            const { commentId } = req.params;
+            const { userId, commentId, } = req.params;
+
             const { content } = req.body;
-            const userId = req.user?.id;
+
 
             if (!userId) {
                 return res.status(401).json({
@@ -121,8 +122,8 @@ const commentController = {
     // Delete a comment
     deleteComment: async (req, res) => {
         try {
-            const { commentId } = req.params;
-            const userId = req.user?.id;
+            const { userId, commentId } = req.params;
+
 
             if (!userId) {
                 return res.status(401).json({

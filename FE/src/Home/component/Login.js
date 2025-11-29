@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { authAPI } from '../../Util/Api';
 import './Login.scss';
-import { useNavigate } from 'react-router-dom';
+// navigate not used in this component
 
-function Login({ onClose, onSwitchToRegister }) {
+function Login({ onClose, onSwitchToRegister, onSwitchToForgotPassword }) {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -11,7 +11,7 @@ function Login({ onClose, onSwitchToRegister }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
+    // navigation not needed in this component
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -27,8 +27,8 @@ function Login({ onClose, onSwitchToRegister }) {
         setError('');
 
         try {
-            if (!formData.email || !formData.password) {
-                setError('Vui lòng nhập đầy đủ thông tin');
+                if (!formData.email || !formData.password) {
+                setError('Please enter all required information');
                 setLoading(false);
                 return;
             }
@@ -48,11 +48,11 @@ function Login({ onClose, onSwitchToRegister }) {
                 window.location.reload();
                 onClose();
             } else {
-                setError(result.message || 'Đăng nhập thất bại');
+                setError(result.message || 'Login failed');
             }
         } catch (error) {
             console.error('Login error:', error);
-            setError('Có lỗi xảy ra. Vui lòng thử lại.');
+            setError('An error occurred. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -69,8 +69,8 @@ function Login({ onClose, onSwitchToRegister }) {
                     <button className="close-btn" onClick={onClose}>×</button>
 
                     <div className="form-header">
-                        <h1 className="form-title">Đăng nhập</h1>
-                        <p className="form-subtitle">Đăng nhập để trải nghiệm đọc sách tốt nhất</p>
+                        <h1 className="form-title">Sign in</h1>
+                        <p className="form-subtitle">Sign in for the best reading experience</p>
                     </div>
 
                     {error && (
@@ -92,7 +92,7 @@ function Login({ onClose, onSwitchToRegister }) {
                             <input
                                 type="text"
                                 className="form-input"
-                                placeholder="Email hoặc số điện thoại"
+                                placeholder="Email or phone number"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleInputChange}
@@ -106,7 +106,7 @@ function Login({ onClose, onSwitchToRegister }) {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     className="form-input"
-                                    placeholder="Mật khẩu"
+                                    placeholder="Password"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleInputChange}
@@ -131,9 +131,9 @@ function Login({ onClose, onSwitchToRegister }) {
                         </div>
 
                         <div className="forgot-password">
-                            <a href="#" onClick={(e) => { e.preventDefault(); }}>
-                                Quên mật khẩu?
-                            </a>
+                            <button type="button" className="link-button" onClick={(e) => { e.preventDefault(); onSwitchToForgotPassword(); }}>
+                                    Forgot password?
+                                </button>
                         </div>
 
                         <button
@@ -145,12 +145,12 @@ function Login({ onClose, onSwitchToRegister }) {
                                 cursor: loading ? 'not-allowed' : 'pointer'
                             }}
                         >
-                            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                            {loading ? 'Signing in...' : 'Sign in'}
                         </button>
                     </form>
 
                     {/* <div className="divider">
-                        <span className="divider-text">Hoặc đăng nhập với</span>
+                        <span className="divider-text">Or login with</span>
                     </div>
 
                     <div className="social-buttons">
@@ -172,8 +172,8 @@ function Login({ onClose, onSwitchToRegister }) {
                     </div> */}
 
                     <div className="register-link">
-                        Bạn chưa có tài khoản?
-                        <a href="#" onClick={onSwitchToRegister}>Đăng ký ngay</a>
+                        Don't have an account?
+                        <button type="button" className="link-button" onClick={onSwitchToRegister}>Register now</button>
                     </div>
                 </div>
             </div>

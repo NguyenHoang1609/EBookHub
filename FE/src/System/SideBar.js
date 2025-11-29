@@ -3,7 +3,6 @@ import './SideBar.scss';
 import { toast } from 'react-toastify';
 
 const SideBar = ({ onNavigation, activeSection }) => {
-    const [isLightMode, setIsLightMode] = useState(true);
     const [userRole, setUserRole] = useState(null);
 
     // All navigation items with role restrictions
@@ -57,9 +56,7 @@ const SideBar = ({ onNavigation, activeSection }) => {
         }
     };
 
-    const handleLightModeToggle = () => {
-        setIsLightMode(!isLightMode);
-    };
+    // Light mode toggle removed (not used currently)
 
     const handleLogout = () => {
         // Clear all user data from localStorage
@@ -100,13 +97,7 @@ const SideBar = ({ onNavigation, activeSection }) => {
                                     <div className="nav-text">{item.label}</div>
                                 </div>
                             </div>
-                            {item.badge && (
-                                <div className="badge-container">
-                                    <div className="badge">
-                                        <div className="badge-text">{item.badge}</div>
-                                    </div>
-                                </div>
-                            )}
+
                         </div>
                     ))}
                 </div>

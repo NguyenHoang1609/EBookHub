@@ -8,16 +8,16 @@ const Footer = () => {
                 {/* Company Information Section */}
                 <div className="footer-section company-info">
                     <div className="logo-section">
-                        <div className="waka-logo"></div>
-                        <p className="company-name">Công ty cổ phần sách điện tử Waka</p>
+                        <img className="logo-image" src="/logo.png" alt="Hoang Minh eBook logo" />
+                        <p className="company-name">Hoang Minh eBook Corporation</p>
                         <div className="contact-info">
                             <div className="contact-item">
-                                <div className="icon-phone"></div>
-                                <span>0877736289</span>
+
+                                <span>0968246811</span>
                             </div>
                             <div className="contact-item">
                                 <div className="icon-email"></div>
-                                <span>Support@waka.vn</span>
+                                <span>nguyenhoang@gmail.com</span>
                             </div>
                         </div>
                     </div>
@@ -25,41 +25,41 @@ const Footer = () => {
 
                 {/* About Us Section */}
                 <div className="footer-section">
-                    <h3 className="section-title">Về chúng tôi</h3>
+                    <h3 className="section-title">About us</h3>
                     <div className="link-columns">
                         <div className="link-column">
-                            <a href="#" className="footer-link">Giới thiệu</a>
-                            <a href="#" className="footer-link">Cơ cấu tổ chức</a>
-                            <a href="#" className="footer-link">Lĩnh vực hoạt động</a>
+                            <a href="/about" className="footer-link">About</a>
+                            <a href="/about#organization" className="footer-link">Organization</a>
+                            <a href="/about#areas" className="footer-link">Areas of operation</a>
                         </div>
                         <div className="link-column">
-                            <a href="#" className="footer-link">Cơ hội đầu tư</a>
-                            <a href="#" className="footer-link">Tuyển dụng</a>
-                            <a href="#" className="footer-link">Liên hệ</a>
-                            <a href="#" className="footer-link">Dịch vụ xuất bản sách</a>
+                            <a href="/about#invest" className="footer-link">Investment opportunities</a>
+                            <a href="/careers" className="footer-link">Careers</a>
+                            <a href="/contact" className="footer-link">Contact</a>
+                            <a href="/services" className="footer-link">Publishing Services</a>
                         </div>
                     </div>
                 </div>
 
                 {/* Useful Information Section */}
                 <div className="footer-section">
-                    <h3 className="section-title">Thông tin hữu ích</h3>
+                    <h3 className="section-title">Useful Information</h3>
                     <div className="link-list">
-                        <a href="#" className="footer-link">Thỏa thuận sử dụng dịch vụ</a>
-                        <a href="#" className="footer-link">Quyền lợi</a>
-                        <a href="#" className="footer-link">Quy định riêng tư</a>
-                        <a href="#" className="footer-link">Quy chế hoạt động sàn TMĐT</a>
-                        <a href="#" className="footer-link">Câu hỏi thường gặp</a>
+                        <a href="/terms" className="footer-link">Terms of Service</a>
+                        <a href="/benefits" className="footer-link">Benefits</a>
+                        <a href="/policy" className="footer-link">Privacy Policy</a>
+                        <a href="/policy#ecommerce" className="footer-link">E-commerce Rules</a>
+                        <a href="/faq" className="footer-link">FAQ</a>
                     </div>
                 </div>
 
                 {/* News Section */}
                 <div className="footer-section">
-                    <h3 className="section-title">Tin tức</h3>
+                    <h3 className="section-title">News</h3>
                     <div className="link-list">
-                        <a href="#" className="footer-link">Tin dịch vụ</a>
-                        <a href="#" className="footer-link">Review sách</a>
-                        <a href="#" className="footer-link">Lịch phát hành</a>
+                        <a href="/updates" className="footer-link">Service Updates</a>
+                        <a href="/reviews" className="footer-link">Book Reviews</a>
+                        <a href="/releases" className="footer-link">Release Schedule</a>
                     </div>
                 </div>
 
@@ -82,13 +82,13 @@ const Footer = () => {
 
             {/* Legal Information */}
             <div className="legal-info">
-                <p>Công ty Cổ phần Sách điện tử Waka - Tầng 6, Tháp văn phòng quốc tế Hòa Bình, số 106 đường Hoàng Quốc Việt, Phường Nghĩa Đô, Thành phố Hà Nội, Việt Nam.</p>
-                <p>ĐKKD số 0108796796 do SKHĐT TP Hà Nội cấp lần đầu ngày 24/06/2019.</p>
-                <p>Giấy xác nhận Đăng ký hoạt động phát hành xuất bản phẩm điện tử số 8132/XN-CXBIPH do Cục Xuất bản, In và Phát hành cấp ngày 31/12/2019.</p>
-                <p>Giấy chứng nhận Đăng ký kết nối để cung cấp dịch vụ nội dung thông tin trên mạng viễn thông di động số 91/GCN-CVT cấp ngày 24/03/2025.</p>
-                <p>Người đại diện: (Bà) Phùng Thị Như Quỳnh (Theo Giấy ủy quyền số 2402/GUQ-WAKA/2025 ngày 24/02/2025).</p>
-                <p>Người đại diện được ủy quyền phối hợp với CQNN giải quyết các vấn đề liên quan đến bảo vệ quyền lợi Khách hàng: (Bà) Phùng Thị Như Quỳnh - Số điện thoại: 0977756263 - Email: Support@waka.vn. - Địa chỉ liên hệ: Tháp văn phòng quốc tế Hòa Bình, số 106 đường Hoàng Quốc Việt, Phường Nghĩa Đô, Thành phố Hà Nội, Việt Nam.</p>
-                <p>Số VPGD: 024.73086566 | Số CSKH: 1900545482 nhánh 5 | Hotline: 0877736289</p>
+                <p>Hoang Minh eBook Corp - 6th Floor, Hoa Binh International Office Tower, 106 Hoang Quoc Viet St., Nghia Do Ward, Hanoi, Vietnam.</p>
+                <p>Business Registration No.: 0108796796 (issued by Hanoi Department of Planning and Investment, first registered on 24/06/2019).</p>
+                <p>Certificate for e-publication distribution No.: 8132/XN-CXBIPH (issued 31/12/2019).</p>
+                <p>Certificate of telecom content service connection No.: 91/GCN-CVT (issued 24/03/2025).</p>
+                <p>Authorized representative: Mr. Nguyen Minh Hoang (Authorization document 2402/GUQ/2025 dated 24/02/2025).</p>
+                <p>Authorized contact for customer protection issues: Nguyen Minh Hoang - Phone: 0968246811 - Email: nguyenhoang@gmail.com - Address: Hoa Binh International Office Tower, 106 Hoang Quoc Viet St., Nghia Do Ward, Hanoi, Vietnam.</p>
+                <p>Office: 024.73086566 | Hotline: 0968246811</p>
             </div>
         </footer>
     );

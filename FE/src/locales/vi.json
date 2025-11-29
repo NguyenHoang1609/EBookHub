@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "mystery_horror": "Trinh thám - Kinh dị",
+    "personal_finance": "Tài chính cá nhân",
+    "creative_thinking": "Tư duy sáng tạo",
+    "romance": "Ngôn tình",
+    "modern": "Hiện đại",
+    "ancient": "Cổ đại",
+    "see_more": "Xem thêm",
+    "subscription": "Gói cước",
+    "register": "Đăng ký",
+    "login": "Đăng nhập",
+    "my_profile": "Hồ sơ của tôi",
+    "logout": "Đăng xuất"
+  },
+  "more_ebook": {
+    "all_books": "Tất cả sách",
+    "search_placeholder": "Tìm kiếm sách...",
+    "all_categories": "Tất cả thể loại",
+    "no_books": "Không tìm thấy sách",
+    "page": "Trang"
+  },
+  "footer": {
+    "about": "Về chúng tôi",
+    "organization": "Tổ chức",
+    "areas": "Lĩnh vực hoạt động",
+    "invest": "Cơ hội đầu tư",
+    "careers": "Tuyển dụng",
+    "contact": "Liên hệ",
+    "services": "Dịch vụ xuất bản",
+    "terms": "Điều khoản dịch vụ",
+    "benefits": "Quyền lợi",
+    "privacy": "Chính sách bảo mật",
+    "ecommerce": "Quy định thương mại điện tử",
+    "faq": "Câu hỏi thường gặp",
+    "updates": "Cập nhật dịch vụ",
+    "reviews": "Đánh giá sách",
+    "releases": "Lịch phát hành"
+  }
+}

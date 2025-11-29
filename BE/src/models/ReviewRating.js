@@ -60,5 +60,6 @@ const ReviewRating = sequelize.define('ReviewRating', {
         }
     ]
 });
+// ReviewRating.sync({alter:true})
 
 module.exports = ReviewRating;

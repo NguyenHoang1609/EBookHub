@@ -44,6 +44,7 @@ const Review = ({ ebook }) => {
             fetchComments();
             fetchCommentStats();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ebook?.ebookId, currentPage]);
 
     const fetchComments = async () => {
@@ -164,7 +165,7 @@ const Review = ({ ebook }) => {
 
         setSubmitting(true);
         try {
-            const result = await commentAPI.updateComment(commentId, editContent.trim());
+            const result = await commentAPI.updateComment(commentId, currentUser.id, editContent.trim());
 
             if (result.success) {
                 setEditingComment(null);
@@ -184,7 +185,7 @@ const Review = ({ ebook }) => {
         if (!window.confirm('Are you sure you want to delete this comment?')) return;
 
         try {
-            const result = await commentAPI.deleteComment(commentId);
+            const result = await commentAPI.deleteComment(commentId, currentUser.id);
 
             if (result.success) {
                 fetchComments();
@@ -205,13 +206,13 @@ const Review = ({ ebook }) => {
         const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
 
         if (diffInHours < 1) {
-            return 'Vừa xong';
+            return 'Just now';
         } else if (diffInHours < 24) {
-            return `${Math.floor(diffInHours)} giờ trước`;
+            return `${Math.floor(diffInHours)} hour(s) ago`;
         } else if (diffInDays < 7) {
-            return `${Math.floor(diffInDays)} ngày trước`;
+            return `${Math.floor(diffInDays)} day(s) ago`;
         } else {
-            return date.toLocaleDateString('vi-VN');
+            return date.toLocaleDateString('en-US');
         }
     };
 
@@ -233,7 +234,7 @@ const Review = ({ ebook }) => {
         return (
             <div className="reviews-section">
                 <div className="loading-comments">
-                    <p>Đang tải bình luận...</p>
+                    <p>Loading comments...</p>
                 </div>
             </div>
         );
@@ -253,7 +254,7 @@ const Review = ({ ebook }) => {
                             <textarea
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
-                                placeholder="Viết bình luận của bạn..."
+                                placeholder="Write your comment..."
                                 className="comment-input"
                                 rows="3"
                                 maxLength="2000"
@@ -267,7 +268,7 @@ const Review = ({ ebook }) => {
                                     className="submit-comment-btn"
                                     disabled={!newComment.trim() || submitting}
                                 >
-                                    {submitting ? 'Đang gửi...' : 'Gửi bình luận'}
+                                    {submitting ? 'Submitting...' : 'Post comment'}
                                 </button>
                             </div>
                         </div>
@@ -275,7 +276,7 @@ const Review = ({ ebook }) => {
                 </form>
             ) : (
                 <div className="login-prompt">
-                    <p>Vui lòng đăng nhập để bình luận</p>
+                    <p>Please sign in to comment</p>
                 </div>
             )}
 
@@ -285,6 +286,11 @@ const Review = ({ ebook }) => {
                     <p>{error}</p>
                 </div>
             )}
+
+            {/* Summary for comment counts */}
+            <div className="comments-summary">
+                <span>{commentStats.totalComments || 0} comments</span>
+            </div>
 
             <div className="comments-list">
                 {comments.map((comment) => (
@@ -310,13 +316,13 @@ const Review = ({ ebook }) => {
                                         }}
                                         className="edit-btn"
                                     >
-                                        Sửa
+                                        Edit
                                     </button>
                                     <button
                                         onClick={() => handleDeleteComment(comment.id)}
                                         className="delete-btn"
                                     >
-                                        Xóa
+                                        Delete
                                     </button>
                                 </div>
                             )}
@@ -338,7 +344,7 @@ const Review = ({ ebook }) => {
                                             className="save-edit-btn"
                                             disabled={submitting}
                                         >
-                                            {submitting ? 'Đang lưu...' : 'Lưu'}
+                                            {submitting ? 'Saving...' : 'Save'}
                                         </button>
                                         <button
                                             onClick={() => {
@@ -347,7 +353,7 @@ const Review = ({ ebook }) => {
                                             }}
                                             className="cancel-edit-btn"
                                         >
-                                            Hủy
+                                            Cancel
                                         </button>
                                     </div>
                                 </div>
@@ -360,7 +366,7 @@ const Review = ({ ebook }) => {
                                                 onClick={() => setReplyToComment(comment.id)}
                                                 className="reply-btn"
                                             >
-                                                Trả lời
+                                                Reply
                                             </button>
                                         </div>
                                     )}
@@ -379,7 +385,7 @@ const Review = ({ ebook }) => {
                                         <textarea
                                             value={replyContent}
                                             onChange={(e) => setReplyContent(e.target.value)}
-                                            placeholder="Viết phản hồi..."
+                                            placeholder="Write your reply..."
                                             className="reply-input"
                                             rows="2"
                                             maxLength="2000"
@@ -390,7 +396,7 @@ const Review = ({ ebook }) => {
                                                 className="submit-reply-btn"
                                                 disabled={!replyContent.trim() || submitting}
                                             >
-                                                {submitting ? 'Đang gửi...' : 'Trả lời'}
+                                                {submitting ? 'Submitting...' : 'Reply'}
                                             </button>
                                             <button
                                                 onClick={() => {
@@ -399,7 +405,7 @@ const Review = ({ ebook }) => {
                                                 }}
                                                 className="cancel-reply-btn"
                                             >
-                                                Hủy
+                                                Cancel
                                             </button>
                                         </div>
                                     </div>
@@ -432,13 +438,13 @@ const Review = ({ ebook }) => {
                                                             }}
                                                             className="edit-btn"
                                                         >
-                                                            Sửa
+                                                            Edit
                                                         </button>
                                                         <button
                                                             onClick={() => handleDeleteComment(reply.id)}
                                                             className="delete-btn"
                                                         >
-                                                            Xóa
+                                                            Delete
                                                         </button>
                                                     </div>
                                                 )}
@@ -459,7 +465,7 @@ const Review = ({ ebook }) => {
                                                                 className="save-edit-btn"
                                                                 disabled={submitting}
                                                             >
-                                                                {submitting ? 'Đang lưu...' : 'Lưu'}
+                                                                {submitting ? 'Saving...' : 'Save'}
                                                             </button>
                                                             <button
                                                                 onClick={() => {
@@ -468,7 +474,7 @@ const Review = ({ ebook }) => {
                                                                 }}
                                                                 className="cancel-edit-btn"
                                                             >
-                                                                Hủy
+                                                                Cancel
                                                             </button>
                                                         </div>
                                                     </div>
@@ -493,24 +499,24 @@ const Review = ({ ebook }) => {
                         disabled={!pagination.hasPrev}
                         className="pagination-btn"
                     >
-                        Trang trước
+                        Previous
                     </button>
                     <span className="pagination-info">
-                        Trang {pagination.currentPage} / {pagination.totalPages}
+                        Page {pagination.currentPage} / {pagination.totalPages}
                     </span>
                     <button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, pagination.totalPages))}
                         disabled={!pagination.hasNext}
                         className="pagination-btn"
                     >
-                        Trang sau
+                        Next
                     </button>
                 </div>
             )}
 
             {comments.length === 0 && !loading && (
                 <div className="no-comments">
-                    <p>Chưa có bình luận nào. Hãy là người đầu tiên bình luận!</p>
+                    <p>No comments yet. Be the first to comment!</p>
                 </div>
             )}
         </div>

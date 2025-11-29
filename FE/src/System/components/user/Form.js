@@ -31,7 +31,8 @@ const UserForm = ({ open, user, isViewMode = false, groups = [], onClose }) => {
         password: '',
         confirmPassword: '',
         groupId: 3,
-        isActive: true
+        isActive: true,
+        is_vip: false
     });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
@@ -49,7 +50,8 @@ const UserForm = ({ open, user, isViewMode = false, groups = [], onClose }) => {
                 password: '',
                 confirmPassword: '',
                 groupId: user.groupId || 3,
-                isActive: user.isActive !== undefined ? user.isActive : true
+                isActive: user.isActive !== undefined ? user.isActive : true,
+                is_vip: user.is_vip !== undefined ? user.is_vip : false
             });
         } else if (user && isViewMode) {
             // View mode - populate form with user data (read-only)
@@ -61,7 +63,8 @@ const UserForm = ({ open, user, isViewMode = false, groups = [], onClose }) => {
                 password: '',
                 confirmPassword: '',
                 groupId: user.groupId || 3,
-                isActive: user.isActive !== undefined ? user.isActive : true
+                isActive: user.isActive !== undefined ? user.isActive : true,
+                is_vip: user.is_vip !== undefined ? user.is_vip : false
             });
         } else {
             // Create mode - reset form
@@ -73,7 +76,8 @@ const UserForm = ({ open, user, isViewMode = false, groups = [], onClose }) => {
                 password: '',
                 confirmPassword: '',
                 groupId: 3,
-                isActive: true
+                isActive: true,
+                is_vip: false
             });
         }
         setErrors({});
@@ -161,10 +165,11 @@ const UserForm = ({ open, user, isViewMode = false, groups = [], onClose }) => {
             const submitData = {
                 name: formData.name.trim(),
                 email: formData.email.trim().toLowerCase(),
-                phone: formData.phone ? parseInt(formData.phone.replace(/\s/g, '')) : null,
-                address: formData.address.trim() || null,
+                phone: formData.phone ? formData.phone.replace(/\s/g, '') : '',
+                address: formData.address.trim() || '',
                 groupId: formData.groupId,
-                isActive: formData.isActive
+                isActive: formData.isActive,
+                is_vip: formData.is_vip
             };
 
             // Add password only if provided
@@ -386,8 +391,8 @@ const UserForm = ({ open, user, isViewMode = false, groups = [], onClose }) => {
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={!!formData.isVip}
-                                onChange={handleSwitchChange('isVip')}
+                                checked={!!formData.is_vip}
+                                onChange={handleSwitchChange('is_vip')}
                                 disabled={isViewMode}
                             />
                         }
@@ -395,8 +400,8 @@ const UserForm = ({ open, user, isViewMode = false, groups = [], onClose }) => {
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Typography>VIP Member</Typography>
                                 <Chip
-                                    label={formData.isVip ? 'VIP' : 'Normal'}
-                                    color={formData.isVip ? 'warning' : 'default'}
+                                    label={formData.is_vip ? 'VIP' : 'Normal'}
+                                    color={formData.is_vip ? 'warning' : 'default'}
                                     size="small"
                                 />
                             </Box>

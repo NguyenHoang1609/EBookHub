@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "mystery_horror": "Mystery - Horror",
+    "personal_finance": "Personal Finance",
+    "creative_thinking": "Creative Thinking",
+    "romance": "Romance",
+    "modern": "Modern",
+    "ancient": "Ancient",
+    "see_more": "See more",
+    "subscription": "Subscription",
+    "register": "Register",
+    "login": "Login",
+    "my_profile": "My Profile",
+    "logout": "Logout"
+  },
+  "more_ebook": {
+    "all_books": "All Books",
+    "search_placeholder": "Search books...",
+    "all_categories": "All categories",
+    "no_books": "No books found",
+    "page": "Page"
+  },
+  "footer": {
+    "about": "About",
+    "organization": "Organization",
+    "areas": "Areas of operation",
+    "invest": "Investment opportunities",
+    "careers": "Careers",
+    "contact": "Contact",
+    "services": "Publishing Services",
+    "terms": "Terms of Service",
+    "benefits": "Benefits",
+    "privacy": "Privacy Policy",
+    "ecommerce": "E-commerce Rules",
+    "faq": "FAQ",
+    "updates": "Service Updates",
+    "reviews": "Book Reviews",
+    "releases": "Release Schedule"
+  }
+}

@@ -5,19 +5,19 @@ function MyOrder() {
     return (
         <div className="my-order-container">
             <div className="section-header">
-                <h2>Quản lý đơn hàng</h2>
-                <p>Theo dõi và quản lý các đơn hàng của bạn</p>
+                <h2>Order Management</h2>
+                <p>Track and manage your orders</p>
             </div>
 
             <div className="placeholder-content">
                 <div className="placeholder-icon">📋</div>
-                <h3>Quản lý đơn hàng</h3>
-                <p>Chức năng này đang được phát triển và sẽ sớm có mặt!</p>
+                <h3>Manage Orders</h3>
+                <p>This feature is under development and coming soon!</p>
                 <div className="coming-features">
-                    <div className="feature-item">✓ Xem lịch sử đơn hàng</div>
-                    <div className="feature-item">✓ Theo dõi trạng thái đơn hàng</div>
-                    <div className="feature-item">✓ Đánh giá sản phẩm đã mua</div>
-                    <div className="feature-item">✓ Yêu cầu hoàn tiền</div>
+                    <div className="feature-item">✓ View order history</div>
+                    <div className="feature-item">✓ Track order status</div>
+                    <div className="feature-item">✓ Review purchased items</div>
+                    <div className="feature-item">✓ Request refund</div>
                 </div>
             </div>
         </div>

@@ -17,8 +17,31 @@ async function createPayment(data) {
     return await Payment.create(data);
 }
 
-async function listPayments(filters = {}, options = {}) {
-    return await Payment.findAll({ where: filters, order: [['created_at', 'DESC']], ...options });
+async function listPayments({ page = 1, limit = 10, status, userId } = {}) {
+    const where = {};
+    if (status) where.status = status;
+    if (userId) where.userId = userId;
+
+    const parsedPage = Math.max(1, parseInt(page, 10) || 1);
+    const parsedLimit = Math.max(1, Math.min(100, parseInt(limit, 10) || 10));
+    const offset = (parsedPage - 1) * parsedLimit;
+
+    const { rows, count } = await Payment.findAndCountAll({
+        where,
+        order: [['created_at', 'DESC']],
+        limit: parsedLimit,
+        offset
+    });
+
+    return {
+        rows,
+        pagination: {
+            page: parsedPage,
+            limit: parsedLimit,
+            total: count,
+            totalPages: Math.ceil(count / parsedLimit) || 0
+        }
+    };
 }
 
 async function getPaymentById(id) {
@@ -126,7 +149,7 @@ async function handleWebhook(queryOrBody = {}) {
 
     if (status === 'completed') {
         // activate VIP
-        await User.update({ isVip: true }, { where: { id: user.id } });
+        await User.update({ is_vip: true }, { where: { id: user.id } });
     }
 
     return { success: status === 'completed' };
@@ -147,7 +170,7 @@ async function checkPaymentStatus({ userId, amount }) {
     console.log('user', user);
     return {
         hasPaid: !!matched,
-        isVip: !!user?.isVip,
+        is_vip: !!user?.is_vip,
     };
 }
 

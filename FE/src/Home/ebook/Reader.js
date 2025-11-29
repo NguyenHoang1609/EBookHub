@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { PageFlip } from 'page-flip';
 import { ebookAPI } from '../../Util/Api';
@@ -57,18 +57,14 @@ const Reader = () => {
         }
     }, [id]);
 
-    useEffect(() => {
-        if (ebook && ebook.pages && bookRef.current) {
-            initializePageFlip();
-        }
-    }, [ebook]);
+    // initializePageFlip effect moved below after definition (to avoid calling before it's declared)
 
-    // Get page parameter from URL
-    const getPageFromURL = () => {
+    // Get page parameter from URL (stable across renders)
+    const getPageFromURL = useCallback(() => {
         const urlParams = new URLSearchParams(location.search);
         const pageParam = urlParams.get('page');
         return pageParam ? parseInt(pageParam, 10) : null;
-    };
+    }, [location.search]);
 
     useEffect(() => {
         return () => {
@@ -103,6 +99,8 @@ const Reader = () => {
                         const totalPageCount = totalPages + (ebook?.coverImage ? 1 : 0);
                         pageFlipRef.current.turnToPage(totalPageCount - 1);
                         break;
+                    default:
+                        break;
                 }
             }
         };
@@ -113,7 +111,7 @@ const Reader = () => {
         };
     }, [totalPages, ebook]);
 
-    const initializePageFlip = () => {
+    const initializePageFlip = useCallback(() => {
         if (pageFlipRef.current) {
             pageFlipRef.current.destroy();
         }
@@ -214,7 +212,13 @@ const Reader = () => {
         });
 
         pageFlipRef.current = pageFlip;
-    };
+    }, [ebook, totalPages, getPageFromURL]);
+
+    useEffect(() => {
+        if (ebook && ebook.pages && bookRef.current) {
+            initializePageFlip();
+        }
+    }, [ebook, initializePageFlip]);
 
     const handlePreviousPage = () => {
         if (pageFlipRef.current) {
@@ -228,11 +232,7 @@ const Reader = () => {
         }
     };
 
-    const handleGoToPage = (pageNumber) => {
-        if (pageFlipRef.current) {
-            pageFlipRef.current.turnToPage(pageNumber);
-        }
-    };
+    // handleGoToPage removed — not used
 
     const handleBackToDetail = () => {
         navigate(`/book/${id}`);
@@ -240,7 +240,7 @@ const Reader = () => {
 
     const handleSavePage = async () => {
         if (!user) {
-            toast('Bạn cần đăng nhập để lưu trang.');
+            toast('You need to log in to save the page.');
             return;
         }
         setSaveLoading(true);
@@ -248,7 +248,7 @@ const Reader = () => {
         const pageNumber = currentPage + 1 - (ebook?.coverImage ? 1 : 0);
         if (!bookId || pageNumber < 1) {
             setSaveLoading(false);
-            toast('Không thể lưu trang này.');
+            toast('Cannot save this page.');
             return;
         }
         const res = await savedPageAPI.saveOrUpdate(user.id, bookId, pageNumber);
@@ -352,8 +352,10 @@ const Reader = () => {
                             }}
                             disabled={audioLoading}
                         >
-                            {audioLoading ? 'Đang tạo...' : 'Đọc tự động'}
+                            {audioLoading ? 'Generating...' : 'Read aloud'}
                         </button>
+                        {saveStatus === 'saved' && <span className="save-status">Saved ✓</span>}
+                        {saveStatus === 'error' && <span className="save-status error">Save failed</span>}
                         {audioUrl && (
                             <>
                                 <audio ref={audioRef} src={audioUrl} autoPlay controls onEnded={() => setIsReading(false)} />
@@ -373,8 +375,8 @@ const Reader = () => {
                             </>
                         )}
                     </div>
-                    <button className="save-page-btn" onClick={handleSavePage} disabled={saveLoading} title="Lưu trang này vào tủ sách cá nhân">
-                        {saveLoading ? 'Đang lưu...' : 'Lưu trang'}
+                        <button className="save-page-btn" onClick={handleSavePage} disabled={saveLoading} title="Save this page to your library">
+                        {saveLoading ? 'Saving...' : 'Save page'}
                     </button>
                 </div>
             </div>

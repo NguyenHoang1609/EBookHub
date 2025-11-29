@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const TTS_API_URL = 'https://viettelai.vn/tts/speech_synthesis';
-const TTS_TOKEN = 'e6297245410275323bec68fdaff21ebb';
+const TTS_TOKEN = 'b5dccbc76cc47a8e23bc5a06e6425e58';
 const TTS_VOICE = 'hcm-diemmy';
 const TTS_SPEED = 0.9;
 

@@ -141,9 +141,75 @@ const checkAccount = async (req, res) => {
     }
 };
 
+const forgotPassword = async (req, res) => {
+    try {
+        console.log('Forgot password request received:', req.body);
+
+        const { emailOrPhone, phone } = req.body;
+
+        if (!emailOrPhone || !phone) {
+            return res.status(400).json({
+                DT: '',
+                EC: -1,
+                EM: 'Email hoặc số điện thoại và số điện thoại là bắt buộc!'
+            });
+        }
+
+        const result = await authService.forgotPassword(emailOrPhone, phone);
+
+        if (result.EC === 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.log('Forgot password controller error:', error);
+        return res.status(500).json({
+            DT: '',
+            EC: -1,
+            EM: 'Lỗi server khi xử lý yêu cầu quên mật khẩu'
+        });
+    }
+};
+
+const changePassword = async (req, res) => {
+    try {
+        console.log('Change password request received:', req.body);
+
+        const { emailOrPhone, phone, newPassword } = req.body;
+
+        if (!emailOrPhone || !phone || !newPassword) {
+            return res.status(400).json({
+                DT: '',
+                EC: -1,
+                EM: 'Thông tin không đầy đủ!'
+            });
+        }
+
+        const result = await authService.changePassword(emailOrPhone, phone, newPassword);
+
+        if (result.EC === 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(400).json(result);
+        }
+
+    } catch (error) {
+        console.log('Change password controller error:', error);
+        return res.status(500).json({
+            DT: '',
+            EC: -1,
+            EM: 'Lỗi server khi đặt lại mật khẩu'
+        });
+    }
+};
+
 export default {
     register,
     login,
     logout,
-    checkAccount
+    checkAccount,
+    forgotPassword,
+    changePassword
 };

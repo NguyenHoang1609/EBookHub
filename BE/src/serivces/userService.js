@@ -49,7 +49,7 @@ const checkPhoneExists = async (phone, excludeId = null) => {
     try {
         if (!phone) return false;
 
-        const whereClause = { phone: parseInt(phone) };
+        const whereClause = { phone: String(phone).trim() };
         if (excludeId) {
             whereClause.id = { [Op.ne]: excludeId };
         }
@@ -202,7 +202,7 @@ const getUserById = async (id) => {
 // Create new user
 const createUser = async (userData) => {
     try {
-        const { name, email, phone, address, password, groupId = 3 } = userData;
+        const { name, email, phone, address, password, groupId = 3, is_vip = false } = userData;
 
         // Validation
         if (!name || !email || !password) {
@@ -258,10 +258,11 @@ const createUser = async (userData) => {
         const newUser = {
             name: name.trim(),
             email: email.toLowerCase().trim(),
-            phone: phone ? parseInt(phone) : null,
+            phone: phone ? String(phone).trim() : null,
             address: address ? address.trim() : null,
             password: hashedPassword,
-            groupId: parseInt(groupId)
+            groupId: parseInt(groupId),
+            is_vip: Boolean(is_vip)
         };
 
         const createdUser = await db.User.create(newUser);
@@ -310,7 +311,7 @@ const updateUser = async (id, updateData) => {
             };
         }
 
-        const { name, email, phone, address, groupId, isActive, avatar } = updateData;
+        const { name, email, phone, address, groupId, isActive, is_vip, avatar } = updateData;
 
         // Find user
         const user = await db.User.findByPk(id);
@@ -359,12 +360,13 @@ const updateUser = async (id, updateData) => {
         const updateFields = {};
         if (name) updateFields.name = name.trim();
         if (email) updateFields.email = email.toLowerCase().trim();
-        if (phone !== undefined) updateFields.phone = phone ? parseInt(phone) : null;
+        if (phone !== undefined) updateFields.phone = phone ? String(phone).trim() : null;
         if (address !== undefined) updateFields.address = address ? address.trim() : null;
         if (groupId) updateFields.groupId = parseInt(groupId);
         if (isActive !== undefined) updateFields.isActive = Boolean(isActive);
+        if (is_vip !== undefined) updateFields.is_vip = is_vip === true ? 1 : 0;
         if (avatar !== undefined) updateFields.avatar = avatar;
-
+        console.log('updateFields', updateFields);
         // Update user
         await user.update(updateFields);
 
@@ -762,7 +764,7 @@ const getDashboardStats = async () => {
             }),
 
             // VIP users
-            db.User.count({ where: { isVip: true } }),
+            db.User.count({ where: { is_vip: true } }),
 
             // Authors (group 2)
             db.User.count({ where: { groupId: 2 } }),

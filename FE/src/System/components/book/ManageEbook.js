@@ -41,9 +41,7 @@ import {
     Visibility as ViewIcon,
     Book as BookIcon,
     Person as PersonIcon,
-    Visibility as VisibilityIcon,
-    LibraryBooks as LibraryBooksIcon,
-    Pages as PagesIcon
+    LibraryBooks as LibraryBooksIcon
 } from '@mui/icons-material';
 import { ebookAPI, userAPI } from '../../../Util/Api';
 import EbookForm from './Form';
@@ -176,6 +174,7 @@ const ManageEbook = () => {
     };
 
     const handleAuthorFilterChange = (event) => {
+
         setAuthorFilter(event.target.value);
         setPage(0);
     };
@@ -314,7 +313,8 @@ const ManageEbook = () => {
 
     const getAuthorName = (authorId) => {
         const author = authors.find(a => a.id === authorId);
-        return author ? author.name : 'Unknown';
+        console.log('author name', author);
+        return author ? author.customAuthor || author.name : 'Unknown';
     };
 
     const getCoverImageUrl = (coverImage) => {
@@ -406,7 +406,7 @@ const ManageEbook = () => {
                                 <CardContent>
                                     <Box className="stat-content">
                                         <Box className="stat-icon">
-                                            <VisibilityIcon />
+                                            <ViewIcon />
                                         </Box>
                                         <Box>
                                             <Typography className="stat-label">Total Views</Typography>
@@ -583,7 +583,7 @@ const ManageEbook = () => {
                                             <Box className="author-info">
                                                 <PersonIcon sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
                                                 <Typography variant="body2">
-                                                    {getAuthorName(ebook.authorId)}
+                                                    {ebook.customAuthor || getAuthorName(ebook.authorId)}
                                                 </Typography>
                                             </Box>
                                         </TableCell>
@@ -603,7 +603,7 @@ const ManageEbook = () => {
                                         </TableCell>
                                         <TableCell>
                                             <Box className="views-info">
-                                                <VisibilityIcon sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
+                                                   <ViewIcon sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
                                                 <Typography variant="body2">
                                                     {ebook.viewCount || 0}
                                                 </Typography>

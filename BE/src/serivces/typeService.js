@@ -9,8 +9,7 @@ const getAllTypes = async (options = {}) => {
             pageSize = 10,
             search,
             isActive = true,
-            sortBy = 'name',
-            sortOrder = 'ASC'
+         
         } = options;
 
         const offset = page * pageSize;
@@ -29,10 +28,10 @@ const getAllTypes = async (options = {}) => {
                 { description: { [Op.like]: `%${search}%` } }
             ];
         }
-
+        // console.log(sortBy,sortOrder)
         const { count, rows } = await db.Type.findAndCountAll({
             where: whereClause,
-            order: [[sortBy, sortOrder.toUpperCase()]],
+            order: [['created_at',"DESC"]],
             limit,
             offset,
             distinct: true
@@ -319,6 +318,65 @@ const getUserFavouriteTypes = async (userId) => {
             DT: '',
             EC: -1,
             EM: 'Internal server error while fetching user favourite types'
+        };
+    }
+};
+
+// Get users who favourited a specific type
+const getUsersWhoFavouritedType = async (typeId) => {
+    try {
+        if (!typeId || isNaN(parseInt(typeId))) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Invalid type ID provided!'
+            };
+        }
+
+        const favourites = await db.UserFavouriteType.findAll({
+            where: { typeId: parseInt(typeId) },
+            attributes: ['userId', 'created_at'],
+            order: [['created_at', 'DESC']]
+        });
+
+        if (!favourites || favourites.length === 0) {
+            return {
+                DT: [],
+                EC: 0,
+                EM: 'No users have favourited this type'
+            };
+        }
+
+        const userIds = favourites.map(f => f.userId);
+
+        const users = await db.User.findAll({
+            where: { id: { [Op.in]: userIds } },
+            attributes: ['id', 'name', 'email', 'avatar', 'created_at']
+        });
+
+        // Map addedAt from favourites
+        const addedAtByUserId = new Map(favourites.map(f => [f.userId, f.createdAt]));
+        const resultUsers = users.map(u => ({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            avatar: u.avatar,
+            createdAt: u.createdAt,
+            addedAt: addedAtByUserId.get(u.id)
+        }));
+
+        return {
+            DT: resultUsers,
+            EC: 0,
+            EM: 'Users who favourited type retrieved successfully'
+        };
+
+    } catch (error) {
+        console.log('Get users who favourited type service error:', error);
+        return {
+            DT: '',
+            EC: -1,
+            EM: 'Internal server error while fetching users for type'
         };
     }
 };
@@ -625,6 +683,7 @@ export default {
     updateType,
     deleteType,
     getUserFavouriteTypes,
+    getUsersWhoFavouritedType,
     addUserFavouriteType,
     removeUserFavouriteType,
     getEbooksByType,

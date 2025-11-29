@@ -111,6 +111,42 @@ const authAPI = {
                 error: error.response?.data || error.message
             };
         }
+    },
+
+    forgotPassword: async (credentials) => {
+        try {
+            const response = await API.post('/auth/forgot-password', credentials);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Forgot password failed',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    changePassword: async (credentials) => {
+        try {
+            const response = await API.post('/auth/change-password', credentials);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Change password failed',
+                error: error.response?.data || error.message
+            };
+        }
     }
 };
 
@@ -686,9 +722,9 @@ const commentAPI = {
         }
     },
 
-    updateComment: async (commentId, content) => {
+    updateComment: async (commentId, userId, content) => {
         try {
-            const response = await API.put(`/comments/${commentId}`, { content });
+            const response = await API.put(`/comments/${commentId}/${userId}`, { content });
             return {
                 success: true,
                 data: response.data,
@@ -704,9 +740,9 @@ const commentAPI = {
         }
     },
 
-    deleteComment: async (commentId) => {
+    deleteComment: async (commentId, userId) => {
         try {
-            const response = await API.delete(`/comments/${commentId}`);
+            const response = await API.delete(`/comments/${commentId}/${userId}`);
             return {
                 success: true,
                 data: response.data,
@@ -1004,6 +1040,24 @@ const typeAPI = {
                 success: false,
                 data: null,
                 message: error.response?.data?.EM || 'Failed to fetch ebooks by type',
+                error: error.response?.data || error.message
+            };
+        }
+    },
+
+    getUsersWhoFavouritedType: async (typeId) => {
+        try {
+            const response = await API.get(`/types/${typeId}/favourite-users`);
+            return {
+                success: true,
+                data: response.data,
+                message: response.data.EM
+            };
+        } catch (error) {
+            return {
+                success: false,
+                data: null,
+                message: error.response?.data?.EM || 'Failed to fetch users who favourited this type',
                 error: error.response?.data || error.message
             };
         }
@@ -1419,9 +1473,15 @@ const apiUtils = {
 };
 
 const paymentAPI = {
-    list: async () => {
+    list: async (params = { page: 1, limit: 10, status: undefined, userId: undefined }) => {
         try {
-            const response = await API.get('/payments');
+            const query = new URLSearchParams();
+            if (params.page) query.append('page', params.page);
+            if (params.limit) query.append('limit', params.limit);
+            if (params.status) query.append('status', params.status);
+            if (params.userId) query.append('userId', params.userId);
+            const url = `/payments${query.toString() ? `?${query.toString()}` : ''}`;
+            const response = await API.get(url);
             return { success: true, data: response.data };
         } catch (error) {
             return { success: false, message: error.response?.data?.EM || 'Failed to fetch payments', error: error.response?.data || error.message };
@@ -1515,6 +1575,33 @@ const savedPageAPI = {
     }
 };
 
+const readingHistoryAPI = {
+    record: async (userId, ebookId) => {
+        try {
+            const response = await API.post('/reading-history', { userId, ebookId });
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to record reading history', error: error.response?.data || error.message };
+        }
+    },
+    list: async (userId, limit = 100) => {
+        try {
+            const response = await API.get(`/reading-history?userId=${userId}&limit=${limit}`);
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to fetch reading history', error: error.response?.data || error.message };
+        }
+    },
+    remove: async (userId, ebookId) => {
+        try {
+            const response = await API.delete('/reading-history', { data: { userId, ebookId } });
+            return { success: response.data.EC === 0, data: response.data.DT, message: response.data.EM };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.EM || 'Failed to remove reading history', error: error.response?.data || error.message };
+        }
+    }
+};
+
 // Extend paymentAPI for user payment history
 paymentAPI.getByUser = async (userId) => {
     try {
@@ -1570,4 +1657,4 @@ const ratingAPI = {
 };
 
 export default API;
-export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, violationAPI, contentModerationAPI, apiUtils, paymentAPI, audioAPI, wishlistAPI, savedPageAPI, ratingAPI };
+export { authAPI, userAPI, ebookAPI, pageAPI, commentAPI, typeAPI, violationAPI, contentModerationAPI, apiUtils, paymentAPI, audioAPI, wishlistAPI, savedPageAPI, readingHistoryAPI, ratingAPI };

@@ -57,19 +57,19 @@ function MarkedPages() {
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN');
+        return date.toLocaleDateString('en-US');
     };
 
     if (!user) {
         return (
             <div className="marked-pages-container">
                 <div className="section-header">
-                    <h2>Trang đã đánh dấu</h2>
-                    <p>Quản lý các trang sách bạn đã lưu để đọc sau</p>
+                    <h2>Bookmarked Pages</h2>
+                    <p>Manage the pages you saved to read later</p>
                 </div>
                 <div className="placeholder-content">
                     <div className="placeholder-icon">🔖</div>
-                    <h3>Vui lòng đăng nhập để xem trang đã đánh dấu</h3>
+                    <h3>Please sign in to view bookmarked pages</h3>
                 </div>
             </div>
         );
@@ -79,12 +79,12 @@ function MarkedPages() {
         return (
             <div className="marked-pages-container">
                 <div className="section-header">
-                    <h2>Trang đã đánh dấu</h2>
-                    <p>Quản lý các trang sách bạn đã lưu để đọc sau</p>
+                    <h2>Bookmarked Pages</h2>
+                    <p>Manage the pages you saved to read later</p>
                 </div>
                 <div className="placeholder-content">
                     <div className="placeholder-icon">🔖</div>
-                    <h3>Đang tải dữ liệu...</h3>
+                    <h3>Loading data...</h3>
                 </div>
             </div>
         );
@@ -93,14 +93,14 @@ function MarkedPages() {
     return (
         <div className="marked-pages-container">
             <div className="section-header">
-                <h2>Trang đã đánh dấu</h2>
-                <p>Quản lý các trang sách bạn đã lưu để đọc sau</p>
+                <h2>Bookmarked Pages</h2>
+                <p>Manage the pages you saved to read later</p>
             </div>
             {markedPages.length === 0 ? (
                 <div className="placeholder-content">
                     <div className="placeholder-icon">🔖</div>
-                    <h3>Chưa có trang nào được đánh dấu</h3>
-                    <p>Hãy lưu trang khi đọc sách để có thể quay lại sau!</p>
+                    <h3>No bookmarked pages yet</h3>
+                        <p>Save pages while reading so you can return later!</p>
                 </div>
             ) : (
                 <div className="marked-pages-list">
@@ -128,15 +128,15 @@ function MarkedPages() {
                             <div className="page-info">
                                 <h4>{item.ebook?.title || 'Unknown Book'}</h4>
                                 <div className="page-details">
-                                    <span className="page-number">Trang {item.pageNumber}</span>
+                                    <span className="page-number">Page {item.pageNumber}</span>
                                     {item.savedAt && (
                                         <span className="saved-date">
-                                            Lưu lúc: {formatDate(item.savedAt)}
+                                            Saved at: {formatDate(item.savedAt)}
                                         </span>
                                     )}
                                 </div>
                                 <div className="click-hint">
-                                    👆 Nhấp để đọc tiếp từ trang này
+                                    👆 Click to continue reading from this page
                                 </div>
                             </div>
                         </div>

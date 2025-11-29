@@ -197,10 +197,10 @@ class RatingService {
                     }
                 ],
                 group: ['ebook_id', 'ebook.ebook_id', 'ebook.author.id'],
-                having: ReviewRating.sequelize.literal('ratingCount >= 0'), // At least 3 ratings
+                having: ReviewRating.sequelize.literal('ratingCount >= 1'),
                 order: [
-                    [ReviewRating.sequelize.literal('averageRating'), 'DESC'],
-                    [ReviewRating.sequelize.literal('ratingCount'), 'DESC']
+                    [ReviewRating.sequelize.literal('averageRating'), 'DESC'],//danh gia tb
+                    [ReviewRating.sequelize.literal('ratingCount'), 'DESC']//luot danh gia
                 ],
                 limit: limit
             });

@@ -628,6 +628,7 @@ const validateCommentContent = async (content) => {
         moderationWords.forEach(moderationWord => {
             const word = moderationWord.word.toLowerCase();
             if (contentLower.includes(word)) {
+                console.log('moderationWord', moderationWord)
                 violations.push({
                     word: moderationWord.word,
                     severity: moderationWord.severity,
@@ -642,19 +643,20 @@ const validateCommentContent = async (content) => {
         const hasCriticalViolations = violations.some(v => v.severity === 'critical');
         const hasHighViolations = violations.some(v => v.severity === 'high');
         const hasMediumViolations = violations.some(v => v.severity === 'medium');
+        const hasLowViolations = violations.some(v => v.severity === 'low');
 
-        const isValid = !hasCriticalViolations && !hasHighViolations;
+        console.log('hasCriticalViolations', hasCriticalViolations)
+        console.log('hasHighViolations', hasHighViolations)
+        console.log('hasMediumViolations', hasMediumViolations)
+        console.log('hasLowViolations', hasLowViolations)
+
+        const isValid = !hasCriticalViolations && !hasHighViolations && !hasMediumViolations && !hasLowViolations;
 
         let message = 'Content is valid';
         if (!isValid) {
-            if (hasCriticalViolations) {
-                message = 'Comment bao gồm nội dung bị cấm nên sẽ không được đăng';
-            } else if (hasHighViolations) {
-                message = 'Comment bao gồm nội dung bị cấm nên sẽ không được đăng';
-            }
-        } else if (hasMediumViolations) {
             message = 'Comment bao gồm nội dung bị cấm nên sẽ không được đăng';
         }
+
 
         return {
             DT: {

@@ -1,43 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Support.scss';
 
 function Support() {
-    const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
-    const [submitting, setSubmitting] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-            alert('Vui lòng điền đầy đủ thông tin.');
-            return;
-        }
-        setSubmitting(true);
-        try {
-            // Placeholder submit: you can wire this to backend later
-            await new Promise((resolve) => setTimeout(resolve, 800));
-            setSubmitted(true);
-            setFormData({ name: '', email: '', subject: '', message: '' });
-        } finally {
-            setSubmitting(false);
-        }
-    };
+    // The ticket submission flow is currently not active — quick-contact and FAQ are shown instead.
 
     return (
         <div className="support-container">
             <div className="section-header">
-                <h2>Hỗ trợ khách hàng</h2>
-                <p>Chúng tôi luôn sẵn sàng trợ giúp bạn 24/7</p>
+                <h2>Customer Support</h2>
+                <p>We are here to help you 24/7</p>
             </div>
 
             <div className="support-grid">
                 <div className="contact-panel">
-                    <h3>Liên hệ nhanh</h3>
+                    <h3>Quick Contact</h3>
                     <div className="contact-items">
                         <a className="contact-item" href="mailto:support@ebook.example">
                             <span className="icon">📧</span>
@@ -56,28 +32,28 @@ function Support() {
                         <a className="contact-item" href="/policy" rel="noopener">
                             <span className="icon">📄</span>
                             <div>
-                                <div className="title">Chính sách & Hướng dẫn</div>
-                                <div className="desc">Xem các câu hỏi thường gặp</div>
+                                <div className="title">Policies & Guides</div>
+                                    <div className="desc">See frequently asked questions</div>
                             </div>
                         </a>
                     </div>
                 </div>
 
-                <div className="ticket-panel">
-                    <h3>Gửi yêu cầu hỗ trợ</h3>
+                {/* <div className="ticket-panel">
+                    <h3>Submit a support request</h3>
                     {submitted && (
-                        <div className="submit-success">Cảm ơn bạn! Yêu cầu đã được ghi nhận.</div>
+                        <div className="submit-success">Thank you — your request has been received.</div>
                     )}
                     <form className="support-form" onSubmit={handleSubmit}>
                         <div className="form-row">
                             <div className="form-field">
-                                <label>Họ và tên</label>
+                                <label>Full name</label>
                                 <input
                                     type="text"
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    placeholder="Nguyễn Văn A"
+                                    placeholder="John Doe"
                                 />
                             </div>
                             <div className="form-field">
@@ -92,45 +68,45 @@ function Support() {
                             </div>
                         </div>
                         <div className="form-field">
-                            <label>Chủ đề</label>
+                                <label>Subject</label>
                             <input
                                 type="text"
                                 name="subject"
                                 value={formData.subject}
                                 onChange={handleChange}
-                                placeholder="Vấn đề bạn gặp phải"
+                                placeholder="Describe your issue"
                             />
                         </div>
                         <div className="form-field">
-                            <label>Nội dung</label>
+                                <label>Message</label>
                             <textarea
                                 name="message"
                                 rows="5"
                                 value={formData.message}
                                 onChange={handleChange}
-                                placeholder="Mô tả chi tiết vấn đề để chúng tôi hỗ trợ tốt hơn"
+                                placeholder="Describe your issue in detail so we can assist you better"
                             />
                         </div>
                         <button className="submit-btn" type="submit" disabled={submitting}>
-                            {submitting ? 'Đang gửi...' : 'Gửi yêu cầu'}
+                            {submitting ? 'Submitting...' : 'Send request'}
                         </button>
                     </form>
-                </div>
+                </div> */}
             </div>
 
             <div className="faq-panel">
-                <h3>FAQ - Câu hỏi thường gặp</h3>
+                <h3>FAQ - Frequently Asked Questions</h3>
                 <details>
-                    <summary>Tôi quên mật khẩu thì làm sao?</summary>
-                    <p>Hãy sử dụng chức năng "Quên mật khẩu" tại trang đăng nhập để đặt lại.</p>
+                    <summary>What if I forgot my password?</summary>
+                    <p>Use the "Forgot password" feature on the sign-in page to reset it.</p>
                 </details>
                 <details>
-                    <summary>Tôi không đọc được sách đã mua?</summary>
-                    <p>Vui lòng đăng nhập đúng tài khoản đã thanh toán và kiểm tra kết nối mạng.</p>
+                    <summary>I can't read a book I purchased — what should I do?</summary>
+                    <p>Please sign in with the account used for purchase and check your network connection.</p>
                 </details>
                 <details>
-                    <summary>Làm sao để hủy gia hạn hội viên?</summary>
-                    <p>Vào mục Lịch sử giao dịch để quản lý gói và yêu cầu hủy.</p>
+                    <summary>How do I cancel membership renewal?</summary>
+                    <p>Go to Transaction History to manage your plan and request cancellation.</p>
                 </details>
             </div>
         </div>

@@ -180,7 +180,18 @@ const uploadEbook = async (uploadData) => {
         //     };
         // }
         console.log("type", typeof authorId, authorId, "isNumericString:", isNumericString(authorId))
+        // Check if ebook title already exists
+        const existingEbook = await db.Ebook.findOne({
+            where: { title: title.trim() }
+        });
 
+        if (existingEbook) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Ebook is exist!'
+            };
+        }
         // Check if authorId is a numeric string (like '12') - treat as integer
         if (isNumericString(authorId)) {
             const numericAuthorId = parseInt(authorId);
@@ -209,7 +220,7 @@ const uploadEbook = async (uploadData) => {
         else if (typeof authorId === 'string') {
             console.log("custom author string", authorId)
             ebook = await db.Ebook.create({
-                authorId: 9, // Default author ID for custom authors
+                authorId: 1,// Default author ID for custom authors
                 customAuthor: authorId,
                 title,
                 description,
@@ -429,7 +440,8 @@ const getAllEbooks = async (queryParams) => {
         if (search) {
             whereClause[Op.or] = [
                 { title: { [Op.like]: `%${search}%` } },
-                { description: { [Op.like]: `%${search}%` } }
+                { description: { [Op.like]: `%${search}%` } },
+                { customAuthor: { [Op.like]: `%${search}%` } }
             ];
         }
 
@@ -472,7 +484,9 @@ const getAllEbooks = async (queryParams) => {
             offset,
             limit,
             distinct: true,
-            order: [['created_at', 'DESC']],
+            order: [['created_at', 'DESC']], // ['created_at', 'DESC'] ASC 
+                                            //title
+
         });
 
         return {
@@ -570,7 +584,7 @@ const getEbookById = async (ebookId, includePages = false) => {
 
 const updateEbook = async (ebookId, updateData) => {
     try {
-        const { title, description, status, isVipEbook } = updateData;
+        const { title, description, status, isVipEbook, authorId } = updateData;
 
         if (!ebookId) {
             return {
@@ -579,6 +593,8 @@ const updateEbook = async (ebookId, updateData) => {
                 EM: 'Ebook ID is required!'
             };
         }
+
+
 
         const ebook = await db.Ebook.findByPk(ebookId);
         if (!ebook) {
@@ -595,6 +611,58 @@ const updateEbook = async (ebookId, updateData) => {
         if (status !== undefined) updateFields.status = status;
         if (isVipEbook !== undefined) updateFields.isVipEbook = isVipEbook;
 
+        console.log('authorId', authorId, isNumericString(authorId), typeof authorId);
+        if (isNumericString(authorId) || typeof authorId === 'number') {
+            const numericAuthorId = parseInt(authorId);
+            const author = await db.User.findByPk(numericAuthorId);
+            if (!author) {
+                return {
+                    DT: '',
+                    EC: -1,
+                    EM: 'Author not found!'
+                };
+            }
+
+            await ebook.update({
+                authorId: numericAuthorId,
+                customAuthor: author.name || 'Unknown',
+                title: title.trim(),
+                description,
+                status: status || 'draft'
+            });
+        }
+        // Check if authorId is a text string (like 'Pham Quang Hung') - treat as custom author
+        else if (typeof authorId === 'string') {
+            await ebook.update({
+                authorId: 1,
+                customAuthor: authorId,
+                title: title.trim(),
+                description,
+                status: status || 'draft'
+            });
+        }
+        // Check if authorId is already a number
+        else if (typeof authorId === 'number') {
+            const author = await db.User.findByPk(authorId);
+            if (!author) {
+                return {
+                    DT: '',
+                    EC: -1,
+                    EM: 'Author not found!'
+                };
+            }
+
+
+        }
+        else {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Invalid authorId format!'
+            };
+        }
+
+
         await ebook.update(updateFields);
 
         const updatedEbook = await db.Ebook.findByPk(ebookId, {
@@ -602,7 +670,7 @@ const updateEbook = async (ebookId, updateData) => {
                 {
                     model: db.User,
                     as: 'author',
-                    attributes: ['id', 'email', 'name']
+                    attributes: ['id', 'email', 'name', ]
                 }
             ]
         });

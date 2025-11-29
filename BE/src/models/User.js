@@ -60,8 +60,8 @@ const User = sequelize.define('User', {
         defaultValue: null,
         field: 'avatar'
     },
-    isVip: {
-        type: DataTypes.BOOLEAN,
+    is_vip: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: false,
         field: 'is_vip'

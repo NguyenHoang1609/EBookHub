@@ -436,8 +436,8 @@ const ManageUser = () => {
                                         </TableCell>
                                         <TableCell>
                                             <Chip
-                                                label={user.isVip ? 'VIP' : 'Normal'}
-                                                color={user.isVip ? 'warning' : 'default'}
+                                                label={user.is_vip ? 'VIP' : 'Normal'}
+                                                color={user.is_vip ? 'warning' : 'default'}
                                                 size="small"
                                             />
                                         </TableCell>

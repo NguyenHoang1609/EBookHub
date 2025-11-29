@@ -24,27 +24,27 @@ const ManageViolation = () => {
     const [stats, setStats] = useState(null);
 
     const violationTypes = [
-        { value: '', label: 'Tất cả loại' },
-        { value: 'copyright', label: 'Vi phạm bản quyền' },
-        { value: 'plagiarism', label: 'Đạo văn' },
-        { value: 'abuse', label: 'Lạm dụng' },
+        { value: '', label: 'All types' },
+        { value: 'copyright', label: 'Copyright infringement' },
+        { value: 'plagiarism', label: 'Plagiarism' },
+        { value: 'abuse', label: 'Abuse' },
         { value: 'spam', label: 'Spam' },
-        { value: 'other', label: 'Khác' }
+        { value: 'other', label: 'Other' }
     ];
 
     const violationStatuses = [
-        { value: '', label: 'Tất cả trạng thái' },
-        { value: 'open', label: 'Đang giải quyết' },
-        { value: 'under_review', label: 'Đang xem xét' },
-        { value: 'resolved', label: 'Đã giải quyết' },
-        { value: 'dismissed', label: 'Đã bỏ qua' }
+        { value: '', label: 'All statuses' },
+        { value: 'open', label: 'Open' },
+        { value: 'under_review', label: 'Under review' },
+        { value: 'resolved', label: 'Resolved' },
+        { value: 'dismissed', label: 'Dismissed' }
     ];
 
     const ebookStatuses = [
-        { value: 'published', label: 'Giữ nguyên' },
-        { value: 'blocked', label: 'Bị chặn' },
-        { value: 'pending_review', label: 'Chờ xem xét' },
-        { value: 'archived', label: 'Lưu trữ' }
+        { value: 'published', label: 'No change' },
+        { value: 'blocked', label: 'Blocked' },
+        { value: 'pending_review', label: 'Pending review' },
+        { value: 'archived', label: 'Archived' }
     ];
 
     useEffect(() => {
@@ -64,7 +64,7 @@ const ManageViolation = () => {
                 setError(result.message);
             }
         } catch (err) {
-            setError('Có lỗi xảy ra khi tải danh sách báo cáo');
+            setError('An error occurred while loading the report list');
         } finally {
             setLoading(false);
         }
@@ -131,14 +131,14 @@ const ManageViolation = () => {
                 setError(result.message);
             }
         } catch (err) {
-            setError('Có lỗi xảy ra khi cập nhật báo cáo');
+            setError('An error occurred while updating the report');
         }
     };
 
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
+        return date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
@@ -177,7 +177,7 @@ const ManageViolation = () => {
             <div className="manage-violation">
                 <div className="loading-container">
                     <div className="loading-spinner"></div>
-                    <p>Đang tải danh sách báo cáo...</p>
+                    <p>Loading report list...</p>
                 </div>
             </div>
         );
@@ -186,8 +186,8 @@ const ManageViolation = () => {
     return (
         <div className="manage-violation">
             <div className="page-header">
-                <h1>Quản lý báo cáo vi phạm</h1>
-                <p>Xem xét và xử lý các báo cáo vi phạm từ người dùng</p>
+                <h1>Manage Violation Reports</h1>
+                <p>Review and handle user violation reports</p>
             </div>
 
             {/* Statistics Cards */}
@@ -201,7 +201,7 @@ const ManageViolation = () => {
                         </div>
                         <div className="stat-content">
                             <h3>{stats.totalViolations}</h3>
-                            <p>Tổng báo cáo</p>
+                            <p>Total reports</p>
                         </div>
                     </div>
                     <div className="stat-card">
@@ -212,7 +212,7 @@ const ManageViolation = () => {
                         </div>
                         <div className="stat-content">
                             <h3>{stats.statusCounts.open}</h3>
-                            <p>Chờ xử lý</p>
+                            <p>Pending</p>
                         </div>
                     </div>
                     <div className="stat-card">
@@ -223,7 +223,7 @@ const ManageViolation = () => {
                         </div>
                         <div className="stat-content">
                             <h3>{stats.statusCounts.under_review}</h3>
-                            <p>Đang xem xét</p>
+                            <p>Under review</p>
                         </div>
                     </div>
                     <div className="stat-card">
@@ -234,16 +234,16 @@ const ManageViolation = () => {
                         </div>
                         <div className="stat-content">
                             <h3>{stats.statusCounts.resolved}</h3>
-                            <p>Đã giải quyết</p>
+                            <p>Resolved</p>
                         </div>
                     </div>
                 </div>
             )}
 
             {/* Filters */}
-            <div className="filters-section">
+                <div className="filters-section">
                 <div className="filter-group">
-                    <label>Trạng thái:</label>
+                    <label>Status:</label>
                     <select
                         value={filters.status}
                         onChange={(e) => handleFilterChange('status', e.target.value)}
@@ -256,7 +256,7 @@ const ManageViolation = () => {
                     </select>
                 </div>
                 <div className="filter-group">
-                    <label>Loại vi phạm:</label>
+                    <label>Violation type:</label>
                     <select
                         value={filters.type}
                         onChange={(e) => handleFilterChange('type', e.target.value)}
@@ -269,7 +269,7 @@ const ManageViolation = () => {
                     </select>
                 </div>
                 <div className="filter-group">
-                    <label>Số lượng hiển thị:</label>
+                    <label>Items per page:</label>
                     <select
                         value={filters.limit}
                         onChange={(e) => handleFilterChange('limit', parseInt(e.target.value))}
@@ -297,13 +297,13 @@ const ManageViolation = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Sách</th>
-                            <th>Tác giả</th>
-                            <th>Người báo cáo</th>
-                            <th>Loại</th>
-                            <th>Trạng thái</th>
-                            <th>Ngày tạo</th>
-                            <th>Hành động</th>
+                            <th>Book</th>
+                            <th>Author</th>
+                            <th>Reporter</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -332,7 +332,7 @@ const ManageViolation = () => {
                                                 </div>
                                             </>
                                         ) : (
-                                            <span className="no-ebook">Không có sách</span>
+                                            <span className="no-ebook">No books</span>
                                         )}
                                     </div>
                                 </td>
@@ -393,7 +393,7 @@ const ManageViolation = () => {
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                                             <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13M18.5 2.5C18.8978 2.10218 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10218 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10218 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
-                                        Xử lý
+                                        Handle
                                     </button>
                                 </td>
                             </tr>
@@ -406,8 +406,8 @@ const ManageViolation = () => {
                         <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
                             <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                        <h3>Không có báo cáo nào</h3>
-                        <p>Hiện tại không có báo cáo vi phạm nào phù hợp với bộ lọc của bạn.</p>
+                            <h3>No reports</h3>
+                        <p>There are currently no violation reports matching your filters.</p>
                     </div>
                 )}
             </div>
@@ -420,12 +420,12 @@ const ManageViolation = () => {
                         onClick={() => handlePageChange(pagination.currentPage - 1)}
                         disabled={!pagination.hasPrevPage}
                     >
-                        Trước
+                        Previous
                     </button>
 
                     <div className="pagination-info">
-                        Trang {pagination.currentPage} / {pagination.totalPages}
-                        ({pagination.totalItems} báo cáo)
+                        Page {pagination.currentPage} / {pagination.totalPages}
+                        ({pagination.totalItems} reports)
                     </div>
 
                     <button
@@ -433,7 +433,7 @@ const ManageViolation = () => {
                         onClick={() => handlePageChange(pagination.currentPage + 1)}
                         disabled={!pagination.hasNextPage}
                     >
-                        Sau
+                        Next
                     </button>
                 </div>
             )}

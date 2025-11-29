@@ -7,23 +7,15 @@ import {
     CardContent,
     Grid,
     Chip,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
     Alert,
     CircularProgress,
     Divider,
-    Paper,
-    IconButton,
-    Tooltip
+    Paper
 } from '@mui/material';
 import {
     Category as CategoryIcon,
     Check as CheckIcon,
-    Close as CloseIcon,
-    Favorite as FavoriteIcon,
-    Book as BookIcon
+    Favorite as FavoriteIcon
 } from '@mui/icons-material';
 import { typeAPI } from '../../Util/Api';
 import './FavouriteTypeForm.scss';
@@ -63,10 +55,7 @@ const FavouriteTypeForm = ({ userData, onComplete, onSkip }) => {
         }
     };
 
-    const handleTypeChange = (event) => {
-        const value = event.target.value;
-        setSelectedTypes(typeof value === 'string' ? value.split(',').map(id => parseInt(id)) : value);
-    };
+    // handleTypeChange removed — not used in current design
 
     const toggleTypeSelection = (typeId) => {
         setSelectedTypes(prev => {
@@ -131,21 +120,22 @@ const FavouriteTypeForm = ({ userData, onComplete, onSkip }) => {
     };
 
     const getTypeIcon = (typeName) => {
-        if (typeName.toLowerCase().includes('kinh doanh') || typeName.toLowerCase().includes('marketing')) {
+        const nameLower = typeName.toLowerCase();
+        if (nameLower.includes('business') || nameLower.includes('marketing')) {
             return '💼';
-        } else if (typeName.toLowerCase().includes('truyện') || typeName.toLowerCase().includes('tiểu thuyết')) {
+        } else if (nameLower.includes('novel') || nameLower.includes('fiction')) {
             return '📚';
-        } else if (typeName.toLowerCase().includes('khoa học') || typeName.toLowerCase().includes('công nghệ')) {
+        } else if (nameLower.includes('science') || nameLower.includes('technology')) {
             return '🔬';
-        } else if (typeName.toLowerCase().includes('sức khỏe') || typeName.toLowerCase().includes('làm đẹp')) {
+        } else if (nameLower.includes('health') || nameLower.includes('beauty')) {
             return '💊';
-        } else if (typeName.toLowerCase().includes('tài chính') || typeName.toLowerCase().includes('đầu tư')) {
+        } else if (nameLower.includes('finance') || nameLower.includes('investment')) {
             return '💰';
-        } else if (typeName.toLowerCase().includes('thiếu nhi')) {
+        } else if (nameLower.includes('children') || nameLower.includes('kids')) {
             return '🧸';
-        } else if (typeName.toLowerCase().includes('ngôn tình')) {
+        } else if (nameLower.includes('romance')) {
             return '💕';
-        } else if (typeName.toLowerCase().includes('trinh thám') || typeName.toLowerCase().includes('kinh dị')) {
+        } else if (nameLower.includes('mystery') || nameLower.includes('horror')) {
             return '🕵️';
         } else {
             return '📖';
@@ -159,10 +149,10 @@ const FavouriteTypeForm = ({ userData, onComplete, onSkip }) => {
                     <Box className="header-content">
                         <CategoryIcon className="header-icon" />
                         <Typography variant="h4" className="header-title">
-                            Chọn thể loại sách yêu thích
+                            Choose Your Favorite Book Categories
                         </Typography>
                         <Typography variant="body1" className="header-subtitle">
-                            Giúp chúng tôi cá nhân hóa trải nghiệm đọc sách online của bạn
+                            Help us personalize your online reading experience
                         </Typography>
                     </Box>
                 </Box>

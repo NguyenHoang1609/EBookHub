@@ -34,7 +34,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
         e.preventDefault();
 
         if (!formData.status) {
-            setError('Vui lòng chọn trạng thái xử lý');
+            setError('Please select an action status');
             return;
         }
 
@@ -44,7 +44,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
         try {
             await onSubmit(formData);
         } catch (err) {
-            setError('Có lỗi xảy ra khi cập nhật báo cáo');
+            setError('An error occurred while updating the report');
         } finally {
             setLoading(false);
         }
@@ -59,7 +59,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
+        return date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
@@ -77,13 +77,14 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
         const statusObj = ebookStatuses.find(s => s.value === status);
         return statusObj ? statusObj.label : status;
     };
+    console.log('ebookStatuses', ebookStatuses);
 
     return (
         <div className="violation-form">
             <div className="form-overlay" onClick={handleClose}>
                 <div className="form-modal" onClick={(e) => e.stopPropagation()}>
                     <div className="form-header">
-                        <h2>Xử lý báo cáo vi phạm</h2>
+                        <h2>Handle Violation Report</h2>
                         <button
                             className="close-btn"
                             onClick={handleClose}
@@ -98,24 +99,24 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                     <div className="form-content">
                         {/* Violation Details */}
                         <div className="violation-details">
-                            <h3>Chi tiết báo cáo</h3>
+                            <h3>Report details</h3>
                             <div className="details-grid">
                                 <div className="detail-item">
-                                    <label>ID báo cáo:</label>
+                                    <label>Report ID:</label>
                                     <span>#{violation?.id}</span>
                                 </div>
                                 <div className="detail-item">
-                                    <label>Loại vi phạm:</label>
+                                    <label>Violation type:</label>
                                     <span className="violation-type">{violation?.type}</span>
                                 </div>
                                 <div className="detail-item">
-                                    <label>Trạng thái hiện tại:</label>
+                                    <label>Current status:</label>
                                     <span className={`status-badge ${violation?.status}`}>
                                         {getStatusLabel(violation?.status)}
                                     </span>
                                 </div>
                                 <div className="detail-item">
-                                    <label>Ngày tạo:</label>
+                                    <label>Created at:</label>
                                     <span>{formatDate(violation?.created_at)}</span>
                                 </div>
                             </div>
@@ -123,7 +124,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                             {/* Book Information */}
                             {violation?.ebook && (
                                 <div className="book-section">
-                                    <h4>Thông tin sách</h4>
+                                    <h4>Book information</h4>
                                     <div className="book-info">
                                         <div className="book-cover">
                                             {violation.ebook.coverImage ? (
@@ -149,7 +150,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                             {/* Author Information */}
                             {violation?.author && (
                                 <div className="author-section">
-                                    <h4>Thông tin tác giả</h4>
+                                    <h4>Author information</h4>
                                     <div className="author-info">
                                         <div className="author-avatar">
                                             {violation.author.avatar ? (
@@ -174,7 +175,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                             {/* Reporter Information */}
                             {violation?.reporter && (
                                 <div className="reporter-section">
-                                    <h4>Thông tin người báo cáo</h4>
+                                    <h4>Reporter information</h4>
                                     <div className="reporter-info">
                                         <div className="reporter-avatar">
                                             {violation.reporter.avatar ? (
@@ -198,7 +199,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
 
                             {/* Reason */}
                             <div className="reason-section">
-                                <h4>Lý do báo cáo</h4>
+                                <h4>Reason for report</h4>
                                 <div className="reason-content">
                                     <p>{violation?.reason}</p>
                                 </div>
@@ -207,10 +208,10 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
 
                         {/* Action Form */}
                         <form onSubmit={handleSubmit} className="action-form">
-                            <h3>Hành động xử lý</h3>
+                            <h3>Action to take</h3>
 
                             <div className="form-group">
-                                <label htmlFor="status">Trạng thái xử lý *</label>
+                                <label htmlFor="status">Action status *</label>
                                 <select
                                     id="status"
                                     name="status"
@@ -219,7 +220,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                                     className="form-select"
                                     required
                                 >
-                                    <option value="">Chọn trạng thái</option>
+                                    <option value="">Select status</option>
                                     {violationStatuses.map(status => (
                                         <option key={status.value} value={status.value}>
                                             {status.label}
@@ -230,7 +231,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
 
                             {violation?.ebook && (
                                 <div className="form-group">
-                                    <label htmlFor="ebookStatus">Trạng thái sách</label>
+                                    <label htmlFor="ebookStatus">Book status</label>
                                     <select
                                         id="ebookStatus"
                                         name="ebookStatus"
@@ -238,7 +239,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                                         onChange={handleInputChange}
                                         className="form-select"
                                     >
-                                        <option value="">Giữ nguyên</option>
+                                        <option value="">Select status</option>
                                         {ebookStatuses.map(status => (
                                             <option key={status.value} value={status.value}>
                                                 {status.label}
@@ -246,24 +247,24 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                                         ))}
                                     </select>
                                     <small className="form-help">
-                                        Thay đổi trạng thái sách nếu cần thiết
+                                        Change book status if necessary
                                     </small>
                                 </div>
                             )}
 
                             <div className="form-group">
-                                <label htmlFor="actionTaken">Ghi chú hành động</label>
+                                <label htmlFor="actionTaken">Action notes</label>
                                 <textarea
                                     id="actionTaken"
                                     name="actionTaken"
                                     value={formData.actionTaken}
                                     onChange={handleInputChange}
                                     className="form-textarea"
-                                    placeholder="Mô tả chi tiết về hành động đã thực hiện..."
+                                    placeholder="Describe the actions taken in detail..."
                                     rows="4"
                                 />
-                                <small className="form-help">
-                                    Mô tả chi tiết về các hành động đã thực hiện để xử lý báo cáo
+                                    <small className="form-help">
+                                    Describe in detail the actions taken to handle the report
                                 </small>
                             </div>
 
@@ -283,7 +284,7 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                                     onClick={handleClose}
                                     disabled={loading}
                                 >
-                                    Hủy
+                                    Cancel
                                 </button>
                                 <button
                                     type="submit"
@@ -293,10 +294,10 @@ const Form = ({ violation, ebookStatuses, violationStatuses, onSubmit, onClose }
                                     {loading ? (
                                         <>
                                             <div className="loading-spinner"></div>
-                                            Đang xử lý...
+                                            Processing...
                                         </>
                                     ) : (
-                                        'Cập nhật'
+                                        'Update'
                                     )}
                                 </button>
                             </div>

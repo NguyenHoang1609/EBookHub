@@ -33,13 +33,13 @@ function SelfBook() {
     if (!user) {
         return (
             <div className="self-book-container">
-                <div className="section-header">
-                    <h2>Tủ sách cá nhân</h2>
-                    <p>Quản lý các cuốn sách bạn đã mua và sở hữu</p>
+                    <div className="section-header">
+                        <h2>Personal Library</h2>
+                        <p>Manage the books you've purchased and own</p>
                 </div>
                 <div className="placeholder-content">
                     <div className="placeholder-icon">📚</div>
-                    <h3>Vui lòng đăng nhập để xem tủ sách cá nhân</h3>
+                    <h3>Please sign in to view your library</h3>
                 </div>
             </div>
         );
@@ -49,12 +49,12 @@ function SelfBook() {
         return (
             <div className="self-book-container">
                 <div className="section-header">
-                    <h2>Tủ sách cá nhân</h2>
-                    <p>Quản lý các cuốn sách bạn đã mua và sở hữu</p>
+                    <h2>Personal Library</h2>
+                    <p>Manage the books you've purchased and own</p>
                 </div>
                 <div className="placeholder-content">
                     <div className="placeholder-icon">📚</div>
-                    <h3>Đang tải dữ liệu...</h3>
+                    <h3>Loading data...</h3>
                 </div>
             </div>
         );
@@ -62,15 +62,15 @@ function SelfBook() {
 
     return (
         <div className="self-book-container">
-            <div className="section-header">
-                <h2>Sách yêu thích</h2>
-                <p>Quản lý các cuốn sách bạn đã đánh dấu yêu thích</p>
+                <div className="section-header">
+                <h2>Favorite Books</h2>
+                <p>Manage the books you've marked as favorites</p>
             </div>
             {wishlist.length === 0 ? (
                 <div className="placeholder-content">
                     <div className="placeholder-icon">📚</div>
-                    <h3>Chưa có sách yêu thích nào</h3>
-                    <p>Hãy thêm sách vào tủ yêu thích để quản lý!</p>
+                    <h3>No favorite books yet</h3>
+                    <p>Add books to your favorites to manage them!</p>
                 </div>
             ) : (
                 <div className="book-list">
@@ -98,7 +98,7 @@ function SelfBook() {
                             <div className="book-info">
                                 <h4>{item.ebook?.title}</h4>
                                 <div className="click-hint">
-                                    👆 Nhấp để xem chi tiết sách
+                                    👆 Click to view book details
                                 </div>
                             </div>
                         </div>

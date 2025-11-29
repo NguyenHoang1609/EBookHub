@@ -14,6 +14,7 @@ import { uploadAvatar, handleUploadError } from '../middleware/upload'
 import libraryWishlistController from '../controllers/libraryWishlistController'
 import savedPageController from '../controllers/savedPageController'
 import ratingController from '../controllers/ratingController'
+import readingHistoryController from '../controllers/readingHistoryController'
 
 const router = express.Router();
 
@@ -27,6 +28,8 @@ router.post('/auth/register', authController.register);
 router.post('/auth/login', authController.login);
 router.post('/auth/logout', authController.logout);
 router.get('/auth/account', authController.checkAccount);
+router.post('/auth/forgot-password', authController.forgotPassword);
+router.post('/auth/change-password', authController.changePassword);
 // User management routes
 router.get('/users', userController.getAllUsers);
 router.get('/users/stats', userController.getUserStats);
@@ -65,14 +68,14 @@ router.delete('/pages/:pageId', pageController.deletePage);
 router.get('/comments/ebook/:ebookId', commentController.getCommentsByEbook);
 router.get('/comments/ebook/:ebookId/stats', commentController.getCommentStats);
 router.post('/comments', commentController.createComment);
-router.put('/comments/:commentId', commentController.updateComment);
-router.delete('/comments/:commentId', commentController.deleteComment);
+router.put('/comments/:commentId/status', commentController.toggleCommentStatus);
+router.put('/comments/:commentId/:userId', commentController.updateComment);
+router.delete('/comments/:commentId/:userId', commentController.deleteComment);
 
 // Admin comment routes
 router.get('/comments/admin', commentController.getAllCommentsForAdmin);
 router.get('/comments/statistics', commentController.getCommentStatistics);
 router.get('/comments/user/:userId', commentController.getCommentsByUser);
-router.put('/comments/:commentId/status', commentController.toggleCommentStatus);
 router.delete('/comments/bulk', commentController.bulkDeleteComments);
 
 // Type routes
@@ -81,6 +84,8 @@ router.get('/types/:id', typeController.getTypeById);
 router.post('/types', typeController.createType);
 router.put('/types/:id', typeController.updateType);
 router.delete('/types/:id', typeController.deleteType);
+// Users who favourited a type
+router.get('/types/:typeId/favourite-users', typeController.getUsersWhoFavouritedType);
 
 // User favourite types routes
 router.get('/users/:userId/favourite-types', typeController.getUserFavouriteTypes);
@@ -149,6 +154,12 @@ router.get('/ratings/user', ratingController.getUserRating);
 router.delete('/ratings', ratingController.deleteRating);
 router.get('/ratings/top-rated', ratingController.getTopRatedEbooks);
 router.get('/ratings/statistics', ratingController.getRatingStatistics);
+
+
+// Reading History routes
+router.post('/reading-history', readingHistoryController.record);
+router.get('/reading-history', readingHistoryController.list);
+router.delete('/reading-history', readingHistoryController.remove);
 
 
 const initApiRoutes = (app) => {

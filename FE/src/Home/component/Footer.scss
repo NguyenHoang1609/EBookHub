@@ -35,13 +35,11 @@
         flex-direction: column;
         gap           : 13.3px;
 
-        .waka-logo {
-            width              : 180px;
-            height             : 43.88px;
-            background-image   : url('http://localhost:3845/assets/94c46c22f59f1b4aac27bdd17f4390e8106138e7.png');
-            background-size    : 100% 99.99%;
-            background-repeat  : no-repeat;
-            background-position: left;
+        .logo-image {
+            width        : 180px;
+            height       : 180px;
+            object-fit   : contain;
+            border-radius: 15px;
         }
 
         .company-name {

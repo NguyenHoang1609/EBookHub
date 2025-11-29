@@ -199,7 +199,7 @@ const loginUser = async (email, password) => {
             avatar: user.avatar,
             groupId: user.groupId || 3,
             group: user.group,
-            isVip: user.isVip,
+            is_vip: user.is_vip,
         };
 
         const tokenData = {
@@ -244,7 +244,7 @@ const getUserProfile = async (email) => {
 
         const user = await db.User.findOne({
             where: { email: email.toLowerCase().trim() },
-            attributes: ['id', 'name', 'email', 'phone', 'address', 'avatar', 'groupId', 'isVip', 'created_at', 'updated_at'],
+            attributes: ['id', 'name', 'email', 'phone', 'address', 'avatar', 'groupId', 'is_vip', 'created_at', 'updated_at'],
             include: [
                 {
                     model: db.Group,
@@ -272,7 +272,7 @@ const getUserProfile = async (email) => {
                 address: user.address,
                 avatar: user.avatar,
                 groupId: user.groupId,
-                isVip: user.isVip,
+                is_vip: user.is_vip,
                 group: user.group,
                 createdAt: user.created_at,
                 updatedAt: user.updated_at
@@ -348,7 +348,7 @@ const updateUserProfile = async (email, updateData) => {
                 email: user.email,
                 phone: user.phone,
                 address: user.address,
-                isVip: user.isVip
+                is_vip: user.is_vip
             },
             EC: 0,
             EM: 'Profile updated successfully!'
@@ -364,6 +364,123 @@ const updateUserProfile = async (email, updateData) => {
     }
 };
 
+const forgotPassword = async (emailOrPhone, phone) => {
+    try {
+        if (!emailOrPhone) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Email hoặc số điện thoại là bắt buộc!'
+            };
+        }
+
+        if (!phone) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Số điện thoại là bắt buộc!'
+            };
+        }
+
+        // Try to find user by email or phone
+        const user = await db.User.findOne({
+            where: {
+                [Op.or]: [
+                    { email: emailOrPhone.toLowerCase().trim() },
+                    { phone: isNaN(emailOrPhone) ? null : (emailOrPhone) }
+                ],
+                phone: (phone)
+            }
+        });
+
+        if (!user) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Thông tin tài khoản không khớp. Vui lòng kiểm tra lại!'
+            };
+        }
+
+        return {
+            DT: {
+                userId: user.id,
+                email: user.email
+            },
+            EC: 0,
+            EM: 'Xác thực thành công! Bạn có thể đặt lại mật khẩu.'
+        };
+
+    } catch (error) {
+        console.log('Forgot password service error:', error);
+        return {
+            DT: '',
+            EC: -1,
+            EM: 'Lỗi server khi xử lý yêu cầu quên mật khẩu'
+        };
+    }
+};
+
+const changePassword = async (emailOrPhone, phone, newPassword) => {
+    try {
+        if (!emailOrPhone || !phone || !newPassword) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Thông tin không đầy đủ!'
+            };
+        }
+
+        if (newPassword.length < 6) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Mật khẩu phải có ít nhất 6 ký tự!'
+            };
+        }
+
+        // Find user by email/phone and verify phone number matches
+        const user = await db.User.findOne({
+            where: {
+                [Op.or]: [
+                    { email: emailOrPhone.toLowerCase().trim() },
+                    { phone: isNaN(emailOrPhone) ? null : (emailOrPhone) }
+                ],
+                phone: (phone)
+            }
+        });
+
+        if (!user) {
+            return {
+                DT: '',
+                EC: -1,
+                EM: 'Thông tin tài khoản không khớp. Vui lòng kiểm tra lại!'
+            };
+        }
+
+        // Hash new password
+        const hashedPassword = await hashPassword(newPassword);
+
+        // Update password
+        await user.update({ password: hashedPassword });
+
+        console.log('Password changed successfully for user:', user.email);
+
+        return {
+            DT: '',
+            EC: 0,
+            EM: 'Đặt lại mật khẩu thành công!'
+        };
+
+    } catch (error) {
+        console.log('Change password service error:', error);
+        return {
+            DT: '',
+            EC: -1,
+            EM: 'Lỗi server khi đặt lại mật khẩu'
+        };
+    }
+};
+
 export default {
     registerUser,
     loginUser,
@@ -372,5 +489,7 @@ export default {
     hashPassword,
     comparePassword,
     checkEmailExists,
-    checkPhoneExists
+    checkPhoneExists,
+    forgotPassword,
+    changePassword
 };

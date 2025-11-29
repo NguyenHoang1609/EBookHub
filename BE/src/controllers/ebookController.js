@@ -226,7 +226,7 @@ const updateEbook = async (req, res) => {
         console.log('Update ebook request received:', req.params, req.body);
 
         const { ebookId } = req.params;
-        const { title, description, status, isVipEbook } = req.body;
+        const { title, description, status, isVipEbook, authorId } = req.body;
 
         if (!ebookId) {
             return res.status(400).json({
@@ -240,7 +240,8 @@ const updateEbook = async (req, res) => {
             title,
             description,
             status,
-            isVipEbook
+            isVipEbook,
+            authorId
         });
 
         if (result.EC === 0) {

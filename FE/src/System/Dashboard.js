@@ -7,14 +7,18 @@ import ManageComment from './components/comment/ManageComment';
 import ManageType from './components/type/ManageType';
 import ManageViolation from './components/violation/ManageViolation';
 import ManageModeration from './components/moderation/ManageModeration';
-import { userAPI, ebookAPI } from '../Util/Api';
+import { userAPI, ebookAPI, paymentAPI } from '../Util/Api';
+import { Button } from '@mui/material';
 
 const Dashboard = () => {
     const [activeSection, setActiveSection] = useState('dashboard');
     const [userRole, setUserRole] = useState(null);
-    const [userData, setUserData] = useState(null);
+    // user data stored locally if needed; not kept in state to avoid unused variable warnings
     const [dashboardStats, setDashboardStats] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [payments, setPayments] = useState([]);
+    const [paymentPagination, setPaymentPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0 });
+    const [paymentsLoading, setPaymentsLoading] = useState(false);
 
     useEffect(() => {
         // Get user data from localStorage
@@ -22,9 +26,11 @@ const Dashboard = () => {
         if (storedUserData) {
             try {
                 const user = JSON.parse(storedUserData);
-                setUserData(user);
                 setUserRole(user.groupId);
                 loadDashboardStats(user.groupId, user.id);
+                if (user.groupId === 1) {
+                    loadPayments(1, 10);
+                }
             } catch (error) {
                 console.error('Error parsing user data:', error);
                 setLoading(false);
@@ -67,6 +73,22 @@ const Dashboard = () => {
             console.error('Error loading dashboard stats:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const loadPayments = async (page = 1, limit = 10) => {
+        try {
+            setPaymentsLoading(true);
+            const res = await paymentAPI.list({ page, limit });
+            if (res.success) {
+                const payload = res.data?.data;
+                setPayments(payload?.DT || []);
+                setPaymentPagination(payload?.pagination || { page, limit, total: 0, totalPages: 0 });
+            }
+        } catch (e) {
+            // noop
+        } finally {
+            setPaymentsLoading(false);
         }
     };
 
@@ -206,6 +228,67 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    {/* Payments Table */}
+                    <div className="stats-section" style={{ marginTop: '24px' }}>
+                        <h2>Recent Payments</h2>
+                        <div className="payments-table-wrapper">
+                            {paymentsLoading ? (
+                                <p>Loading payments...</p>
+                            ) : (
+                                <>
+                                    <table className="payments-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #eee' }}>ID</th>
+                                                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #eee' }}>User ID</th>
+                                                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #eee' }}>Amount</th>
+                                                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #eee' }}>Status</th>
+                                                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #eee' }}>Transaction Date</th>
+                                                <th style={{ textAlign: 'left', padding: '8px', borderBottom: '1px solid #eee' }}>Gateway</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {payments.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan={6} style={{ padding: '12px' }}>No payments found.</td>
+                                                </tr>
+                                            ) : (
+                                                payments.map((p) => (
+                                                    <tr key={p.id}>
+                                                        <td style={{ padding: '8px', borderBottom: '1px solid #f5f5f5' }}>{p.id}</td>
+                                                        <td style={{ padding: '8px', borderBottom: '1px solid #f5f5f5' }}>{p.userId}</td>
+                                                        <td style={{ padding: '8px', borderBottom: '1px solid #f5f5f5' }}>{p.transferAmount ?? p.amount}</td>
+                                                        <td style={{ padding: '8px', borderBottom: '1px solid #f5f5f5' }}>{p.status}</td>
+                                                        <td style={{ padding: '8px', borderBottom: '1px solid #f5f5f5' }}>{p.transactionDate ? new Date(p.transactionDate).toLocaleString() : '-'}</td>
+                                                        <td style={{ padding: '8px', borderBottom: '1px solid #f5f5f5' }}>{p.gateway || '-'}</td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                    <div className="payments-pagination" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
+                                        <Button
+                                            variant="outlined"
+                                            disabled={paymentPagination.page <= 1}
+                                            onClick={() => loadPayments(paymentPagination.page - 1, paymentPagination.limit)}
+                                        >
+                                            Prev
+                                        </Button>
+                                        <div>
+                                            Page {paymentPagination.page} of {paymentPagination.totalPages}
+                                        </div>
+                                        <Button
+                                            variant="outlined"
+                                            disabled={paymentPagination.page >= paymentPagination.totalPages}
+                                            onClick={() => loadPayments(paymentPagination.page + 1, paymentPagination.limit)}
+                                        >
+                                            Next
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

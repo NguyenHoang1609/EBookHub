@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ebookAPI } from '../../Util/Api';
 import { wishlistAPI } from '../../Util/Api';
+import { readingHistoryAPI } from '../../Util/Api';
 import Navigation from '../component/Navigation';
 import Footer from '../component/Footer';
 import Review from './components/Review';
@@ -17,8 +18,6 @@ const EbookDetail = () => {
     const [ebook, setEbook] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [bookType, setBookType] = useState('Sách điện tử');
-    const [contentType, setContentType] = useState('Đầy đủ');
     const [showFullDescription, setShowFullDescription] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const [showRatingModal, setShowRatingModal] = useState(false);
@@ -26,6 +25,7 @@ const EbookDetail = () => {
     const [user, setUser] = useState(null);
     const [isFavourite, setIsFavourite] = useState(false);
     const [favLoading, setFavLoading] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     console.log('user', user);
 
@@ -67,7 +67,7 @@ const EbookDetail = () => {
 
     const handleToggleFavourite = async () => {
         if (!user) {
-            toast('Bạn cần đăng nhập để sử dụng chức năng này.');
+            toast('You need to log in to use this feature.');
             return;
         }
         setFavLoading(true);
@@ -87,56 +87,26 @@ const EbookDetail = () => {
         setFavLoading(false);
     };
 
-    const renderStars = (rating) => {
-        const stars = [];
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 !== 0;
-
-        for (let i = 0; i < fullStars; i++) {
-            stars.push(
-                <div key={i} className="star-icon filled">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M8 0L10.5 5.5L16 6L11.5 10L12.5 16L8 13L3.5 16L4.5 10L0 6L5.5 5.5L8 0Z" fill="#FFD700" />
-                    </svg>
-                </div>
-            );
-        }
-
-        if (hasHalfStar) {
-            stars.push(
-                <div key="half" className="star-icon half">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M8 0L10.5 5.5L16 6L11.5 10L12.5 16L8 13L3.5 16L4.5 10L0 6L5.5 5.5L8 0Z" fill="#FFD700" />
-                    </svg>
-                </div>
-            );
-        }
-
-        const emptyStars = 5 - Math.ceil(rating);
-        for (let i = 0; i < emptyStars; i++) {
-            stars.push(
-                <div key={`empty-${i}`} className="star-icon empty">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M8 0L10.5 5.5L16 6L11.5 10L12.5 16L8 13L3.5 16L4.5 10L0 6L5.5 5.5L8 0Z" fill="#999999" />
-                    </svg>
-                </div>
-            );
-        }
-
-        return stars;
-    };
+    // star rendering helper removed (not used)
 
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN');
+        return date.toLocaleDateString('en-US');
     };
 
-    const handleReadBook = () => {
-        if (ebook?.isVipEbook && !user?.isVip) {
-            toast('Cuốn sách này chỉ dành cho tài khoản VIP. Vui lòng nâng cấp để đọc.');
+    const handleReadBook = async () => {
+        if (ebook?.isVipEbook && !user?.is_vip) {
+            toast('This book is for VIP accounts only. Please upgrade to read it.');
             navigate('/payment');
             return;
+        }
+        if (user) {
+            try {
+                await readingHistoryAPI.record(user.id, id);
+            } catch (err) {
+                // non-blocking
+            }
         }
         navigate(`/reader/${id}`);
     };
@@ -147,15 +117,15 @@ const EbookDetail = () => {
 
     const handleWriteReview = () => {
         if (!user) {
-            toast('Bạn cần đăng nhập để đánh giá');
+            toast('You need to log in to rate this book');
             return;
         }
         setShowRatingModal(true);
     };
 
     const handleRatingSubmitted = () => {
-        // Refresh ratings when a new rating is submitted
-        // This will be handled by the Rating component
+        setRefreshKey(prev => prev + 1);
+        setShowRatingModal(false);
     };
 
     const handleShare = async () => {
@@ -174,9 +144,9 @@ const EbookDetail = () => {
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
             }
-            toast.success('Đã sao chép liên kết');
+            toast.success('Link copied');
         } catch (err) {
-            toast.error('Không thể sao chép liên kết');
+            toast.error('Unable to copy link');
         }
     };
 
@@ -226,7 +196,7 @@ const EbookDetail = () => {
             <div className="ebook-detail-container">
                 {/* Breadcrumb */}
                 <div className="breadcrumb">
-                    <span>Trang chủ</span>
+                    <span>Home</span>
                     <span className="chevron">›</span>
                     <span>{ebook.title}</span>
                 </div>
@@ -246,7 +216,7 @@ const EbookDetail = () => {
                                 )}
                             </div>
                             {/* <div className="member-badge">
-                                <span>Hội viên</span>
+                                <span>VIP</span>
                                 <div className="member-icon">
                                     <svg width="35" height="35" viewBox="0 0 35 35" fill="none">
                                         <path d="M17.5 0C7.84 0 0 7.84 0 17.5S7.84 35 17.5 35 35 27.16 35 17.5 27.16 0 17.5 0Z" fill="#FFD700" />
@@ -266,23 +236,23 @@ const EbookDetail = () => {
                                     <div className="stars">
                                         {renderStars(3.8)}
                                     </div>
-                                    <span className="rating-count">13 đánh giá</span>
+                                    <span className="rating-count">13 reviews</span>
                                 </div> */}
                             </div>
                             {/* <div className="trending-badge">
                                 <span className="trending-number">#1</span>
-                                <span className="trending-text">trong Top xu hướng Sách điện tử</span>
+                                <span className="trending-text">in top trending eBooks</span>
                                 <div className="trending-arrow">→</div>
                             </div> */}
                         </div>
 
                         <div className="book-info-grid">
                             <div className="info-item">
-                                <span className="info-label">Tác giả</span>
+                                <span className="info-label">Author</span>
                                 <span className="info-value">{ebook.customAuthor || ebook.author?.name || 'Unknown'}</span>
                             </div>
                             <div className="info-item">
-                                <span className="info-label">Thể loại</span>
+                                <span className="info-label">Genres</span>
                                 <div className='type-list'>
                                     {ebook?.types.map(type => {
                                         return <span>{type.name}, </span>
@@ -292,64 +262,64 @@ const EbookDetail = () => {
 
                             </div>
                             <div className="info-item">
-                                <span className="info-label">Nhà xuất bản</span>
-                                <span className="info-value">NXB Quân Đội Nhân Dân</span>
+                                <span className="info-label">Publisher</span>
+                                <span className="info-value">People's Army Publishing House</span>
                             </div>
                             <div className="info-item">
-                                <span className="info-label">Gói cước</span>
+                                <span className="info-label">Subscription</span>
                                 {ebook.isVipEbook ? (
-                                    <span className="info-value">Hội viên</span>
+                                    <span className="info-value">VIP</span>
                                 ) : (
-                                    <span className="info-value">Thường</span>
+                                    <span className="info-value">Regular</span>
                                 )}
 
                             </div>
                             <div className="info-item">
-                                <span className="info-label">Phát hành</span>
+                                <span className="info-label">Published</span>
                                 <span className="info-value">{formatDate(ebook.createdAt)}</span>
                             </div>
                         </div>
 
                         {/* Book Type Selection */}
                         {/* <div className="selection-section">
-                            <span className="selection-label">Chọn loại sách</span>
+                            <span className="selection-label">Select book type</span>
                             <div className="selection-buttons">
                                 <button
-                                    className={`selection-btn ${bookType === 'Sách điện tử' ? 'active' : ''}`}
-                                    onClick={() => setBookType('Sách điện tử')}
+                                    className={`selection-btn ${bookType === 'Ebook' ? 'active' : ''}`}
+                                    onClick={() => setBookType('Ebook')}
                                 >
-                                    Sách điện tử
+                                    Ebook
                                 </button>
                                 <button
-                                    className={`selection-btn ${bookType === 'Sách nói' ? 'active' : ''}`}
-                                    onClick={() => setBookType('Sách nói')}
+                                    className={`selection-btn ${bookType === 'Audiobook' ? 'active' : ''}`}
+                                    onClick={() => setBookType('Audiobook')}
                                 >
-                                    Sách nói
+                                    Audiobook
                                 </button>
                                 <button
-                                    className={`selection-btn ${bookType === 'Sách giấy' ? 'active' : ''}`}
-                                    onClick={() => setBookType('Sách giấy')}
+                                    className={`selection-btn ${bookType === 'Paperback' ? 'active' : ''}`}
+                                    onClick={() => setBookType('Paperback')}
                                 >
-                                    Sách giấy
+                                    Paperback
                                 </button>
                             </div>
                         </div> */}
 
                         {/* Content Type Selection */}
                         {/* <div className="selection-section">
-                            <span className="selection-label">Chọn nội dung</span>
+                            <span className="selection-label">Select content type</span>
                             <div className="selection-buttons">
                                 <button
-                                    className={`selection-btn ${contentType === 'Đầy đủ' ? 'active' : ''}`}
-                                    onClick={() => setContentType('Đầy đủ')}
+                                    className={`selection-btn ${contentType === 'Full' ? 'active' : ''}`}
+                                    onClick={() => setContentType('Full')}
                                 >
-                                    Đầy đủ
+                                    Full
                                 </button>
                                 <button
-                                    className={`selection-btn ${contentType === 'Tóm tắt' ? 'active' : ''}`}
-                                    onClick={() => setContentType('Tóm tắt')}
+                                    className={`selection-btn ${contentType === 'Summary' ? 'active' : ''}`}
+                                    onClick={() => setContentType('Summary')}
                                 >
-                                    Tóm tắt
+                                    Summary
                                 </button>
                             </div>
                         </div> */}
@@ -365,8 +335,8 @@ const EbookDetail = () => {
                                 <p>{ebook.description.substring(0, 100)}<span className="read-more" onClick={() => setShowFullDescription(true)}>...</span></p>
                             )}
                             {showFullDescription && (
-                                <button className="read-more-btn" onClick={() => setShowFullDescription(false)}>
-                                    Thu gọn
+                                    <button className="read-more-btn" onClick={() => setShowFullDescription(false)}>
+                                    Show less
                                 </button>
                             )}
                         </div>
@@ -374,14 +344,14 @@ const EbookDetail = () => {
                         {/* Action Buttons */}
                         <div className="action-buttons">
                             <button className="read-book-btn" onClick={handleReadBook}>
-                                <span>Đọc sách</span>
+                                <span>Read Book</span>
                             </button>
-                            <button className={`action-btn heart-btn${isFavourite ? ' active' : ''}`} onClick={handleToggleFavourite} disabled={favLoading} title={isFavourite ? 'Bỏ khỏi yêu thích' : 'Thêm vào yêu thích'}>
+                            <button className={`action-btn heart-btn${isFavourite ? ' active' : ''}`} onClick={handleToggleFavourite} disabled={favLoading} title={isFavourite ? 'Remove from favorites' : 'Add to favorites'}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                     <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z" fill={isFavourite ? '#ff4d4f' : 'white'} />
                                 </svg>
                             </button>
-                            <button className="action-btn share-btn" onClick={handleShare} title="Sao chép liên kết">
+                            <button className="action-btn share-btn" onClick={handleShare} title="Copy link">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                     <path d="M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12C9 11.76 8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5C21 3.34 19.66 2 18 2C16.34 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12C3 13.66 4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.34C15.11 18.55 15.08 18.77 15.08 19C15.08 20.61 16.39 21.92 18 21.92C19.61 21.92 20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08Z" fill="white" />
                                 </svg>
@@ -398,37 +368,37 @@ const EbookDetail = () => {
                     {/* <div className="member-offer-section">
                         <div className="offer-container">
                             <div className="offer-header">
-                                <h3>ƯU ĐÃI HỘI VIÊN</h3>
+                                <h3>VIP OFFERS</h3>
                             </div>
                             <div className="offer-content">
                                 <div className="offer-title">
-                                    <span>WAKA 12 THÁNG</span>
-                                    <span className="offer-price">329.000đ</span>
+                                    <span>WAKA 12 MONTHS</span>
+                                    <span className="offer-price">329,000 VND</span>
                                 </div>
                                 <div className="offer-description">
-                                    <p>Tặng thêm 2 tháng. Mua 12 tháng</p>
-                                    <p>được 14 tháng</p>
+                                    <p>Get 2 extra months when purchasing the 12-month plan</p>
+                                    <p>for 14 months</p>
                                 </div>
                                 <div className="countdown-timer">
-                                    <span>Chỉ còn</span>
+                                        <span>Only</span>
                                     <div className="timer-display">
                                         <div className="timer-box">
                                             <span>42</span>
                                         </div>
-                                        <span>Giờ</span>
+                                        <span>Hours</span>
                                         <div className="timer-separator">:</div>
                                         <div className="timer-box">
                                             <span>33</span>
                                         </div>
-                                        <span>Phút</span>
+                                        <span>Minutes</span>
                                         <div className="timer-separator">:</div>
                                         <div className="timer-box">
                                             <span>54</span>
                                         </div>
-                                        <span>Giây</span>
+                                        <span>Seconds</span>
                                     </div>
                                 </div>
-                                <button className="buy-package-btn">MUA GÓI NGAY</button>
+                                <button className="buy-package-btn">BUY NOW</button>
                             </div>
                         </div>
                     </div> */}
@@ -437,19 +407,19 @@ const EbookDetail = () => {
                 {/* Reviews Section */}
                 <div className="reviews-section-detail">
                     <div className="reviews-header">
-                        <h2>Độc giả nói gì về "{ebook?.title}"</h2>
+                        <h2>What readers say about "{ebook?.title}"</h2>
                         <div className="reviews-tabs">
                             <button
                                 className={`tab-btn ${activeTab === 'comments' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('comments')}
-                            >
-                                Bình luận
+                                >
+                                Comments
                             </button>
                             <button
                                 className={`tab-btn ${activeTab === 'ratings' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('ratings')}
-                            >
-                                Đánh giá & nhận xét
+                                >
+                                Ratings & Reviews
                             </button>
                         </div>
                     </div>
@@ -459,6 +429,7 @@ const EbookDetail = () => {
                         <Rating
                             ebook={ebook}
                             onWriteReview={handleWriteReview}
+                            refreshKey={refreshKey}
                         />
                     )}
                 </div>
@@ -469,7 +440,7 @@ const EbookDetail = () => {
                 <div className="related-books-section">
 
                     <Section
-                        title="Sách mới nhất"
+                        title="New Releases"
                         apiType="getAllEbooks"
                         apiParams={{
                             page: 1,
@@ -482,7 +453,7 @@ const EbookDetail = () => {
 
                 {/* Partner Section */}
                 <div className="partner-section">
-                    <h2>Đối tác</h2>
+                    <h2>Partners</h2>
                     <div className="partner-banner">
                         <img src="https://307a0e78.vws.vegacdn.vn/view/v2/image/img.banner_web_v2/0/0/0/3508.jpg?v=8&w=1920&h=600" alt="Partner Banner" />
                     </div>

@@ -1,6 +1,6 @@
 import './App.scss';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import RouteIndex from './route/RouteIndex.js'
 
 function App() {

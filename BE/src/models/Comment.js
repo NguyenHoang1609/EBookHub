@@ -69,5 +69,5 @@ const Comment = sequelize.define('Comment', {
         }
     ]
 });
-
+// Comment.sync({alter:true});
 module.exports = Comment;

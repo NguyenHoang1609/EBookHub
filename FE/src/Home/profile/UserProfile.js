@@ -9,6 +9,7 @@ import MyOrder from './components/MyOrder';
 import Achivements from './components/Achivements';
 import PaymentHistory from './components/PaymentHistory';
 import Support from './components/Support';
+import ReadingHistory from './components/ReadingHistory';
 import MyFavouriteType from './components/MyFavouriteType';
 
 function UserProfile() {
@@ -27,12 +28,13 @@ function UserProfile() {
     };
 
     const navigationItems = [
-        { id: 'account', label: 'Quản lý tài khoản', icon: '👤', active: true },
-        { id: 'library', label: 'Sách yêu thích', icon: '📚', active: false },
-        { id: 'favouriteTypes', label: 'Thể loại yêu thích', icon: '💙', active: false },
-        { id: 'marked', label: 'Trang đã đánh dấu', icon: '🔖', active: false },
-        { id: 'history', label: 'Lịch sử giao dịch', icon: '💳', active: false },
-        { id: 'support', label: 'Hỗ trợ', icon: '🆘', active: false },
+        { id: 'account', label: 'Account Management', icon: '👤', active: true },
+        { id: 'library', label: 'Favorite Books', icon: '📚', active: false },
+        { id: 'favouriteTypes', label: 'Favorite Categories', icon: '💙', active: false },
+        { id: 'marked', label: 'Bookmarked Pages', icon: '🔖', active: false },
+        { id: 'readingHistory', label: 'Reading History', icon: '📖', active: false },
+        { id: 'history', label: 'Transaction History', icon: '💳', active: false },
+        { id: 'support', label: 'Support', icon: '🆘', active: false },
 
     ];
 
@@ -50,6 +52,8 @@ function UserProfile() {
                 return <MyOrder />;
             case 'achievements':
                 return <Achivements />;
+            case 'readingHistory':
+                return <ReadingHistory />;
             case 'history':
                 return <PaymentHistory />;
             case 'support':
@@ -64,7 +68,7 @@ function UserProfile() {
             <div className="user-profile-loading">
                 <Navigation />
                 <div className="loading-content">
-                    <p>Đang tải thông tin người dùng...</p>
+                    <p>Loading user information...</p>
                 </div>
                 <Footer />
             </div>
@@ -93,15 +97,15 @@ function UserProfile() {
                                 <div className="user-stats">
 
                                     {
-                                        user.isVip ? (
+                                        user.is_vip ? (
                                             <div className="action-buttons">
-                                                <button className="membership-btn active">Hội viên</button>
+                                                <button className="membership-btn active">VIP Member</button>
                                             </div>
                                         ) : (
                                             <div className="action-buttons">
                                                 <button
                                                     onClick={() => window.location.href = '/payment'}
-                                                    className="membership-btn">Trở thành hội viên</button>
+                                                    className="membership-btn">Become a VIP Member</button>
                                             </div>
                                         )
                                     }

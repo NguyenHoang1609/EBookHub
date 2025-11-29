@@ -207,6 +207,39 @@ const getUserFavouriteTypes = async (req, res) => {
     }
 };
 
+// Get users who favourited a specific type
+const getUsersWhoFavouritedType = async (req, res) => {
+    try {
+        console.log('Get users who favourited type request received:', req.params.typeId);
+
+        const { typeId } = req.params;
+
+        if (!typeId || isNaN(parseInt(typeId))) {
+            return res.status(400).json({
+                DT: '',
+                EC: -1,
+                EM: 'Invalid type ID provided!'
+            });
+        }
+
+        const result = await typeService.getUsersWhoFavouritedType(parseInt(typeId));
+
+        if (result.EC === 0) {
+            return res.status(200).json(result);
+        } else {
+            return res.status(404).json(result);
+        }
+
+    } catch (error) {
+        console.log('Get users who favourited type controller error:', error);
+        return res.status(500).json({
+            DT: '',
+            EC: -1,
+            EM: 'Internal server error while fetching users for type'
+        });
+    }
+};
+
 // Add favourite type for user
 const addUserFavouriteType = async (req, res) => {
     try {
@@ -377,6 +410,7 @@ export default {
     updateType,
     deleteType,
     getUserFavouriteTypes,
+    getUsersWhoFavouritedType,
     addUserFavouriteType,
     removeUserFavouriteType,
     getEbooksByType,

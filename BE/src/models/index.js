@@ -19,6 +19,7 @@ const Comment = require('./Comment');
 const Type = require('./Type');
 const EbookType = require('./EbookType');
 const UserFavouriteType = require('./UserFavouriteType');
+const ReadingHistory = require('./ReadingHistory');
 
 // Define associations
 // User associations
@@ -30,6 +31,7 @@ User.hasMany(Payment, { foreignKey: 'userId', as: 'payments' });
 User.hasMany(LibraryWishlist, { foreignKey: 'userId', as: 'libraryItems' });
 User.hasMany(SavedPage, { foreignKey: 'userId', as: 'savedPages' });
 User.hasMany(Comment, { foreignKey: 'userId', as: 'comments' });
+User.hasMany(ReadingHistory, { foreignKey: 'userId', as: 'readingHistories' });
 User.belongsTo(Group, { foreignKey: 'groupId', as: 'group' });
 
 // User-Type many-to-many associations (favourite types)
@@ -54,6 +56,7 @@ Ebook.hasMany(LibraryWishlist, { foreignKey: 'ebookId', as: 'libraryItems' });
 Ebook.hasMany(AuthorViolation, { foreignKey: 'ebookId', as: 'violations' });
 Ebook.hasMany(Category, { foreignKey: 'ebookId', as: 'categories' });
 Ebook.hasMany(Comment, { foreignKey: 'ebookId', as: 'comments' });
+Ebook.hasMany(ReadingHistory, { foreignKey: 'ebookId', as: 'readingHistories' });
 
 // Ebook-Type many-to-many associations
 Ebook.belongsToMany(Type, {
@@ -69,6 +72,10 @@ Page.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
 // SavedPage associations
 SavedPage.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 SavedPage.belongsTo(Ebook, { foreignKey: 'bookId', as: 'ebook' });
+
+// ReadingHistory associations
+ReadingHistory.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+ReadingHistory.belongsTo(Ebook, { foreignKey: 'ebookId', as: 'ebook' });
 
 // ReviewRating associations
 ReviewRating.belongsTo(User, { foreignKey: 'userId', as: 'user' });
@@ -165,5 +172,6 @@ module.exports = {
     Comment,
     Type,
     EbookType,
-    UserFavouriteType
+    UserFavouriteType,
+    ReadingHistory
 };

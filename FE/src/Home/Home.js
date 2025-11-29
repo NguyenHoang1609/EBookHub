@@ -3,7 +3,7 @@ import Navigation from './component/Navigation';
 import Banner from './component/Banner';
 import Section from './component/Section';
 import Footer from './component/Footer';
-import { authAPI, typeAPI } from '../Util/Api';
+import { typeAPI } from '../Util/Api';
 import './Home.css';
 
 function Home() {
@@ -70,23 +70,23 @@ function Home() {
 
 
             <Section
-                title="Sách mới nhất"
+                title="Latest Books"
                 apiType="getAllEbooks"
                 showMemberBadge={true}
                 apiParams={{
                     page: 1,
-                    limit: 10,
+                    limit: 20,
                     status: 'published'
                 }}
                 showRanking={false}
             />
 
             <Section
-                title="Sách được đánh giá cao nhất"
+                title="Top Rated Books"
                 apiType="getTopRatedEbooks"
                 showMemberBadge={true}
                 apiParams={{
-                    limit: 10
+                    limit: 20
                 }}
                 showRanking={false}
             />
@@ -96,10 +96,10 @@ function Home() {
             {/* Favourite Books Section - Only show if user is logged in */}
             {currentUser && (
                 <Section
-                    title="Sách yêu thích của bạn"
+                    title="Your Favorite Books"
                     apiType="getFavouriteBooks"
                     apiParams={{
-                        limit: 10
+                        limit: 20
                     }}
                     userId={currentUser.id}
                     showRanking={false}
@@ -115,7 +115,7 @@ function Home() {
                     apiType="getAllEbooks"
                     apiParams={{
                         page: 1,
-                        limit: 10,
+                        limit: 20,
                         status: 'published',
                         typeId: type.typeId
                     }}
@@ -128,7 +128,7 @@ function Home() {
 
             {/* Top Books Section - Most Viewed */}
             {/* <Section
-                title="Sách đọc nhiều nhất"
+                title="Top Reads"
                 apiType="getTopBooks"
                 apiParams={{ limit: 10 }}
                 showRanking={true}

@@ -26,19 +26,19 @@ function PaymentHistory() {
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
-        return date.toLocaleString('vi-VN');
+        return date.toLocaleString('en-US');
     };
 
     if (!user) {
         return (
             <div className="payment-history-container">
-                <div className="section-header">
-                    <h2>Lịch sử giao dịch</h2>
-                    <p>Xem lại các giao dịch thanh toán và nạp tiền</p>
+                    <div className="section-header">
+                        <h2>Transaction History</h2>
+                        <p>Review your payment and top-up transactions</p>
                 </div>
                 <div className="placeholder-content">
                     <div className="placeholder-icon">💳</div>
-                    <h3>Vui lòng đăng nhập để xem lịch sử giao dịch</h3>
+                    <h3>Please sign in to view your transaction history</h3>
                 </div>
             </div>
         );
@@ -48,12 +48,12 @@ function PaymentHistory() {
         return (
             <div className="payment-history-container">
                 <div className="section-header">
-                    <h2>Lịch sử giao dịch</h2>
-                    <p>Xem lại các giao dịch thanh toán và nạp tiền</p>
+                    <h2>Transaction History</h2>
+                    <p>Review your payment and top-up transactions</p>
                 </div>
                 <div className="placeholder-content">
                     <div className="placeholder-icon">💳</div>
-                    <h3>Đang tải dữ liệu...</h3>
+                    <h3>Loading data...</h3>
                 </div>
             </div>
         );
@@ -62,31 +62,31 @@ function PaymentHistory() {
     return (
         <div className="payment-history-container">
             <div className="section-header">
-                <h2>Lịch sử giao dịch</h2>
-                <p>Xem lại các giao dịch thanh toán và nạp tiền</p>
+                <h2>Transaction History</h2>
+                <p>Review your payment and top-up transactions</p>
             </div>
             {payments.length === 0 ? (
                 <div className="placeholder-content">
                     <div className="placeholder-icon">💳</div>
-                    <h3>Chưa có giao dịch nào</h3>
-                    <p>Bạn chưa thực hiện giao dịch nào trên hệ thống.</p>
+                    <h3>No transactions yet</h3>
+                    <p>You have not made any transactions on the system.</p>
                 </div>
             ) : (
                 <div className="payment-table-wrapper">
                     <table className="payment-table">
                         <thead>
                             <tr>
-                                <th>Ngày giao dịch</th>
-                                <th>Số tiền (VNĐ)</th>
-                                <th>Trạng thái</th>
-                                <th>Mô tả</th>
+                                <th>Transaction date</th>
+                                <th>Amount (VND)</th>
+                                <th>Status</th>
+                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>
                             {payments.map((p, idx) => (
                                 <tr key={p.id || idx}>
                                     <td>{formatDate(p.transactionDate || p.created_at)}</td>
-                                    <td>{Number(p.amount || p.transferAmount || 0).toLocaleString('vi-VN')}</td>
+                                    <td>{Number(p.amount || p.transferAmount || 0).toLocaleString('en-US')}</td>
                                     <td>
                                         <span className={`status-badge status-${p.status}`}>{p.status}</span>
                                     </td>

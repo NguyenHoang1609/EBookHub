@@ -178,6 +178,20 @@ const ManageType = () => {
         }
     };
 
+    const handleSwitchChange = (field) => (event) => {
+        const checked = event.target.checked;
+        setFormData(prev => ({
+            ...prev,
+            [field]: checked
+        }));
+        if (formErrors[field]) {
+            setFormErrors(prev => ({
+                ...prev,
+                [field]: ''
+            }));
+        }
+    };
+
     const validateForm = () => {
         const newErrors = {};
 
@@ -271,7 +285,7 @@ const ManageType = () => {
         setLoading(true);
 
         try {
-            const result = await typeAPI.getUserFavouriteTypes(type.typeId);
+            const result = await typeAPI.getUsersWhoFavouritedType(type.typeId);
             if (result.success && result.data?.DT) {
                 setTypeUsers(result.data.DT);
             } else {
@@ -554,7 +568,7 @@ const ManageType = () => {
                                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                         {user.avatar ? (
                                             <img
-                                                src={user.avatar}
+                                                src={`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/public${user.avatar}`}
                                                 alt={user.name}
                                                 style={{
                                                     width: 40,
@@ -575,9 +589,7 @@ const ManageType = () => {
                                             </Typography>
                                         </Box>
                                     </Box>
-                                    <Typography variant="caption" color="text.secondary">
-                                        Added: {new Date(user.createdAt).toLocaleDateString()}
-                                    </Typography>
+
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -639,7 +651,7 @@ const ManageType = () => {
                             control={
                                 <Switch
                                     checked={formData.isActive}
-                                    onChange={handleInputChange('isActive')}
+                                    onChange={handleSwitchChange('isActive')}
                                     disabled={dialogMode === 'view'}
                                 />
                             }

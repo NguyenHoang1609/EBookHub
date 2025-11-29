@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './Navigation.scss';
 import Login from './Login';
 import Register from './Register';
+import ForgotPassword from './ForgotPassword';
 import { authAPI } from '../../Util/Api';
 
 function Navigation(props) {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showRegisterModal, setShowRegisterModal] = useState(false);
+    const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -22,6 +24,7 @@ function Navigation(props) {
     const handleCloseModal = () => {
         setShowLoginModal(false);
         setShowRegisterModal(false);
+        setShowForgotPasswordModal(false);
     };
 
     const handleSwitchToRegister = () => {
@@ -32,6 +35,11 @@ function Navigation(props) {
     const handleSwitchToLogin = () => {
         setShowRegisterModal(false);
         setShowLoginModal(true);
+    };
+
+    const handleSwitchToForgotPassword = () => {
+        setShowLoginModal(false);
+        setShowForgotPasswordModal(true);
     };
 
     // Check authentication status on component mount
@@ -93,7 +101,7 @@ function Navigation(props) {
                     <div
                         onClick={() => { window.location.href = '/' }}
                         className="logo-section">
-                        <img className="logo-image" src="https://placehold.co/115x38" />
+                        <img className="logo-image" src="/logo.png" />
                         {/* <div className="logo-icon-container">
                             <img className="logo-icon" src="https://placehold.co/33x26" />
                         </div> */}
@@ -104,28 +112,28 @@ function Navigation(props) {
                             onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Trinh thám - Kinh dị')}`}
                             className="menu-item ebook">
                             <div className="menu-item-content">
-                                <div className="menu-text">Trinh thám - Kinh dị</div>
+                                <div className="menu-text">Detective - Horror</div>
                             </div>
                         </div>
                         <div
                             onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Tài chính cá nhân')}`}
                             className="menu-item member-books">
                             <div className="menu-item-content">
-                                <div className="menu-text">Tài chính cá nhân</div>
+                                <div className="menu-text">Personal Finance</div>
                             </div>
                         </div>
                         <div
                             onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Tư duy sáng tạo')}`}
                             className="menu-item school-books">
                             <div className="menu-item-content">
-                                <div className="menu-text">Tư duy sáng tạo</div>
+                                <div className="menu-text">Creative Thinking</div>
                             </div>
                         </div>
                         <div
                             onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Ngôn tình')}`}
                             className="menu-item audiobooks">
                             <div className="menu-item-content">
-                                <div className="menu-text">Ngôn tình</div>
+                                <div className="menu-text">Romance</div>
                             </div>
                         </div>
                         <div
@@ -133,21 +141,21 @@ function Navigation(props) {
                             onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Hiện đại')}`}
                             className="menu-item comics">
                             <div className="menu-item-content">
-                                <div className="menu-text">Hiện đại</div>
+                                <div className="menu-text">Modern</div>
                             </div>
                         </div>
                         <div
                             onClick={() => window.location.href = `/more-ebook?typeName=${encodeURIComponent('Cổ đại')}`}
                             className="menu-item publishing">
                             <div className="menu-item-content">
-                                <div className="menu-text">Cổ đại</div>
+                                <div className="menu-text">Ancient</div>
                             </div>
                         </div>
                         <div
                             onClick={() => window.location.href = '/more-ebook'}
                             className="menu-item see-more">
                             <div className="menu-item-content">
-                                <div className="menu-text">Xem thêm</div>
+                                <div className="menu-text">See more</div>
                             </div>
                         </div>
                     </div>
@@ -172,7 +180,7 @@ function Navigation(props) {
                             <div
 
                                 className="subscription-text-container">
-                                <div className="subscription-text">Gói cước</div>
+                                <div className="subscription-text">Packages</div>
                             </div>
                         </div>
                     </div>
@@ -190,10 +198,10 @@ function Navigation(props) {
                                 {showUserDropdown && (
                                     <div className="user-dropdown">
                                         <div className="dropdown-item" onClick={handleUserProfileClick}>
-                                            <span>Hồ sơ của tôi</span>
+                                            <span>My Profile</span>
                                         </div>
                                         <div className="dropdown-item" onClick={handleLogout}>
-                                            <span>Đăng xuất</span>
+                                            <span>Logout</span>
                                         </div>
                                     </div>
                                 )}
@@ -202,12 +210,12 @@ function Navigation(props) {
                             <>
                                 <div className="register-button" onClick={handleRegisterClick}>
                                     <div className="register-button-content">
-                                        <div className="register-text">Đăng ký</div>
+                                        <div className="register-text">Register</div>
                                     </div>
                                 </div>
                                 <div className="login-button" onClick={handleLoginClick}>
                                     <div className="login-button-content">
-                                        <div className="login-text">Đăng nhập</div>
+                                        <div className="login-text">Login</div>
                                     </div>
                                 </div>
                             </>
@@ -223,6 +231,7 @@ function Navigation(props) {
                         <Login
                             onClose={handleCloseModal}
                             onSwitchToRegister={handleSwitchToRegister}
+                            onSwitchToForgotPassword={handleSwitchToForgotPassword}
                         />
                     </div>
                 </div>
@@ -234,6 +243,16 @@ function Navigation(props) {
                         <Register
                             onClose={handleCloseModal}
                             onSwitchToLogin={handleSwitchToLogin}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {showForgotPasswordModal && (
+                <div className="modal-overlay" onClick={handleCloseModal}>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <ForgotPassword
+                            onClose={handleCloseModal}
                         />
                     </div>
                 </div>

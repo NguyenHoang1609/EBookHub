@@ -11,8 +11,9 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        const data = await paymentService.listPayments();
-        return res.status(200).json({ success: true, data: { DT: data } });
+        const { page = 1, limit = 10, status, userId } = req.query;
+        const result = await paymentService.listPayments({ page: Number(page), limit: Number(limit), status, userId: userId ? Number(userId) : undefined });
+        return res.status(200).json({ success: true, data: { DT: result.rows, pagination: result.pagination } });
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message });
     }

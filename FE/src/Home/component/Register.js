@@ -30,29 +30,29 @@ function Register({ onClose, onSwitchToLogin }) {
 
     const validateForm = () => {
         if (!formData.name || !formData.email || !formData.phone || !formData.password) {
-            setError('Vui lòng nhập đầy đủ thông tin');
+            setError('Please enter all required information');
             return false;
         }
 
         if (formData.password.length < 6) {
-            setError('Mật khẩu phải có ít nhất 6 ký tự');
+            setError('Password must be at least 6 characters');
             return false;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            setError('Mật khẩu xác nhận không khớp');
+            setError('Password confirmation does not match');
             return false;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            setError('Email không hợp lệ');
+            setError('Invalid email');
             return false;
         }
 
         const phoneRegex = /^[0-9]{10,11}$/;
         if (!phoneRegex.test(formData.phone)) {
-            setError('Số điện thoại không hợp lệ (10-11 số)');
+            setError('Invalid phone number (10-11 digits)');
             return false;
         }
 
@@ -86,11 +86,11 @@ function Register({ onClose, onSwitchToLogin }) {
                 // Show favourite types form instead of immediate redirect
                 setShowFavouriteTypes(true);
             } else {
-                setError(result.message || 'Đăng ký thất bại');
+                setError(result.message || 'Registration failed');
             }
         } catch (error) {
             console.error('Registration error:', error);
-            setError('Có lỗi xảy ra. Vui lòng thử lại.');
+            setError('An error occurred. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -106,13 +106,13 @@ function Register({ onClose, onSwitchToLogin }) {
 
     const handleFavouriteTypesComplete = () => {
         // After user completes favourite types selection, redirect to login
-        toast('Đăng ký thành công! Vui lòng đăng nhập.');
+        toast('Registration successful! Please log in.');
         onSwitchToLogin();
     };
 
     const handleFavouriteTypesSkip = () => {
         // User skipped favourite types selection, redirect to login
-        toast('Đăng ký thành công! Vui lòng đăng nhập.');
+        toast('Registration successful! Please log in.');
         onSwitchToLogin();
     };
 
@@ -134,8 +134,8 @@ function Register({ onClose, onSwitchToLogin }) {
                     <button className="close-btn" onClick={onClose}>×</button>
 
                     <div className="form-header">
-                        <h1 className="form-title">Đăng ký tài khoản</h1>
-                        <p className="form-subtitle">Đăng ký để mua và theo dõi quá trình đọc sách</p>
+                        <h1 className="form-title">Create an account</h1>
+                        <p className="form-subtitle">Sign up to purchase and track your reading</p>
                     </div>
 
                     {error && (
@@ -157,7 +157,7 @@ function Register({ onClose, onSwitchToLogin }) {
                             <input
                                 type="text"
                                 className="form-input"
-                                placeholder="Họ và tên"
+                                placeholder="Full name"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleInputChange}
@@ -183,7 +183,7 @@ function Register({ onClose, onSwitchToLogin }) {
                             <input
                                 type="tel"
                                 className="form-input"
-                                placeholder="Số điện thoại"
+                                placeholder="Phone number"
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleInputChange}
@@ -197,7 +197,7 @@ function Register({ onClose, onSwitchToLogin }) {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     className="form-input"
-                                    placeholder="Mật khẩu"
+                                    placeholder="Password"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleInputChange}
@@ -220,7 +220,7 @@ function Register({ onClose, onSwitchToLogin }) {
                                     </svg>
                                 </button>
                             </div>
-                            <div className="password-hint">Mật khẩu bao gồm ít nhất 6 ký tự</div>
+                            <div className="password-hint">Password must be at least 6 characters</div>
                         </div>
 
                         <div className="form-group">
@@ -228,7 +228,7 @@ function Register({ onClose, onSwitchToLogin }) {
                                 <input
                                     type={showConfirmPassword ? "text" : "password"}
                                     className="form-input"
-                                    placeholder="Nhập lại mật khẩu"
+                                    placeholder="Confirm password"
                                     name="confirmPassword"
                                     value={formData.confirmPassword}
                                     onChange={handleInputChange}
@@ -250,7 +250,7 @@ function Register({ onClose, onSwitchToLogin }) {
                                     </svg>
                                 </button>
                             </div>
-                            <div className="password-hint">Nhập lại mật khẩu để xác nhận</div>
+                            <div className="password-hint">Re-enter password to confirm</div>
                         </div>
 
                         <button
@@ -263,16 +263,16 @@ function Register({ onClose, onSwitchToLogin }) {
                             }}
                             onClick={handleSubmit}
                         >
-                            {loading ? 'Đang đăng ký...' : 'Đăng ký'}
+                            {loading ? 'Registering...' : 'Register'}
                         </button>
 
                         <div className="policy-link">
-                            <a href="/policy">Điều khoản và điều kiện</a>
+                            <a href="/policy">Terms and Conditions</a>
                         </div>
                     </div>
 
                     {/* <div className="divider">
-                        <span className="divider-text">Hoặc đăng ký với</span>
+                        <span className="divider-text">Or sign up with</span>
                     </div>
 
                     <div className="social-buttons">
@@ -294,13 +294,12 @@ function Register({ onClose, onSwitchToLogin }) {
                     </div> */}
 
                     {/* <div className="terms-text">
-                        Bằng việc nhấn "Đăng ký", bạn đã đọc và đồng ý với điều<br />
-                        kiện và điều khoản của Waka
+                        By clicking "Register", you agree to Waka's terms and conditions
                     </div> */}
 
                     <div className="login-link">
-                        Bạn đã có tài khoản?
-                        <a href="#" onClick={onSwitchToLogin}>Đăng nhập ngay</a>
+                        Already have an account?
+                        <button type="button" className="link-button" onClick={onSwitchToLogin}>Log in now</button>
                     </div>
                 </div>
             </div>

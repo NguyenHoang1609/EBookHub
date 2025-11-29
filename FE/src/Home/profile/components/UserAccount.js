@@ -12,7 +12,7 @@ function UserAccount({ user, setUser }) {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
-    const [selectedGender, setSelectedGender] = useState('Khác');
+    const [selectedGender, setSelectedGender] = useState('Other');
     const [birthday, setBirthday] = useState('01/01/1900');
     const [previewAvatar, setPreviewAvatar] = useState(null);
     const fileInputRef = useRef(null);
@@ -33,12 +33,12 @@ function UserAccount({ user, setUser }) {
         const file = e.target.files[0];
         if (file) {
             if (!file.type.startsWith('image/')) {
-                setMessage('Vui lòng chọn file ảnh!');
+                setMessage('Please choose an image file!');
                 return;
             }
 
             if (file.size > 5 * 1024 * 1024) {
-                setMessage('File ảnh không được vượt quá 5MB!');
+                setMessage('Image file must not exceed 5MB!');
                 return;
             }
 
@@ -78,7 +78,7 @@ function UserAccount({ user, setUser }) {
             const result = await userAPI.updateUserWithAvatar(user.id, submitData);
 
             if (result.success) {
-                setMessage('Cập nhật thông tin thành công!');
+                setMessage('Profile updated successfully!');
 
                 const updatedUser = { ...user, ...result.data.DT };
                 setUser(updatedUser);
@@ -89,11 +89,11 @@ function UserAccount({ user, setUser }) {
                     setFormData(prev => ({ ...prev, avatar: null }));
                 }
             } else {
-                setMessage(result.message || 'Có lỗi xảy ra khi cập nhật!');
+                setMessage(result.message || 'An error occurred while updating!');
             }
         } catch (error) {
             console.error('Update error:', error);
-            setMessage('Có lỗi xảy ra khi cập nhật!');
+            setMessage('An error occurred while updating!');
         } finally {
             setIsLoading(false);
         }
@@ -118,39 +118,39 @@ function UserAccount({ user, setUser }) {
                 <div className="form-section">
                     <div className="form-fields">
                         <div className="form-group readonly">
-                            <label>Tên đăng nhập</label>
+                            <label>Username</label>
                             <div className="input-display">
                                 {user?.name || 'N/A'}
                             </div>
                         </div>
 
                         <div className="form-group readonly">
-                            <label>ID người dùng</label>
+                            <label>User ID</label>
                             <div className="input-display">
                                 {user?.id || 'N/A'}
                             </div>
                         </div>
 
                         <div className="form-group">
-                            <label>Họ và tên</label>
+                            <label>Full name</label>
                             <input
                                 type="text"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleInputChange}
-                                placeholder="Nhập họ và tên"
+                                placeholder="Enter full name"
                                 required
                             />
                         </div>
 
                         <div className="form-group">
-                            <label>Số điện thoại</label>
+                            <label>Phone number</label>
                             <input
                                 type="tel"
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleInputChange}
-                                placeholder="Nhập số điện thoại"
+                                placeholder="Enter phone number"
                             />
                         </div>
 
@@ -161,25 +161,25 @@ function UserAccount({ user, setUser }) {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleInputChange}
-                                placeholder="Nhập email"
+                                placeholder="Enter email"
                                 required
                             />
                         </div>
 
                         <div className="form-group">
-                            <label>Địa chỉ</label>
+                            <label>Address</label>
                             <input
                                 type="text"
                                 name="address"
                                 value={formData.address}
                                 onChange={handleInputChange}
-                                placeholder="Nhập địa chỉ"
+                                placeholder="Enter address"
                             />
                         </div>
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label>Ngày sinh</label>
+                                <label>Birthday</label>
                                 <div className="date-input">
                                     <input
                                         type="text"
@@ -192,15 +192,15 @@ function UserAccount({ user, setUser }) {
                             </div>
 
                             <div className="form-group">
-                                <label>Giới tính</label>
+                                <label>Gender</label>
                                 <div className="select-input">
                                     <select
                                         value={selectedGender}
                                         onChange={(e) => setSelectedGender(e.target.value)}
                                     >
-                                        <option value="Nam">Nam</option>
-                                        <option value="Nữ">Nữ</option>
-                                        <option value="Khác">Khác</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
                                     </select>
                                     <span className="select-arrow">▼</span>
                                 </div>
@@ -213,7 +213,7 @@ function UserAccount({ user, setUser }) {
                                 className="submit-btn"
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Đang cập nhật...' : 'Cập nhật'}
+                                {isLoading ? 'Updating...' : 'Update'}
                             </button>
                             <button
                                 type="button"
@@ -221,12 +221,12 @@ function UserAccount({ user, setUser }) {
                                 onClick={handleCancel}
                                 disabled={isLoading}
                             >
-                                Hủy
+                                Cancel
                             </button>
                         </div>
 
-                        {message && (
-                            <div className={`message ${message.includes('thành công') ? 'success' : 'error'}`}>
+                            {message && (
+                            <div className={`message ${message.toLowerCase().includes('success') ? 'success' : 'error'}`}>
                                 {message}
                             </div>
                         )}
@@ -246,7 +246,7 @@ function UserAccount({ user, setUser }) {
                             onClick={handleAvatarClick}
                             disabled={isLoading}
                         >
-                            Thay ảnh
+                            Change avatar
                         </button>
                         <input
                             type="file"

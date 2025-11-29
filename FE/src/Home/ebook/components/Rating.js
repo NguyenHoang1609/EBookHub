@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { authAPI } from '../../../Util/Api';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Rating.scss';
 
-const Rating = ({ ebook, onWriteReview }) => {
+const Rating = ({ ebook, onWriteReview, refreshKey }) => {
     const [ratings, setRatings] = useState([]);
     const [ratingStats, setRatingStats] = useState({
         averageRating: 0,
@@ -11,36 +10,15 @@ const Rating = ({ ebook, onWriteReview }) => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [currentUser, setCurrentUser] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState({});
 
     // Check if user is authenticated and get user data
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const userData = JSON.parse(localStorage.getItem('userData'));
-                if (userData) {
-                    const result = await authAPI.getProfile({ email: userData.email });
-                    if (result.success) {
-                        setCurrentUser(result.data);
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to get user profile:', error);
-            }
-        };
-        checkAuth();
-    }, []);
+    // User profile not needed in Rating component right now — skip auth lookup
 
-    // Fetch ratings
-    useEffect(() => {
-        if (ebook?.ebookId) {
-            fetchRatings();
-        }
-    }, [ebook?.ebookId, currentPage]);
-
-    const fetchRatings = async () => {
+    // Fetch ratings (stable fetch function)
+    const fetchRatings = useCallback(async () => {
+        if (!ebook?.ebookId) return;
         try {
             setLoading(true);
             const response = await fetch(`http://localhost:8080/api/ratings/ebook/${ebook.ebookId}?page=${currentPage}&limit=10`);
@@ -62,7 +40,13 @@ const Rating = ({ ebook, onWriteReview }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [ebook?.ebookId, currentPage]);
+
+    useEffect(() => {
+        fetchRatings();
+    }, [fetchRatings, refreshKey]);
+
+    // fetchRatings is defined above as useCallback
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -72,13 +56,13 @@ const Rating = ({ ebook, onWriteReview }) => {
         const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
 
         if (diffInHours < 1) {
-            return 'Vừa xong';
+            return 'Just now';
         } else if (diffInHours < 24) {
-            return `${Math.floor(diffInHours)} giờ trước`;
+            return `${Math.floor(diffInHours)} hour(s) ago`;
         } else if (diffInDays < 7) {
-            return `${Math.floor(diffInDays)} ngày trước`;
+            return `${Math.floor(diffInDays)} day(s) ago`;
         } else {
-            return date.toLocaleDateString('vi-VN');
+            return date.toLocaleDateString('en-US');
         }
     };
 
@@ -122,8 +106,8 @@ const Rating = ({ ebook, onWriteReview }) => {
     if (loading && ratings.length === 0) {
         return (
             <div className="ratings-section">
-                <div className="loading-ratings">
-                    <p>Đang tải đánh giá...</p>
+                    <div className="loading-ratings">
+                        <p>Loading reviews...</p>
                 </div>
             </div>
         );
@@ -131,7 +115,7 @@ const Rating = ({ ebook, onWriteReview }) => {
 
     return (
         <div className="ratings-section">
-            <h2>Độc giả nói gì về "{ebook?.title}"</h2>
+            <h2>What readers say about "{ebook?.title}"</h2>
 
             {/* Rating Summary */}
             <div className="rating-summary">
@@ -141,14 +125,14 @@ const Rating = ({ ebook, onWriteReview }) => {
                         <div className="stars">
                             {renderStars(Math.round(ratingStats.averageRating))}
                         </div>
-                        <span className="rating-count">{ratingStats.totalRatings} đánh giá</span>
+                        <span className="rating-count">{ratingStats.totalRatings} reviews</span>
                     </div>
                 </div>
 
                 <div className="rating-distribution">
                     {[5, 4, 3, 2, 1].map((rating) => (
                         <div key={rating} className="rating-bar">
-                            <span className="rating-label">{rating} sao</span>
+                            <span className="rating-label">{rating} stars</span>
                             <div className="bar-container">
                                 <div
                                     className="bar-fill"
@@ -168,7 +152,7 @@ const Rating = ({ ebook, onWriteReview }) => {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor" />
                         </svg>
-                        Viết đánh giá
+                        Write a review
                     </button>
                 </div>
             </div>
@@ -217,24 +201,24 @@ const Rating = ({ ebook, onWriteReview }) => {
                         disabled={!pagination.hasPrev}
                         className="pagination-btn"
                     >
-                        Trang trước
+                        Previous
                     </button>
-                    <span className="pagination-info">
-                        Trang {pagination.currentPage} / {pagination.totalPages}
+                        <span className="pagination-info">
+                        Page {pagination.currentPage} / {pagination.totalPages}
                     </span>
                     <button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, pagination.totalPages))}
                         disabled={!pagination.hasNext}
                         className="pagination-btn"
                     >
-                        Trang sau
+                        Next
                     </button>
                 </div>
             )}
 
             {ratings.length === 0 && !loading && (
                 <div className="no-ratings">
-                    <p>Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá!</p>
+                    <p>No reviews yet. Be the first to review!</p>
                 </div>
             )}
         </div>

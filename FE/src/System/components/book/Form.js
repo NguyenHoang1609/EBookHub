@@ -30,12 +30,11 @@ import {
 } from '@mui/material';
 import {
     CloudUpload as UploadIcon,
-    Book as BookIcon,
     Image as ImageIcon,
     Check as CheckIcon
 } from '@mui/icons-material';
 import { ebookAPI, userAPI, typeAPI, contentModerationAPI } from '../../../Util/Api';
-
+import { toast } from 'react-toastify';
 const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     const [formData, setFormData] = useState({
         authorId: '',
@@ -64,6 +63,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     const [contentValidationResult, setContentValidationResult] = useState(null);
     const [customAuthorName, setCustomAuthorName] = useState('');
     const [selectedAuthor, setSelectedAuthor] = useState(null);
+    const [policyDialogOpen, setPolicyDialogOpen] = useState(false);
 
     useEffect(() => {
         if (open) {
@@ -206,41 +206,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
         }
     };
 
-    const handleAuthorChange = (event, newValue, reason) => {
-        if (reason === 'selectOption' && newValue && typeof newValue === 'object') {
-            // Selected from existing authors
-            setSelectedAuthor(newValue);
-            setFormData(prev => ({
-                ...prev,
-                authorId: newValue.id
-            }));
-            setCustomAuthorName('');
-        } else if (reason === 'clear') {
-            // Cleared selection
-            setSelectedAuthor(null);
-            setFormData(prev => ({
-                ...prev,
-                authorId: ''
-            }));
-            setCustomAuthorName('');
-        } else if (reason === 'input' && typeof newValue === 'string') {
-            // Custom input
-            setCustomAuthorName(newValue);
-            setSelectedAuthor(null);
-            setFormData(prev => ({
-                ...prev,
-                authorId: newValue.trim() // Use custom name as authorId for now
-            }));
-        }
-
-        // Clear error for author
-        if (errors.authorId) {
-            setErrors(prev => ({
-                ...prev,
-                authorId: ''
-            }));
-        }
-    };
+    console.log('selectedAuthor', selectedAuthor, formData.authorId)
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -306,9 +272,9 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
     };
 
     const handleSubmit = async () => {
-        // if (!validateForm()) {
-        //     return;
-        // }
+        if (!validateForm()) {
+            return;
+        }
 
         if (uploadMode && !ebook) {
             // PDF Upload mode
@@ -347,7 +313,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             setValidatingContent(false);
         }
     };
-    console.log('typeid', formData.typeIds)
+    console.log('typeid', formData)
     const handleUpload = async () => {
         if (!selectedFile) return;
 
@@ -366,12 +332,14 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             formDataToSend.append('title', formData.title.trim());
             formDataToSend.append('description', formData.description.trim());
             formDataToSend.append('status', formData.status);
+            formDataToSend.append('isVipEbook', formData.isVipEbook);
 
             const result = await ebookAPI.uploadEbook(formDataToSend);
 
             if (result.success) {
                 console.log(result);
                 setSuccess(result.message || 'Ebook uploaded and processed successfully!');
+                onClose(true);
                 setUploadProgress(100);
 
                 if (formData.typeIds.length > 0) {
@@ -461,10 +429,12 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     handleClose();
                 }, 1500);
             } else {
-                setError(result.message || 'Operation failed');
+                // window.scrollTo(0, 0);
+                toast.error(result.message || 'Operation failed');
             }
         } catch (err) {
-            setError('An unexpected error occurred');
+            // window.scrollTo(0, 0);
+            toast.error('An unexpected error occurred');
         } finally {
             setLoading(false);
         }
@@ -503,6 +473,21 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
             case 'pending_review': return 'info';
             default: return 'default';
         }
+    };
+
+
+
+    const handleOpenPolicyDialog = () => {
+        setPolicyDialogOpen(true);
+    };
+
+    const handleClosePolicyDialog = () => {
+        setPolicyDialogOpen(false);
+    };
+
+    const handleConfirmPolicyAndSubmit = async () => {
+        setPolicyDialogOpen(false);
+        await handleSubmit();
     };
 
     return (
@@ -571,7 +556,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                         Validation Status
                                     </Typography>
                                     <Chip
-                                        icon={contentValidationResult.isValid ? <CheckIcon /> : <CancelIcon />}
+                                        icon={contentValidationResult.isValid ? <CheckIcon /> : <div>x</div>}
                                         label={contentValidationResult.isValid ? 'PASSED' : 'FAILED'}
                                         color={contentValidationResult.isValid ? 'success' : 'error'}
                                         size="small"
@@ -756,18 +741,67 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                                     options={authors}
                                     value={selectedAuthor}
                                     inputValue={customAuthorName}
-                                    onInputChange={(event, newInputValue) => {
-                                        if (event && event.type === 'change') {
-                                            setCustomAuthorName(newInputValue);
-                                            if (newInputValue.trim()) {
-                                                setFormData(prev => ({
-                                                    ...prev,
-                                                    authorId: newInputValue.trim()
-                                                }));
-                                            }
+                                    onInputChange={(event, newValue, reason) => {
+                                        console.log('event123', event);
+                                        console.log('newValue123', newValue);
+                                        console.log('reason123', reason);
+                                        if (reason === 'input') {
+                                            // User is typing custom text
+                                            setCustomAuthorName(newValue);
+                                            setSelectedAuthor(null);
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                authorId: newValue.trim()
+                                            }));
+                                        } else if (reason === 'clear') {
+                                            // User cleared the input
+                                            setCustomAuthorName('');
+                                            setSelectedAuthor(null);
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                authorId: ''
+                                            }));
+                                        }
+
+                                        // Clear error for author
+                                        if (errors.authorId) {
+                                            setErrors(prev => ({
+                                                ...prev,
+                                                authorId: ''
+                                            }));
                                         }
                                     }}
-                                    onChange={handleAuthorChange}
+                                    onChange={(event, newValue, reason) => {
+                                        console.log('event', event);
+                                        console.log('newValue', newValue);
+                                        console.log('reason', reason);
+                                        if (reason === 'selectOption' && newValue) {
+                                            // Selected from existing authors
+                                            setSelectedAuthor(newValue);
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                authorId: newValue.id
+                                            }));
+                                            // Update inputValue to show the selected author's name
+                                            setCustomAuthorName(`${newValue.name} (${newValue.email})`);
+                                        } else if (reason === 'clear') {
+                                            // Cleared selection
+                                            setSelectedAuthor(null);
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                authorId: ''
+                                            }));
+                                            setCustomAuthorName('');
+                                        }
+
+                                        // Clear error for author
+                                        if (errors.authorId) {
+                                            setErrors(prev => ({
+                                                ...prev,
+                                                authorId: ''
+                                            }));
+                                        }
+                                    }}
                                     getOptionLabel={(option) => {
                                         if (typeof option === 'string') return option;
                                         return `${option.name} (${option.email})`;
@@ -1056,7 +1090,7 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                 </Button>
                 {!isViewMode && (
                     <Button
-                        onClick={handleSubmit}
+                        onClick={handleOpenPolicyDialog}
                         variant="contained"
                         disabled={loading || uploading || validatingContent}
                         startIcon={(loading || uploading || validatingContent) ? <CircularProgress size={20} /> : null}
@@ -1067,9 +1101,29 @@ const EbookForm = ({ open, ebook, isViewMode = false, onClose }) => {
                     </Button>
                 )}
             </DialogActions>
+            {/* Policy Confirmation Modal */}
+            <Dialog open={policyDialogOpen} onClose={handleClosePolicyDialog} maxWidth="sm" fullWidth>
+                <DialogTitle>
+                    <Typography variant="h6">Please read our policy</Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
+                        Authors must read and agree to our policy before submitting their ebook.
+                    </Typography>
+                    <Typography variant="body2">
+                        View the policy here: <a href="/policy" target="_blank" rel="noopener noreferrer">/policy</a>
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClosePolicyDialog}>Cancel</Button>
+                    <Button variant="contained" color="primary" onClick={handleConfirmPolicyAndSubmit}>I have read the policy, proceed</Button>
+                </DialogActions>
+            </Dialog>
         </Dialog>
     );
 };
+
+
 
 export default EbookForm;
 

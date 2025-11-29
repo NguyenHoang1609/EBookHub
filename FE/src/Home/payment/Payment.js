@@ -5,9 +5,9 @@ import styles from './Payment.module.scss';
 import { paymentAPI } from '../../Util/Api';
 
 const TIERS = [
-    // { id: '3m', label: '3 Tháng', price: 199000 },
-    // { id: '6m', label: '6 Tháng', price: 399000 },
-    { id: 'vĩnh viễn', label: 'Gói hội viên', price: 499000 }
+    // { id: '3m', label: '3 Months', price: 199000 },
+    // { id: '6m', label: '6 Months', price: 399000 },
+    { id: 'lifetime', label: 'Membership Plan', price: 200000 }
 ];
 
 const FIXED_CHECK_AMOUNT = 2000; // matches backend VIP_PRICE_VND
@@ -18,7 +18,7 @@ const Payment = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [polling, setPolling] = useState(false);
     const [paid, setPaid] = useState(false);
-    const [error, setError] = useState('');
+    const [error] = useState('');
 
     useEffect(() => {
         const userData = localStorage.getItem('userData');
@@ -27,10 +27,12 @@ const Payment = () => {
         }
     }, []);
 
-    const qrSrc = useMemo(() => {
-        const uid = user?.id || 0;
-        return `https://qr.sepay.vn/img?acc=0383984836&bank=MBBank&amount=${FIXED_CHECK_AMOUNT}&des=DH${uid}&template=compact`;
-    }, [user]);
+const qrSrc = useMemo(() => {
+    if (!user) return '';
+    const uid = user.id;
+    return `https://qr.sepay.vn/img?acc=0968246811&bank=MBBank&amount=2000&des=DH${uid}&template=compact`;
+}, [user]);
+
 
     useEffect(() => {
         let timer;
@@ -63,15 +65,15 @@ const Payment = () => {
     }, [modalOpen, user]);
 
     const featureList = (months) => ([
-        'Đọc không giới hạn ebook VIP',
-        'Bỏ quảng cáo',
-        'Ưu đãi thành viên độc quyền'
+        'Unlimited VIP ebook reading',
+        'Ad-free experience',
+        'Exclusive member benefits'
     ]);
 
     const savingsText = (id) => {
-        if (id === '6m') return 'Tiết kiệm 15% so với trả 3 tháng x2';
-        if (id === '12m') return 'Tiết kiệm 30% so với trả theo tháng';
-        return 'Bắt đầu trải nghiệm VIP ngay';
+        if (id === '6m') return 'Save 15% compared to paying monthly (6-month plan)';
+        if (id === '12m') return 'Save 30% compared to paying monthly (12-month plan)';
+        return 'Start your VIP experience now';
     };
 
     return (
@@ -79,8 +81,8 @@ const Payment = () => {
             <Navigation />
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>Nâng cấp Hội viên VIP</h1>
-                    <p className={styles.subtitle}>Chọn gói phù hợp với bạn</p>
+                    <h1 className={styles.title}>Upgrade to VIP Membership</h1>
+                    <p className={styles.subtitle}>Choose a plan that suits you</p>
                 </div>
 
                 <div className={styles.tiersGrid}>
@@ -89,7 +91,7 @@ const Payment = () => {
 
                             <div className={styles.cardHeader}>
                                 <div className={styles.plan}>{t.label}</div>
-                                <div className={styles.price}>{t.price.toLocaleString('vi-VN')}đ</div>
+                                <div className={styles.price}>{t.price.toLocaleString('en-US')} VND</div>
                             </div>
                             <div className={styles.savings}>{savingsText(t.id)}</div>
                             <div className={styles.features}>
@@ -100,8 +102,8 @@ const Payment = () => {
                                     </div>
                                 ))}
                             </div>
-                            <button className={styles.buyBtn} onClick={() => setModalOpen(true)}>Mua gói</button>
-                            <div className={styles.footnote}>Thanh toán qua QR. Kích hoạt tự động sau vài giây.</div>
+                            <button className={styles.buyBtn} onClick={() => setModalOpen(true)}>Buy plan</button>
+                            <div className={styles.footnote}>Payment via QR. Activation will happen automatically.</div>
                         </div>
                     ))}
                 </div>
@@ -110,28 +112,28 @@ const Payment = () => {
                     <div className={styles.overlay} onClick={() => setModalOpen(false)}>
                         <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                             <div className={styles.panelLeft}>
-                                <h3 className={styles.panelTitle}>Quét mã thanh toán</h3>
+                                <h3 className={styles.panelTitle}>Scan QR to Pay</h3>
                                 <div className={styles.qrBox}>
                                     <img className={styles.qr} src={qrSrc} alt="QR Payment" />
                                 </div>
                                 <div className={styles.status}>
-                                    <div className={styles.note}>Sử dụng ứng dụng ngân hàng để quét mã.</div>
-                                    {polling && <div className={styles.polling}>Đang kiểm tra thanh toán...</div>}
-                                    {paid && <div className={styles.success}>Thanh toán thành công! Tài khoản đã kích hoạt VIP.</div>}
+                                    <div className={styles.note}>Use your banking app to scan the code.</div>
+                                    {polling && <div className={styles.polling}>Checking payment...</div>}
+                                    {paid && <div className={styles.success}>Payment successful! Your account is now VIP.</div>}
                                     {error && <div className={styles.error}>{error}</div>}
                                 </div>
                             </div>
                             <div className={styles.panelRight}>
-                                <h3 className={styles.panelTitle}>Thông tin chuyển khoản</h3>
+                                <h3 className={styles.panelTitle}>Transfer information</h3>
                                 <div className={styles.infoCol}>
-                                    <div className={styles.row}><span className={styles.label}>Ngân hàng</span><span className={styles.value}>MBBank</span></div>
-                                    <div className={styles.row}><span className={styles.label}>Chủ tài khoản</span><span className={styles.value}>SEPAY DEMO</span></div>
-                                    <div className={styles.row}><span className={styles.label}>Số tài khoản</span><span className={styles.value}>0383984836</span></div>
-                                    <div className={styles.row}><span className={styles.label}>Số tiền xác thực</span><span className={styles.value}>{FIXED_CHECK_AMOUNT.toLocaleString('vi-VN')}đ</span></div>
-                                    <div className={styles.row}><span className={styles.label}>Nội dung</span><span className={styles.value}>DH{user?.id}</span></div>
+                                    <div className={styles.row}><span className={styles.label}>Bank</span><span className={styles.value}>MBBank</span></div>
+                                    <div className={styles.row}><span className={styles.label}>Account holder</span><span className={styles.value}>SEPAY DEMO</span></div>
+                                    <div className={styles.row}><span className={styles.label}>Account number</span><span className={styles.value}>0968246811</span></div>
+                                    <div className={styles.row}><span className={styles.label}>Verification amount</span><span className={styles.value}>{FIXED_CHECK_AMOUNT.toLocaleString('en-US')} VND</span></div>
+                                    <div className={styles.row}><span className={styles.label}>Reference</span><span className={styles.value}>DH{user?.id}</span></div>
                                 </div>
                                 <div className={styles.actions}>
-                                    <button className={styles.outlineBtn} onClick={() => setModalOpen(false)}>Đóng</button>
+                                    <button className={styles.outlineBtn} onClick={() => setModalOpen(false)}>Close</button>
                                 </div>
                             </div>
                         </div>

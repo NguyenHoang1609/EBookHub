@@ -17,8 +17,8 @@ const RatingModal = ({ isOpen, onClose, ebook, user, onSubmit }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!user) {
-            toast('Bạn cần đăng nhập để đánh giá');
+            if (!user) {
+            toast('You need to log in to submit a review');
             return;
         }
 
@@ -40,16 +40,16 @@ const RatingModal = ({ isOpen, onClose, ebook, user, onSubmit }) => {
             const response = await result.json();
 
             if (response.success) {
-                toast.success('Đánh giá của bạn đã được gửi thành công!');
+                toast.success('Your review has been submitted successfully!');
                 onClose();
                 if (onSubmit) {
                     onSubmit();
                 }
             } else {
-                toast('Có lỗi xảy ra: ' + response.message);
+                toast('An error occurred: ' + response.message);
             }
         } catch (error) {
-            toast('Có lỗi xảy ra khi gửi đánh giá');
+            toast('An error occurred while submitting the review');
         } finally {
             setSubmitting(false);
         }
@@ -81,7 +81,7 @@ const RatingModal = ({ isOpen, onClose, ebook, user, onSubmit }) => {
         <div className="rating-modal-overlay" onClick={onClose}>
             <div className="rating-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h3>Đánh giá và nhận xét</h3>
+                    <h3>Rating and Review</h3>
                     <button className="close-btn" onClick={onClose}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -91,18 +91,18 @@ const RatingModal = ({ isOpen, onClose, ebook, user, onSubmit }) => {
 
                 <form onSubmit={handleSubmit} className="rating-form">
                     <div className="rating-section">
-                        <label className="rating-label">Đánh giá</label>
+                        <label className="rating-label">Rating</label>
                         <div className="stars-container">
                             {renderStars()}
                         </div>
                     </div>
 
                     <div className="review-section">
-                        <label className="review-label">Nhận xét</label>
+                        <label className="review-label">Review</label>
                         <textarea
                             value={reviewText}
                             onChange={(e) => setReviewText(e.target.value)}
-                            placeholder="Hãy cho chúng mình một vài nhận xét và đóng góp ý kiến nhé"
+                            placeholder="Please leave your review and feedback"
                             className="review-textarea"
                             rows="4"
                             maxLength="300"
@@ -118,14 +118,14 @@ const RatingModal = ({ isOpen, onClose, ebook, user, onSubmit }) => {
                             className="cancel-btn"
                             onClick={onClose}
                         >
-                            Hủy
+                            Cancel
                         </button>
                         <button
                             type="submit"
                             className="submit-btn"
                             disabled={submitting}
                         >
-                            {submitting ? 'Đang gửi...' : 'Gửi nhận xét'}
+                            {submitting ? 'Submitting...' : 'Submit Review'}
                         </button>
                     </div>
                 </form>

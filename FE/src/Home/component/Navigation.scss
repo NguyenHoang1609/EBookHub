@@ -34,11 +34,14 @@
                 cursor         : pointer;
 
                 .logo-image {
-                    width    : 115px;
-                    height   : 38px;
-                    max-width: 146px;
-                    min-width: 115px;
-                    position : relative;
+                    width           : 50px;
+                    height          : 50px;
+                    // max-width    : 146px;
+                    // min-width    : 115px;
+                    position        : relative;
+                    object-fit      : contain;
+                    border-radius   : 15px;
+
                 }
 
                 .logo-icon-container {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ebookAPI, typeAPI } from '../../Util/Api';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './MoreEbook.scss';
@@ -33,10 +33,11 @@ const MoreEbook = () => {
                 }
             }
         }
-    }, [types, location.search]);
+    }, [types, location.search, selectedType]);
 
     useEffect(() => {
         fetchEbooks();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, selectedType, searchTerm]);
 
     const fetchTypes = async () => {
@@ -50,7 +51,7 @@ const MoreEbook = () => {
         }
     };
 
-    const fetchEbooks = async () => {
+    const fetchEbooks = useCallback(async () => {
         setLoading(true);
         setError('');
 
@@ -85,7 +86,7 @@ const MoreEbook = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentPage, selectedType, searchTerm]);
 
     const handleTypeChange = (e) => {
         setSelectedType(e.target.value);
@@ -123,7 +124,7 @@ const MoreEbook = () => {
                         {ebook.isVipEbook && (
                             <div className="member-badge">
                                 <div className="badge-content">
-                                    <div className="badge-text">Hội viên</div>
+                                    <div className="badge-text">VIP</div>
                                 </div>
                             </div>
                         )}
@@ -149,14 +150,14 @@ const MoreEbook = () => {
             <Navbar />
             <div className="more-ebook-header">
                 <div className="header-content">
-                    <h1 className="header-title">Tất cả sách</h1>
+                    <h1 className="header-title">All Books</h1>
                 </div>
 
                 <div className="filters-section">
                     <div className="search-box">
                         <input
                             type="text"
-                            placeholder="Tìm kiếm sách..."
+                            placeholder="Search books..."
                             value={searchTerm}
                             onChange={handleSearchChange}
                             className="search-input"
@@ -169,7 +170,7 @@ const MoreEbook = () => {
                             onChange={handleTypeChange}
                             className="type-select"
                         >
-                            <option value="">Tất cả thể loại</option>
+                            <option value="">All categories</option>
                             {types.length > 0 && types.map((type) => (
                                 <option key={type.typeId} value={type.typeId}>
                                     {type.name}
@@ -193,7 +194,7 @@ const MoreEbook = () => {
                     </div>
                 ) : (
                     <div className="no-ebooks-message">
-                        Không tìm thấy sách nào
+                        No books found
                     </div>
                 )}
             </div>
@@ -206,15 +207,15 @@ const MoreEbook = () => {
                         disabled={currentPage === 1}
                         className="pagination-btn prev"
                     >
-                        Trang trước
+                        Previous
                     </button>
 
                     <div className="pagination-info">
-                        <span>
-                            Trang {pagination.currentPage} / {pagination.totalPages}
+                            <span>
+                            Page {pagination.currentPage} / {pagination.totalPages}
                         </span>
                         <span className="total-items">
-                            ({pagination.totalItems} sách)
+                            ({pagination.totalItems} books)
                         </span>
                     </div>
 
@@ -223,7 +224,7 @@ const MoreEbook = () => {
                         disabled={currentPage === pagination.totalPages}
                         className="pagination-btn next"
                     >
-                        Trang sau
+                        Next
                     </button>
                 </div>
             )}

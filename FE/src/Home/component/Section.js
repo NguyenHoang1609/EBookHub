@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -9,7 +9,7 @@ import './Section.scss';
 import { useNavigate } from 'react-router-dom';
 function Section(props) {
     const {
-        title = "Waka đề xuất",
+        title = "Waka recommends",
         apiType = "getTopBooks",
         apiParams = {},
         showRanking = true,
@@ -22,13 +22,7 @@ function Section(props) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    useEffect(() => {
-        fetchEbooks();
-    }, [apiType, apiParams, userId, typeId]);
-
-    console.log(ebooks);
-
-    const fetchEbooks = async () => {
+    const fetchEbooks = useCallback(async () => {
         setLoading(true);
         setError('');
 
@@ -104,7 +98,13 @@ function Section(props) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [apiType, apiParams, userId, typeId]);
+
+    useEffect(() => {
+        fetchEbooks();
+    }, [fetchEbooks]);
+
+    console.log(ebooks);
 
     const renderBookItem = (ebook, index) => {
         const coverImage = ebook.coverImage || "https://307a0e78.vws.vegacdn.vn/view/v2/image/img.book/0/0/0/18876.jpg?v=1&w=350&h=510";
@@ -127,7 +127,7 @@ function Section(props) {
                             {showMemberBadge && ebook.isVipEbook && (
                                 <div className="member-badge">
                                     <div className="badge-content">
-                                        <div className="badge-text">Hội viên</div>
+                                        <div className="badge-text">VIP</div>
                                     </div>
                                 </div>
                             )}
@@ -187,11 +187,11 @@ function Section(props) {
                         <div className="section-title">{title}</div>
                     </div>
                     {apiType === 'getAllEbooks' && (
-                        <div
+                            <div
                             onClick={() => {
                                 navigate('/more-ebook');
                             }}
-                            className='see-more-button'>Xem thêm</div>
+                            className='see-more-button'>See more</div>
                     )}
                 </div>
 

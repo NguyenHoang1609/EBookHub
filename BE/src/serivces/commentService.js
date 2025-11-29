@@ -1,6 +1,6 @@
 import db from '../models/index';
 import { Op } from 'sequelize';
-
+import contentModerationService from './contentModerationService';
 const commentService = {
     // Get all comments for an ebook with pagination and nesting
     getCommentsByEbook: async ({ ebookId, page = 1, limit = 20, sortBy = 'created_at', order = 'DESC' }) => {
@@ -106,6 +106,10 @@ const commentService = {
                     data: null
                 };
             }
+
+
+
+
 
             // If parentCommentId is provided, validate parent comment exists
             if (parentCommentId) {
@@ -251,7 +255,7 @@ const commentService = {
             const comment = await db.Comment.findOne({
                 where: {
                     id: commentId,
-                    isActive: true
+                   
                 }
             });
 
@@ -265,32 +269,34 @@ const commentService = {
             }
 
             // Check if user owns the comment or has admin rights
-            const user = await db.User.findByPk(userId, {
-                include: [
-                    {
-                        model: db.Group,
-                        as: 'group',
-                        include: [
-                            {
-                                model: db.Role,
-                                as: 'roles'
-                            }
-                        ]
-                    }
-                ]
-            });
+            // const user = await db.User.findOne(
+            //     {id:userId}
+            //     , {
+            //     include: [
+            //         {
+            //             model: db.Group,
+            //             as: 'group',
+            //             include: [
+            //                 {
+            //                     model: db.Role,
+            //                     as: 'roles'
+            //                 }
+            //             ]
+            //         }
+            //     ]
+            // });
 
-            const isAdmin = user?.group?.roles?.some(role => role.name === 'admin');
-            const isOwner = comment.userId === userId;
+            // const isAdmin = user?.group?.roles?.some(role => role.name === 'admin');
+            // const isOwner = comment.userId === userId;
 
-            if (!isOwner && !isAdmin) {
-                await transaction.rollback();
-                return {
-                    success: false,
-                    message: 'You can only delete your own comments',
-                    data: null
-                };
-            }
+            // if (!isOwner && !isAdmin) {
+            //     await transaction.rollback();
+            //     return {
+            //         success: false,
+            //         message: 'You can only delete your own comments',
+            //         data: null
+            //     };
+            // }
 
             // Soft delete the comment and its replies
             await comment.update({
@@ -302,7 +308,7 @@ const commentService = {
                 { isActive: false },
                 {
                     where: {
-                        parentCommentId: commentId
+                        parent_comment_id: commentId
                     },
                     transaction
                 }

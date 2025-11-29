@@ -72,7 +72,7 @@ const createUser = async (req, res) => {
     try {
         console.log('Create user request received:', req.body);
 
-        const { name, email, phone, address, password, groupId } = req.body;
+        const { name, email, phone, address, password, groupId, is_vip } = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({
@@ -88,7 +88,8 @@ const createUser = async (req, res) => {
             phone,
             address,
             password,
-            groupId: groupId ? parseInt(groupId) : 3
+            groupId: groupId ? parseInt(groupId) : 3,
+            is_vip: is_vip !== undefined ? Boolean(is_vip) : false
         });
 
         if (result.EC === 0) {
@@ -113,7 +114,7 @@ const updateUser = async (req, res) => {
         console.log('Update user request received:', req.params.id, req.body);
 
         const { id } = req.params;
-        const { name, email, phone, address, groupId, isActive } = req.body;
+        const { name, email, phone, address, groupId, isActive, is_vip } = req.body;
 
         // Handle avatar upload if file is present
         let avatarPath = null;
@@ -136,6 +137,7 @@ const updateUser = async (req, res) => {
             address,
             groupId: groupId ? parseInt(groupId) : null,
             isActive: isActive !== undefined ? Boolean(isActive) : null,
+            is_vip: is_vip !== undefined ? Boolean(is_vip) : undefined,
             avatar: avatarPath
         });
 
